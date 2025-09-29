@@ -1,4 +1,4 @@
-package com.example.service;
+package com.example.service.usecase;
 
 import com.example.domain.event.TimesheetEvent;
 import com.example.domain.model.Employee;

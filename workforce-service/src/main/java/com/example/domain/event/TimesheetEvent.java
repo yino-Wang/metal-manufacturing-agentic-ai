@@ -1,6 +1,6 @@
 package com.example.domain.event;
 import com.example.domain.model.Timesheet;
-import com.example.service.RecordTimesheetService;
+import com.example.service.usecase.RecordTimesheetService;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

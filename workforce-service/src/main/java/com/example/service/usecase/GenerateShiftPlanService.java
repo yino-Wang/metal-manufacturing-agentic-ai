@@ -1,4 +1,4 @@
-package com.example.service;
+package com.example.service.usecase;
 // Service for generating shift plans for employees
 // This service interacts with the EmployeeRepository to fetch employee details
 // and the ShiftPlanRepository to save the generated shift plans.
