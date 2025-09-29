@@ -1,8 +1,6 @@
 package com.example.domain.model;
 
 import jakarta.persistence.*;
-import org.apache.catalina.User;
-
 import java.util.Date;
 
 /**
