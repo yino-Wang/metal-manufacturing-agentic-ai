@@ -21,8 +21,8 @@ public class MaintenanceReportApplication {
     @Bean
     public CommandLineRunner loadDatabase(ReportRepository reportRepository, MachineRepository machineRepository) {
         return args -> {
-            Machine machineA = new Machine("Machine A", new ArrayList<>());
-            Machine machineB = new Machine("Machine B", new ArrayList<>());
+            Machine machineA = new Machine("A", new ArrayList<>());
+            Machine machineB = new Machine("B", new ArrayList<>());
 
             machineRepository.save(machineA);
             machineRepository.save(machineB);
