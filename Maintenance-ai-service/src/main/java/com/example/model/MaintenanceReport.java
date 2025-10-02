@@ -1,0 +1,58 @@
+package com.example.model;
+
+import jakarta.persistence.*;
+
+import java.time.LocalDate;
+
+@Entity
+public class MaintenanceReport {
+    @Id
+    private String reportId;
+    @Column
+    private LocalDate reportDate;
+    @ManyToOne
+    @JoinColumn(name = "machine_id")
+    private Machine machine;
+
+    public MaintenanceReport() {
+    }
+
+    public MaintenanceReport(String reportId, LocalDate reportDate, Machine machine) {
+        this.reportId = reportId;
+        this.reportDate = reportDate;
+        this.machine = machine;
+    }
+
+    public String getReportId() {
+        return reportId;
+    }
+
+    public void setReportId(String reportId) {
+        this.reportId = reportId;
+    }
+
+    public LocalDate getReportDate() {
+        return reportDate;
+    }
+
+    public void setReportDate(LocalDate reportDate) {
+        this.reportDate = reportDate;
+    }
+
+    public Machine getMachine() {
+        return machine;
+    }
+
+    public void setMachine(Machine machine) {
+        this.machine = machine;
+    }
+
+    @Override
+    public String toString() {
+        return "MaintenanceReport{" +
+                "reportId='" + reportId + '\'' +
+                ", reportDate=" + reportDate +
+                ", machine=" + machine +
+                '}';
+    }
+}
