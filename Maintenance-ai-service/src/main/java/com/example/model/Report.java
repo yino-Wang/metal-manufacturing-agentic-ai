@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 import java.time.LocalDate;
 
 @Entity
-public class MaintenanceReport {
+public class Report {
     @Id
     private String reportId;
     @Column
@@ -14,10 +14,10 @@ public class MaintenanceReport {
     @JoinColumn(name = "machine_id")
     private Machine machine;
 
-    public MaintenanceReport() {
+    public Report() {
     }
 
-    public MaintenanceReport(String reportId, LocalDate reportDate, Machine machine) {
+    public Report(String reportId, LocalDate reportDate, Machine machine) {
         this.reportId = reportId;
         this.reportDate = reportDate;
         this.machine = machine;

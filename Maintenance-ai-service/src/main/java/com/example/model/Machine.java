@@ -3,19 +3,20 @@ package com.example.model;
 import jakarta.persistence.*;
 import java.util.List;
 
+@Entity
 public class Machine {
 
     @Id
     private String machineId;
     @OneToMany(mappedBy = "machine")
-    private List<MaintenanceReport> maintenanceReports;
+    private List<Report> reports;
 
     public Machine() {
     }
 
-    public Machine(String machineId, List<MaintenanceReport> maintenanceReports) {
+    public Machine(String machineId, List<Report> reports) {
         this.machineId = machineId;
-        this.maintenanceReports = maintenanceReports;
+        this.reports = reports;
     }
 
     public String getMachineId() {
@@ -26,19 +27,19 @@ public class Machine {
         this.machineId = machineId;
     }
 
-    public List<MaintenanceReport> getMaintenanceReports() {
-        return maintenanceReports;
+    public List<Report> getMaintenanceReports() {
+        return reports;
     }
 
-    public void setMaintenanceReports(List<MaintenanceReport> maintenanceReports) {
-        this.maintenanceReports = maintenanceReports;
+    public void setMaintenanceReports(List<Report> reports) {
+        this.reports = reports;
     }
 
     @Override
     public String toString() {
         return "Machine{" +
                 "machineId='" + machineId + '\'' +
-                ", maintenanceReports=" + maintenanceReports +
+                ", maintenanceReports=" + reports +
                 '}';
     }
 
