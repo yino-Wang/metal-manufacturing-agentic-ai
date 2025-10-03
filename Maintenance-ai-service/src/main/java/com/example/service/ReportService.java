@@ -55,6 +55,19 @@ public class ReportService {
         return mapMachineToDto(machine);
     }
 
+    public void addMachine(String machineId) {
+        Machine machine = new Machine();
+        machine.setMachineId(machineId);
+        Machine savedMachine = machineRepository.save(machine);
+    }
+
+    public void removeMachine(String machineId) {
+        Machine machine = machineRepository.findById(machineId)
+                .orElseThrow(() -> new MachineNotFoundException(machineId));
+        machineRepository.delete(machine);
+    }
+
+
     @Transactional
     private MachineDto mapMachineToDto(Machine machine) {
         List<ReportDto> reportDtos = machine.getMaintenanceReports().stream()

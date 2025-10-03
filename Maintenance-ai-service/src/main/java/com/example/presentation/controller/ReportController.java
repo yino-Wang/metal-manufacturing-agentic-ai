@@ -3,9 +3,7 @@ package com.example.presentation.controller;
 import com.example.service.dto.MachineDto;
 import com.example.service.dto.ReportDto;
 import com.example.service.ReportService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -36,6 +34,16 @@ public class ReportController {
     @GetMapping("/admin/machines")
     public List<MachineDto> getAllMachines() {
         return reportService.findAllMachines();
+    }
+
+    @PostMapping("/admin/machines/add")
+    public void addMachine(@RequestBody String MachineId) {
+        reportService.addMachine(MachineId);
+    }
+
+    @PostMapping("/admin/machines/remove")
+    public void removeMachine(@RequestBody String MachineId) {
+        reportService.removeMachine(MachineId);
     }
 
 }

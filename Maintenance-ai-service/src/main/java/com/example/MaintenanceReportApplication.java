@@ -18,19 +18,4 @@ public class MaintenanceReportApplication {
         org.springframework.boot.SpringApplication.run(MaintenanceReportApplication.class, args);
     }
 
-    @Bean
-    public CommandLineRunner loadDatabase(ReportRepository reportRepository, MachineRepository machineRepository) {
-        return args -> {
-            Machine machineA = new Machine("A", new ArrayList<>());
-            Machine machineB = new Machine("B", new ArrayList<>());
-
-            machineRepository.save(machineA);
-            machineRepository.save(machineB);
-
-            reportRepository.save(new Report("A1", LocalDate.now().minusDays(10), machineA));
-            reportRepository.save(new Report("A2", LocalDate.now().minusDays(5), machineA));
-            reportRepository.save(new Report("B1", LocalDate.now(), machineB));
-        };
-    }
-
 }
