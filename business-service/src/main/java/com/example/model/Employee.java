@@ -1,8 +1,14 @@
-package com.example;
+package com.example.model;
 
-import java.util.Objects;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
 
+@Entity
 public class Employee {
+
+    @Id
+    @GeneratedValue
     private Integer id;
     private String name;
     private String jobs;
@@ -41,14 +47,11 @@ public class Employee {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
-        Employee employee = (Employee) o;
-        return Objects.equals(id, employee.id) && Objects.equals(name, employee.name) && Objects.equals(jobs, employee.jobs);
-    }
+    public String toString() {
+        return "Employee{" +
+                "name='" + name + "\'" +
+                ", jobs='" + jobs + "\'" +
+                '}';
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name, jobs);
     }
 }
