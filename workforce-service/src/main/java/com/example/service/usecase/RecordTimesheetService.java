@@ -1,4 +1,4 @@
-package com.example.service;
+package com.example.service.usecase;
 
 import com.example.domain.event.TimesheetEvent;
 import com.example.domain.model.Employee;
@@ -7,12 +7,11 @@ import com.example.infrastructure.repository.EmployeeRepository;
 import com.example.infrastructure.repository.TimesheetRepository;
 import com.example.infrastructure.repository.ShiftPlanRepository;
 import com.example.infrastructure.repository.TimesheetEventRepository;
-import com.example.domain.model.ShiftPlan;
+import com.example.domain.model.ShiftSchedule;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 public class RecordTimesheetService {
@@ -51,10 +50,10 @@ public class RecordTimesheetService {
         timesheet.setSalaryPaid(salaryPaid);
 
         // determine status based on shift plan
-        ShiftPlan shiftPlan = shiftPlanRepository.findAll().stream()
+        ShiftSchedule shiftSchedule = shiftPlanRepository.findAll().stream()
             .filter(sp -> sp.getEmployeeId().equals(employeeId) && sp.getShiftDate().equals(date))
             .findFirst().orElse(null);
-        if (shiftPlan == null) {
+        if (shiftSchedule == null) {
             timesheet.setStatus("EXCEPTION"); // no shift plan found
         } else {
             // normal case
@@ -62,15 +61,10 @@ public class RecordTimesheetService {
         }
         timesheetRepository.save(timesheet);
 
-        // 3. Publish event if necessary
-        TimesheetEvent event = new TimesheetEvent(this, timesheet);
-        event.setEventName("Recorded Timesheet and Calculated Salary");
-        // record current time（format：yyyy-MM-dd HH:mm:ss）
-        String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-        event.setTimestamp(timestamp);
-        event.setTimesheetId(timesheet.getTimesheetId());
-        eventPublisher.publishEvent(event);
-        timesheetEventRepository.save(event);
+        // 3. Publish event
+        TimesheetEvent timesheetEvent = new TimesheetEvent(timesheet);
+        timesheetEventRepository.save(timesheetEvent);
+        eventPublisher.publishEvent(timesheetEvent);
     }
 
     // approve timesheet exception

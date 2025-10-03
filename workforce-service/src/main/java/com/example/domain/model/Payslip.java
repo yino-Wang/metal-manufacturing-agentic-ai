@@ -18,8 +18,8 @@ public class Payslip {
     @Temporal(TemporalType.DATE)
     private Date endDate;
 
-    @Column(name = "gross_pay")
-    private Float grossPay;
+    @Column(name = "total_salary")
+    private Float totalSalary;
 
     @Column(name = "pay")
     private Float pay;
@@ -37,21 +37,65 @@ public class Payslip {
     // 构造方法、getter、setter
     public Payslip() {}
 
-    public Long getPayslipId() { return payslipId; }
-    public void setPayslipId(Long payslipId) { this.payslipId = payslipId; }
-    public Date getStartDate() { return startDate; }
-    public void setStartDate(Date startDate) { this.startDate = startDate; }
-    public Date getEndDate() { return endDate; }
-    public void setEndDate(Date endDate) { this.endDate = endDate; }
-    public Float getGrossPay() { return grossPay; }
-    public void setGrossPay(Float grossPay) { this.grossPay = grossPay; }
-    public Float getPay() { return pay; }
-    public void setPay(Float pay) { this.pay = pay; }
-    public Float getTax() { return tax; }
-    public void setTax(Float tax) { this.tax = tax; }
-    public Float getSuperAmount() { return superAmount; }
-    public void setSuperAmount(Float superAmount) { this.superAmount = superAmount; }
-    public Employee getEmployee() { return employee; }
-    public void setEmployee(Employee employee) { this.employee = employee; }
+    public Payslip(Long payslipId, Date startDate, Date endDate, Float totalSalary, Float pay, Float tax, Float superAmount, Employee employee) {
+        this.payslipId = payslipId;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.totalSalary = totalSalary;
+        this.pay = pay;
+        this.tax = tax;
+        this.superAmount = superAmount;
+        this.employee = employee;
+    }
+
+    public Long getPayslipId() {
+        return payslipId; }
+
+    public void setPayslipId(Long payslipId) {
+        this.payslipId = payslipId; }
+
+    public Date getStartDate() {
+        return startDate; }
+
+    public void setStartDate(Date startDate) {
+        this.startDate = startDate; }
+
+    public Date getEndDate() {
+        return endDate; }
+
+    public void setEndDate(Date endDate) {
+        this.endDate = endDate; }
+
+    public Float getTotalSalary() {
+        return totalSalary; }
+
+    public void setTotalSalary(Float totalSalary) {
+        this.totalSalary = totalSalary; }
+
+    public Float getPay() {
+        return pay; }
+
+    public void setPay(Float pay) {
+        this.pay = pay; }
+
+    public Float getTax() {
+        return tax; }
+
+    public void setTax(Float tax) {
+        this.tax = tax; }
+
+    public Float getSuperAmount() {
+        return superAmount; }
+
+    public void setSuperAmount(Float superAmount) {
+        this.superAmount = superAmount; }
+
+    public Employee getEmployee() {
+        return employee; }
+
+    public void setEmployee(Employee employee) {
+        this.employee = employee; }
+
+
 }
 

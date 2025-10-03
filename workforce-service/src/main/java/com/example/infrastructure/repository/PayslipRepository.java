@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface PayslipRepository extends JpaRepository<Payslip, Long> {
     List<Payslip> findByEmployee_EmployeeId(Long employeeId);
+    List<Payslip> findByEmployee_EmployeeIdAndCurrentMonth(Long employeeId);
+
 }

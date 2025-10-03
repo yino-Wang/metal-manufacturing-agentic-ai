@@ -2,14 +2,13 @@ package com.example.domain.model;
 
 import jakarta.persistence.*;
 import java.util.Date;
-import com.example.domain.model.Job;
-import com.example.domain.model.Employee;
+
 /**
  * ShiftPlan entity class for employee shift scheduling.
  */
 @Entity
 @Table(name = "shift_plan")
-public class ShiftPlan {
+public class ShiftSchedule {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -24,15 +23,15 @@ public class ShiftPlan {
     @Column(name = "shift_type")
     private String shiftType;
 
-    @Column(name = "schedule_id")
-    private Integer scheduleId;
+    @Column(name = "required_employees")
+    private int requiredEmployees;
 
     @ManyToOne
     @JoinColumn(name = "employee_id", referencedColumnName = "employee_id", insertable = false, updatable = false)
     private Employee employee;
 
     @ManyToOne
-    @JoinColumn(name = "job_id")
+    @JoinColumn(name = "job", insertable = false, updatable = false)
     private Job job;
 
     @Column(name = "job_id")
@@ -41,14 +40,22 @@ public class ShiftPlan {
     @Column(name = "status")
     private String status;
 
-    // 构造方法、getter、setter
-    public ShiftPlan() {}
+    @Column(name = "version")
+    private Integer version;
 
-    public ShiftPlan(Integer employeeId, Date shiftDate, String shiftType, Integer scheduleId) {
+    // 构造方法、getter、setter
+    public ShiftSchedule() {}
+
+    public ShiftSchedule(Integer employeeId, Date shiftDate, String shiftType, int requiredEmployees, Employee employee, Job job, Integer jobId, String status, Integer version) {
         this.employeeId = employeeId;
         this.shiftDate = shiftDate;
         this.shiftType = shiftType;
-        this.scheduleId = scheduleId;
+        this.requiredEmployees = requiredEmployees;
+        this.employee = employee;
+        this.job = job;
+        this.jobId = jobId;
+        this.status = status;
+        this.version = version;
     }
 
     // ...getter and setter method...
@@ -76,18 +83,44 @@ public class ShiftPlan {
     public void setShiftType(String shiftType) {
         this.shiftType = shiftType;}
 
-    public Integer getScheduleId() {
-        return scheduleId;}
 
-    public void setScheduleId(Integer scheduleId) {
-        this.scheduleId = scheduleId;}
+    public Employee getEmployee() {
+        return employee; }
 
-    public Employee getEmployee() { return employee; }
-    public void setEmployee(Employee employee) { this.employee = employee; }
-    public Job getJob() { return job; }
-    public void setJob(Job job) { this.job = job; }
-    public Integer getJobId() { return jobId; }
-    public void setJobId(Integer jobId) { this.jobId = jobId; }
-    public String getStatus() { return status; }
-    public void setStatus(String status) { this.status = status; }
+    public void setEmployee(Employee employee) {
+        this.employee = employee; }
+
+    public Job getJob() {
+        return job; }
+
+    public void setJob(Job job) {
+        this.job = job; }
+
+    public Integer getJobId() {
+        return jobId; }
+
+    public void setJobId(Integer jobId) {
+        this.jobId = jobId; }
+
+    public String getStatus() {
+        return status; }
+
+    public void setStatus(String status) {
+        this.status = status; }
+
+    public int getRequiredEmployees() {
+        return requiredEmployees;
+    }
+
+    public void setRequiredEmployees(int requiredEmployees) {
+        this.requiredEmployees = requiredEmployees;
+    }
+
+    public Integer getVersion() {
+        return version;
+    }
+
+    public void setVersion(Integer version) {
+        this.version = version;
+    }
 }
