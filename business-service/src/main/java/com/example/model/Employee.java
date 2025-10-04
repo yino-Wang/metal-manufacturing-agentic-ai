@@ -1,25 +1,27 @@
 package com.example.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+
+import java.util.List;
 
 @Entity
 public class Employee {
 
     @Id
     @GeneratedValue
+    @Column(name="employeeId")
     private Integer id;
+    @Column
     private String name;
-    private String jobs;
+    @OneToMany(mappedBy = "employeeId")
+    private List<Job> jobs;
 
     public Employee() {
     }
 
-    public Employee(Integer id, String name, String jobs) {
+    public Employee(Integer id, String name, List<Job> jobs) {
         this.id = id;
         this.name = name;
-        this.jobs = jobs;
     }
 
     public Integer getId() {
@@ -38,11 +40,11 @@ public class Employee {
         this.name = name;
     }
 
-    public String getJobs() {
+    public List<Job> getJobs() {
         return jobs;
     }
 
-    public void setJobs(String jobs) {
+    public void setJobs(List<Job> jobs) {
         this.jobs = jobs;
     }
 
