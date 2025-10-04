@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Date;
 
-@Embeddable
+@Entity
 public class ScheduledProdutionStep {
 
     @Id
@@ -17,18 +17,18 @@ public class ScheduledProdutionStep {
     private String productionStepName;
 
     //assigned inventory???
-    @OneToMany(mappedBy = "scheduledProductionStep")
-    private List<Consumable> reqConsumables = new ArrayList<>();
-    @Column(name="assignedMachine")
-    private Machine machine;
-    @Column(name="machineScheduleId")
-    private MachineSchedule machineSchedule;
+    @ElementCollection
+    private List<Consumable> reqConsumables;
+//    @Column(name="assignedMachine")
+//    private Machine machine;
+//    @Column(name="machineScheduleId")
+//    private MachineSchedule machineSchedule;
     @Column(name="startTime")
     private Date startTime;
     @Column(name="endTime")
     private Date endTime;
-    @Column(name="scheduledJobId")
-    private ScheduledJob scheduledJob;
+//    @Column(name="scheduledJobId")
+//    private ScheduledJob scheduledJob;
     @Column(name="status")
     private String status;
     @Column(name="priority")
@@ -45,11 +45,11 @@ public class ScheduledProdutionStep {
         this.scheduledProductionStepId = scheduledProductionStepId;
         this.productionStepName = productionStepName;
         this.reqConsumables = reqConsumables;
-        this.machine = machine;
-        this.machineSchedule = machineSchedule;
+        //this.machine = machine;
+        //this.machineSchedule = machineSchedule;
         this.startTime = startTime;
         this.endTime = endTime;
-        this.scheduledJob = scheduledJob;
+        //this.scheduledJob = scheduledJob;
         this.status = status;
         this.priority = priority;
         this.queueOrderNumber = queueOrderNumber;
@@ -79,21 +79,21 @@ public class ScheduledProdutionStep {
         this.reqConsumables = reqConsumables;
     }
 
-    public Machine getMachine() {
-        return machine;
-    }
+//    public Machine getMachine() {
+//        return machine;
+//    }
+//
+//    public void setMachine(Machine machine) {
+//        this.machine = machine;
+//    }
 
-    public void setMachine(Machine machine) {
-        this.machine = machine;
-    }
-
-    public MachineSchedule getMachineSchedule() {
-        return machineSchedule;
-    }
-
-    public void setMachineSchedule(MachineSchedule machineSchedule) {
-        this.machineSchedule = machineSchedule;
-    }
+//    public MachineSchedule getMachineSchedule() {
+//        return machineSchedule;
+//    }
+//
+//    public void setMachineSchedule(MachineSchedule machineSchedule) {
+//        this.machineSchedule = machineSchedule;
+//    }
 
     public Date getStartTime() {
         return startTime;
@@ -111,13 +111,13 @@ public class ScheduledProdutionStep {
         this.endTime = endTime;
     }
 
-    public ScheduledJob getScheduledJob() {
-        return scheduledJob;
-    }
-
-    public void setScheduledJob(ScheduledJob scheduledJob) {
-        this.scheduledJob = scheduledJob;
-    }
+//    public ScheduledJob getScheduledJob() {
+//        return scheduledJob;
+//    }
+//
+//    public void setScheduledJob(ScheduledJob scheduledJob) {
+//        this.scheduledJob = scheduledJob;
+//    }
 
     public String getStatus() {
         return status;
@@ -149,11 +149,11 @@ public class ScheduledProdutionStep {
                 "scheduledProductionStepId='" + scheduledProductionStepId + '\'' +
                 ", productionStepName='" + productionStepName + '\'' +
                 ", reqConsumables=" + reqConsumables +
-                ", machine=" + machine +
-                ", machineSchedule=" + machineSchedule +
+                //", machine=" + machine +
+                //", machineSchedule=" + machineSchedule +
                 ", startTime=" + startTime +
                 ", endTime=" + endTime +
-                ", scheduledJob=" + scheduledJob +
+                //", scheduledJob=" + scheduledJob +
                 ", status='" + status + '\'' +
                 ", priority=" + priority +
                 ", queueOrderNumber=" + queueOrderNumber +

@@ -6,12 +6,12 @@ import java.util.Date;
 /**
  * Job entity class representing a scheduled job in the system.
  */
-@Entity
+@Embeddable
 public class Job {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "job_id")
-    private Integer jobId;
+    //@Column(name = "job_id")
+    private Long jobId;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "scheduledJobId")
@@ -39,12 +39,6 @@ public class Job {
 
     // getter, setter
     public Job() {}
-
-    public Integer getJobId() {
-        return jobId; }
-
-    public void setJobId(Integer jobId) {
-        this.jobId = jobId; }
 
     public String getCustomer() {
         return customer; }

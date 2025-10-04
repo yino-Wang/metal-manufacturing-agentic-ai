@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 
 import java.util.Date;
 
+@Entity
 public class ScheduledJob {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -14,8 +15,8 @@ public class ScheduledJob {
     @JoinColumn(name = "employeeId")
     private Employee employee;
 
-    @OneToOne(mappedBy = "scheduledJobId")
-    private Job job;
+//    @OneToOne(mappedBy = "scheduledJobId")
+//    private Job job;
 
     @Column(name = "priority")
     private Integer priority;
@@ -68,13 +69,13 @@ public class ScheduledJob {
         this.employee = employee;
     }
 
-    public Job getJob() {
-        return job;
-    }
-
-    public void setJob(Job job) {
-        this.job = job;
-    }
+//    public Job getJob() {
+//        return job;
+//    }
+//
+//    public void setJob(Job job) {
+//        this.job = job;
+//    }
 
     public Integer getPriority() {
         return priority;
@@ -129,7 +130,7 @@ public class ScheduledJob {
         return "ScheduledJob{" +
                 "scheduledJobId=" + scheduledJobId +
                 ", employee=" + employee +
-                ", job=" + job +
+                //", job=" + job +
                 ", priority=" + priority +
                 ", status='" + status + '\'' +
                 ", materialRequirement=" + materialRequirement +

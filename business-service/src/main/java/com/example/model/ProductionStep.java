@@ -8,7 +8,7 @@ import java.util.List;
 @Embeddable
 public class ProductionStep {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    //@GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "productionStepId")
     private String productionStepId;
     @Column(name="stepName")
@@ -18,18 +18,18 @@ public class ProductionStep {
     private Integer machineHours;
     @Column(name="manHours")
     private Integer manHours;
-    @OneToMany(mappedBy = "ProductionStep")
-    private List<Consumable> reqConsumables = new ArrayList<>();
-    @Column(name="reqMachine")
-    private Machine machine;
+    @ElementCollection
+    private List<Consumable> reqConsumables;
+//    @Column(name="reqMachine")
+//    private Machine machine;
     @Column(name="reqMachineType")
     private String reqMachineType;
     @Column(name="positionInMachineSchedule")
     private Integer positionInMachineSchedule;
     @Column(name="dependentOn")
     private String dependentOn;
-    @Column(name="partOfJob")
-    private Job job;
+//    @Column(name="partOfJob")
+//    private Job job;
 
     public ProductionStep() {
     }
@@ -42,11 +42,11 @@ public class ProductionStep {
         this.machineHours = machineHours;
         this.manHours = manHours;
         this.reqConsumables = reqConsumables;
-        this.machine = machine;
+        //this.machine = machine;
         this.reqMachineType = reqMachineType;
         this.positionInMachineSchedule = positionInMachineSchedule;
         this.dependentOn = dependentOn;
-        this.job = job;
+        //this.job = job;
     }
 
     public String getProductionStepId() {
@@ -85,13 +85,13 @@ public class ProductionStep {
         this.reqConsumables = reqConsumables;
     }
 
-    public Machine getMachine() {
-        return machine;
-    }
-
-    public void setMachine(Machine machine) {
-        this.machine = machine;
-    }
+//    public Machine getMachine() {
+//        return machine;
+//    }
+//
+//    public void setMachine(Machine machine) {
+//        this.machine = machine;
+//    }
 
     public String getReqMachineType() {
         return reqMachineType;
@@ -117,11 +117,11 @@ public class ProductionStep {
         this.dependentOn = dependentOn;
     }
 
-    public Job getJob() {
-        return job;
-    }
-
-    public void setJob(Job job) {
-        this.job = job;
-    }
+//    public Job getJob() {
+//        return job;
+//    }
+//
+//    public void setJob(Job job) {
+//        this.job = job;
+//    }
 }

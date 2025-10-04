@@ -11,9 +11,9 @@ public class Machine {
     @Column(name = "machineId")
     private String machineId;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "machineScheduleId")
-    private MachineSchedule machineScheduleId;
+    @OneToOne
+    @JoinColumn(name = "machineScheduleFk")
+    private MachineSchedule machineSchedule;
 
     @Column(name="backLog")
     private String backLog;
@@ -37,9 +37,9 @@ public class Machine {
         this.machineState = machineState;
     }
 
-    //all attributes
-    public Machine(String machineId, String backLog, String machineType, String name, String requiredWorkers, String machineState) {
+    public Machine(String machineId, MachineSchedule machineSchedule, String backLog, String machineType, String name, String requiredWorkers, String machineState) {
         this.machineId = machineId;
+        this.machineSchedule = machineSchedule;
         this.backLog = backLog;
         this.machineType = machineType;
         this.name = name;
@@ -49,6 +49,18 @@ public class Machine {
 
     public String getMachineId() {
         return machineId;
+    }
+
+    public void setMachineId(String machineId) {
+        this.machineId = machineId;
+    }
+
+    public MachineSchedule getMachineSchedule() {
+        return machineSchedule;
+    }
+
+    public void setMachineSchedule(MachineSchedule machineSchedule) {
+        this.machineSchedule = machineSchedule;
     }
 
     public String getBackLog() {
@@ -63,8 +75,16 @@ public class Machine {
         return machineType;
     }
 
+    public void setMachineType(String machineType) {
+        this.machineType = machineType;
+    }
+
     public String getName() {
         return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getRequiredWorkers() {
@@ -87,6 +107,7 @@ public class Machine {
     public String toString() {
         return "Machine{" +
                 "machineId='" + machineId + '\'' +
+                ", machineSchedule=" + machineSchedule +
                 ", backLog='" + backLog + '\'' +
                 ", machineType='" + machineType + '\'' +
                 ", name='" + name + '\'' +

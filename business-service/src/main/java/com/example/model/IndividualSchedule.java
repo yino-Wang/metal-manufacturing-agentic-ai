@@ -8,11 +8,11 @@ import java.util.Date;
 public class IndividualSchedule {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "individualScheduleId")
-    private Integer individualScheduleId;
+    //@Column(name = "individualScheduleId")
+    private Long individualScheduleId;
 
-    @Column(name = "nextJob")
-    private Job nextJob;
+//    @Column(name = "nextJob")
+//    private Job nextJob;
 
     @Column(name = "status")
     private String status;
@@ -28,19 +28,10 @@ public class IndividualSchedule {
     }
 
     public IndividualSchedule(Integer individualScheduleId, Job nextJob, String status, Date finishTime, Employee employee) {
-        this.individualScheduleId = individualScheduleId;
-        this.nextJob = nextJob;
+        //this.nextJob = nextJob;
         this.status = status;
         this.finishTime = finishTime;
         this.employee = employee;
-    }
-
-    public Integer getIndividualScheduleId() {
-        return individualScheduleId;
-    }
-
-    public void setIndividualScheduleId(Integer individualScheduleId) {
-        this.individualScheduleId = individualScheduleId;
     }
 
     public Employee getEmployee() {
@@ -51,13 +42,13 @@ public class IndividualSchedule {
         this.employee = employee;
     }
 
-    public Job getNextJob() {
-        return nextJob;
-    }
-
-    public void setNextJob(Job nextJob) {
-        this.nextJob = nextJob;
-    }
+//    public Job getNextJob() {
+//        return nextJob;
+//    }
+//
+//    public void setNextJob(Job nextJob) {
+//        this.nextJob = nextJob;
+//    }
 
     public String getStatus() {
         return status;
@@ -79,10 +70,10 @@ public class IndividualSchedule {
     public String toString() {
         return "IndividualSchedule{" +
                 "individualScheduleId=" + individualScheduleId +
-                ", employee=" + employee +
-                ", nextJob=" + nextJob +
+                //", nextJob=" + nextJob +
                 ", status='" + status + '\'' +
                 ", finishTime=" + finishTime +
+                ", employee=" + employee +
                 '}';
     }
 }
