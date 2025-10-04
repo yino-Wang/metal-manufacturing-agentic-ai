@@ -13,15 +13,18 @@ public class Employee {
     private Integer id;
     @Column
     private String name;
-    @OneToMany(mappedBy = "employeeId")
-    private List<Job> jobs;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "individualScheduleId")
+    private IndividualSchedule individualSchedule;
 
     public Employee() {
     }
 
-    public Employee(Integer id, String name, List<Job> jobs) {
+    public Employee(Integer id, String name, List<Job> jobs, IndividualSchedule individualSchedule) {
         this.id = id;
         this.name = name;
+        this.individualSchedule = individualSchedule;
     }
 
     public Integer getId() {
@@ -40,20 +43,20 @@ public class Employee {
         this.name = name;
     }
 
-    public List<Job> getJobs() {
-        return jobs;
+    public IndividualSchedule getIndividualSchedule() {
+        return individualSchedule;
     }
 
-    public void setJobs(List<Job> jobs) {
-        this.jobs = jobs;
+    public void setIndividualSchedule(IndividualSchedule individualSchedule) {
+        this.individualSchedule = individualSchedule;
     }
 
     @Override
     public String toString() {
         return "Employee{" +
-                "name='" + name + "\'" +
-                ", jobs='" + jobs + "\'" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", individualSchedule=" + individualSchedule +
                 '}';
-
     }
 }

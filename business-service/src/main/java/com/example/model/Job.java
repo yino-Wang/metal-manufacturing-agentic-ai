@@ -13,9 +13,9 @@ public class Job {
     @Column(name = "job_id")
     private Integer jobId;
 
-    @ManyToOne
-    @JoinColumn(name = "employeeId")
-    private Employee employee;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "scheduledJobId")
+    private ScheduledJob scheduledJob;
 
     @Column(name = "customer")
     private String customer;
@@ -36,20 +36,6 @@ public class Job {
 
     @Column(name = "title")
     private String title;
-
-    @Column(name = "material_requirement")
-    private Integer materialRequirement;
-
-    @Column(name = "start_date")
-    @Temporal(TemporalType.DATE)
-    private Date startDate;
-
-    @Column(name = "end_date")
-    @Temporal(TemporalType.DATE)
-    private Date endDate;
-
-    @Column(name = "queue_order_number")
-    private Integer queueOrderNumber;
 
     // getter, setter
     public Job() {}
@@ -96,30 +82,6 @@ public class Job {
     public void setTitle(String title) {
         this.title = title; }
 
-    public Integer getMaterialRequirement() {
-        return materialRequirement; }
-
-    public void setMaterialRequirement(Integer materialRequirement) {
-        this.materialRequirement = materialRequirement; }
-
-    public Date getStartDate() {
-        return startDate; }
-
-    public void setStartDate(Date startDate) {
-        this.startDate = startDate; }
-
-    public Date getEndDate() {
-        return endDate; }
-
-    public void setEndDate(Date endDate) {
-        this.endDate = endDate; }
-
-    public Integer getQueueOrderNumber() {
-        return queueOrderNumber; }
-
-    public void setQueueOrderNumber(Integer queueOrderNumber) {
-        this.queueOrderNumber = queueOrderNumber; }
-
     @Override
     public String toString() {
         return "Job{" +
@@ -130,10 +92,6 @@ public class Job {
                 ", status='" + status + '\'' +
                 ", submitDate=" + submitDate +
                 ", title='" + title + '\'' +
-                ", materialRequirement=" + materialRequirement +
-                ", startDate=" + startDate +
-                ", endDate=" + endDate +
-                ", queueOrderNumber=" + queueOrderNumber +
                 '}';
     }
 }

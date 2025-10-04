@@ -11,6 +11,10 @@ public class Machine {
     @Column(name = "machineId")
     private String machineId;
 
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "machineScheduleId")
+    private MachineSchedule machineScheduleId;
+
     @Column(name="backLog")
     private String backLog;
     @Column(name="machineType")

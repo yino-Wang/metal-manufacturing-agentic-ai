@@ -18,7 +18,7 @@ public class ProductionStep {
     private Integer machineHours;
     @Column(name="manHours")
     private Integer manHours;
-    @OneToMany(mappedBy = "scheduleProductionStep")
+    @OneToMany(mappedBy = "ProductionStep")
     private List<Consumable> reqConsumables = new ArrayList<>();
     @Column(name="reqMachine")
     private Machine machine;
