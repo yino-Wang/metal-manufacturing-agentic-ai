@@ -13,14 +13,20 @@ public class Report {
     @ManyToOne
     @JoinColumn(name = "machine_id")
     private Machine machine;
+    @Column
+    private String issue;
+    @Column
+    private String solution;
 
     public Report() {
     }
 
-    public Report(String reportId, LocalDate reportDate, Machine machine) {
+    public Report(String reportId, LocalDate reportDate, Machine machine, String issue, String solution) {
         this.reportId = reportId;
         this.reportDate = reportDate;
         this.machine = machine;
+        this.issue = issue;
+        this.solution = solution;
     }
 
     public String getReportId() {
@@ -46,6 +52,14 @@ public class Report {
     public void setMachine(Machine machine) {
         this.machine = machine;
     }
+
+    public String getIssue() { return issue; }
+
+    public void setIssue(String issue) { this.issue = issue; }
+
+    public String getSolution() { return solution; }
+
+    public void setSolution(String solution) { this.solution = solution; }
 
     @Override
     public String toString() {

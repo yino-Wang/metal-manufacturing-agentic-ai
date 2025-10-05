@@ -26,6 +26,16 @@ public class ReportController {
         return reportService.findAllReports();
     }
 
+    @PostMapping("/admin/reports")
+    public void addReport(@RequestBody ReportDto reportDto) {
+        reportService.addReport(reportDto);
+    }
+
+    @DeleteMapping("/admin/reports/{reportId}")
+    public void removeReport(@PathVariable String reportId) {
+        reportService.removeReport(reportId);
+    }
+
     @GetMapping("/admin/machines/{machineId}")
     public MachineDto getMachineById(@PathVariable String machineId) {
         return reportService.getMachine(machineId);
@@ -36,14 +46,14 @@ public class ReportController {
         return reportService.findAllMachines();
     }
 
-    @PostMapping("/admin/machines/add")
-    public void addMachine(@RequestBody String MachineId) {
-        reportService.addMachine(MachineId);
+    @PostMapping("/admin/machines")
+    public void addMachine(@RequestBody MachineDto machineDto) {
+        reportService.addMachine(machineDto);
     }
 
-    @PostMapping("/admin/machines/remove")
-    public void removeMachine(@RequestBody String MachineId) {
-        reportService.removeMachine(MachineId);
+    @DeleteMapping("/admin/machines/{machineId}")
+    public void removeMachine(@PathVariable String machineId) {
+        reportService.removeMachine(machineId);
     }
 
 }

@@ -35,18 +35,33 @@ public class ReportService {
     }
 
     @Transactional
+    public ReportDto getReport(String reportId) {
+        Report report = this.reportRepository.findById(reportId)
+                .orElseThrow(() -> new ReportNotFoundException(reportId));
+        return mapReportToDto(report);
+    }
+
+    @Transactional
+    public void addReport(ReportDto reportDto) {
+        Report report = new Report();
+        report = mapDtoToReport(reportDto);
+        Report savedReport = reportRepository.save(report);
+    }
+
+    @Transactional
+    public void removeReport(String reportId) {
+        Report report = reportRepository.findById(reportId)
+                .orElseThrow(() -> new ReportNotFoundException(reportId));
+        reportRepository.delete(report);
+    }
+
+    @Transactional
     public List<MachineDto> findAllMachines() {
         return this.machineRepository.findAll().stream()
                 .map(this::mapMachineToDto)
                 .toList();
     }
 
-    @Transactional
-    public ReportDto getReport(String reportId) {
-        Report report = this.reportRepository.findById(reportId)
-                .orElseThrow(() -> new ReportNotFoundException(reportId));
-        return mapReportToDto(report);
-    }
 
     @Transactional
     public MachineDto getMachine(String machineId) {
@@ -55,15 +70,18 @@ public class ReportService {
         return mapMachineToDto(machine);
     }
 
-    public void addMachine(String machineId) {
+    @Transactional
+    public void addMachine(MachineDto machineDto) {
         Machine machine = new Machine();
-        machine.setMachineId(machineId);
+        machine = mapDtoToMachine(machineDto);
         Machine savedMachine = machineRepository.save(machine);
     }
 
+    @Transactional
     public void removeMachine(String machineId) {
         Machine machine = machineRepository.findById(machineId)
                 .orElseThrow(() -> new MachineNotFoundException(machineId));
+        reportRepository.deleteAll(machine.getMaintenanceReports());
         machineRepository.delete(machine);
     }
 
@@ -78,7 +96,31 @@ public class ReportService {
 
     @Transactional
     private ReportDto mapReportToDto(Report report) {
-        return new ReportDto(report.getReportId(), report.getReportDate(), report.getMachine().getMachineId());
+        return new ReportDto(report.getReportId(), report.getReportDate(), report.getMachine().getMachineId(), report.getIssue(), report.getSolution());
+    }
+
+    @Transactional
+    private Report mapDtoToReport(ReportDto dto) {
+        Report report = new Report();
+        report.setReportId(dto.reportId());
+        report.setReportDate(dto.reportDate());
+        Machine machine = machineRepository.findById(dto.machineId())
+                .orElseThrow(() -> new MachineNotFoundException(dto.machineId()));
+        report.setMachine(machine);
+        report.setIssue(dto.issue());
+        report.setSolution(dto.solution());
+        return report;
+    }
+
+    @Transactional
+    private Machine mapDtoToMachine(MachineDto dto) {
+        Machine machine = new Machine();
+        machine.setMachineId(dto.machineId());
+        List<Report> reports = dto.reports().stream()
+                .map(this::mapDtoToReport)
+                .toList();
+        machine.setMaintenanceReports(reports);
+        return machine;
     }
 
 }
