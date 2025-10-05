@@ -1,6 +1,8 @@
 package com.example.model;
 
 import jakarta.persistence.*;
+
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -9,11 +11,16 @@ public class Machine {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "machineId")
-    private String machineId;
+    private Long machineId;
 
-    @OneToOne
-    @JoinColumn(name = "machineScheduleFk")
+    @OneToOne(mappedBy ="machine", cascade = CascadeType.ALL)
     private MachineSchedule machineSchedule;
+
+    @OneToMany(mappedBy = "machine", cascade = CascadeType.ALL)
+    private List<ScheduledProductionStep> scheduledProductionSteps = new ArrayList<>();
+
+    @OneToMany(mappedBy = "machine", cascade = CascadeType.ALL)
+    private List<ProductionStep> productionSteps = new ArrayList<>();
 
     @Column(name="backLog")
     private String backLog;
@@ -29,17 +36,11 @@ public class Machine {
     public Machine() {
     }
 
-    public Machine(String machineId, String machineType, String name, String requiredWorkers, String machineState) {
-        this.machineId = machineId;
-        this.machineType = machineType;
-        this.name = name;
-        this.requiredWorkers = requiredWorkers;
-        this.machineState = machineState;
-    }
-
-    public Machine(String machineId, MachineSchedule machineSchedule, String backLog, String machineType, String name, String requiredWorkers, String machineState) {
+    public Machine(Long machineId, MachineSchedule machineSchedule, List<ScheduledProductionStep> scheduledProductionSteps,
+                   String backLog, String machineType, String name, String requiredWorkers, String machineState) {
         this.machineId = machineId;
         this.machineSchedule = machineSchedule;
+        this.scheduledProductionSteps = scheduledProductionSteps;
         this.backLog = backLog;
         this.machineType = machineType;
         this.name = name;
@@ -47,11 +48,11 @@ public class Machine {
         this.machineState = machineState;
     }
 
-    public String getMachineId() {
+    public Long getMachineId() {
         return machineId;
     }
 
-    public void setMachineId(String machineId) {
+    public void setMachineId(Long machineId) {
         this.machineId = machineId;
     }
 
@@ -61,6 +62,14 @@ public class Machine {
 
     public void setMachineSchedule(MachineSchedule machineSchedule) {
         this.machineSchedule = machineSchedule;
+    }
+
+    public List<ScheduledProductionStep> getScheduledProdutionSteps() {
+        return scheduledProductionSteps;
+    }
+
+    public void setScheduledProdutionSteps(List<ScheduledProductionStep> scheduledProductionSteps) {
+        this.scheduledProductionSteps = scheduledProductionSteps;
     }
 
     public String getBackLog() {
@@ -106,8 +115,9 @@ public class Machine {
     @Override
     public String toString() {
         return "Machine{" +
-                "machineId='" + machineId + '\'' +
+                "machineId=" + machineId +
                 ", machineSchedule=" + machineSchedule +
+                ", scheduledProdutionSteps=" + scheduledProductionSteps +
                 ", backLog='" + backLog + '\'' +
                 ", machineType='" + machineType + '\'' +
                 ", name='" + name + '\'' +

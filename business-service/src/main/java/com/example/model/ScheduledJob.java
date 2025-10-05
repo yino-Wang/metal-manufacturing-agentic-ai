@@ -2,21 +2,27 @@ package com.example.model;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 public class ScheduledJob {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "scheduledJobId")
-    private Integer scheduledJobId;
+    private Long scheduledJobId;
 
     @ManyToOne
     @JoinColumn(name = "employeeId")
     private Employee employee;
 
-//    @OneToOne(mappedBy = "scheduledJobId")
-//    private Job job;
+    @OneToMany(mappedBy = "scheduledJob", cascade = CascadeType.ALL)
+    private List<ScheduledProductionStep> scheduledProductionSteps = new ArrayList<>();
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "jobId")
+    private Job job;
 
     @Column(name = "priority")
     private Integer priority;
@@ -38,13 +44,15 @@ public class ScheduledJob {
     @Column(name = "queue_order_number")
     private Integer queueOrderNumber;
 
-    public ScheduledJob() {}
+    public ScheduledJob() {
+    }
 
-    public ScheduledJob(Integer jobId, Employee employee, String customer, Date dueDate, Integer priority,
-                        String status, Date submitDate, String title, Integer materialRequirement, Date startDate,
-                        Date endDate, Integer queueOrderNumber) {
-        this.scheduledJobId = jobId;
+    public ScheduledJob(Long scheduledJobId, Employee employee, List<ScheduledProductionStep> scheduledProductionSteps,
+                        Job job, Integer priority, String status, Integer materialRequirement, Date startDate, Date endDate, Integer queueOrderNumber) {
+        this.scheduledJobId = scheduledJobId;
         this.employee = employee;
+        this.scheduledProductionSteps = scheduledProductionSteps;
+        this.job = job;
         this.priority = priority;
         this.status = status;
         this.materialRequirement = materialRequirement;
@@ -53,11 +61,19 @@ public class ScheduledJob {
         this.queueOrderNumber = queueOrderNumber;
     }
 
-    public Integer getScheduledJobId() {
+    public List<ScheduledProductionStep> getScheduledProdutionSteps() {
+        return scheduledProductionSteps;
+    }
+
+    public void setScheduledProdutionSteps(List<ScheduledProductionStep> scheduledProductionSteps) {
+        this.scheduledProductionSteps = scheduledProductionSteps;
+    }
+
+    public Long getScheduledJobId() {
         return scheduledJobId;
     }
 
-    public void setScheduledJobId(Integer scheduledJobId) {
+    public void setScheduledJobId(Long scheduledJobId) {
         this.scheduledJobId = scheduledJobId;
     }
 
@@ -69,13 +85,13 @@ public class ScheduledJob {
         this.employee = employee;
     }
 
-//    public Job getJob() {
-//        return job;
-//    }
-//
-//    public void setJob(Job job) {
-//        this.job = job;
-//    }
+    public Job getJob() {
+        return job;
+    }
+
+    public void setJob(Job job) {
+        this.job = job;
+    }
 
     public Integer getPriority() {
         return priority;
@@ -130,7 +146,8 @@ public class ScheduledJob {
         return "ScheduledJob{" +
                 "scheduledJobId=" + scheduledJobId +
                 ", employee=" + employee +
-                //", job=" + job +
+                ", scheduledProductionSteps=" + scheduledProductionSteps +
+                ", job=" + job +
                 ", priority=" + priority +
                 ", status='" + status + '\'' +
                 ", materialRequirement=" + materialRequirement +

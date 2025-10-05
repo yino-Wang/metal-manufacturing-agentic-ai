@@ -1,16 +1,17 @@
 package com.example.model;
 
+import com.example.model.valueObjects.Consumable;
 import jakarta.persistence.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
-@Embeddable
+@Entity
 public class ProductionStep {
     @Id
-    //@GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "productionStepId")
-    private String productionStepId;
+    private Long id;
+
     @Column(name="stepName")
     private String stepName;
 
@@ -20,37 +21,42 @@ public class ProductionStep {
     private Integer manHours;
     @ElementCollection
     private List<Consumable> reqConsumables;
-//    @Column(name="reqMachine")
-//    private Machine machine;
+    @ManyToOne
+    @JoinColumn(name="requiredMachine")
+    private Machine machine;
     @Column(name="reqMachineType")
     private String reqMachineType;
-    @Column(name="positionInMachineSchedule")
-    private Integer positionInMachineSchedule;
+    //DO NOT NEED?????? MAKES IT EMBEDDABLE IF NOT HAVE
+//    @Column(name="positionInMachineSchedule")
+//    private Integer positionInMachineSchedule;
     @Column(name="dependentOn")
     private String dependentOn;
-//    @Column(name="partOfJob")
-//    private Job job;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "jobId")
+    private Job job;
+
 
     public ProductionStep() {
     }
 
-    public ProductionStep(String stepName, Integer machineHours,
-                          Integer manHours, List<Consumable> reqConsumables,
-                          Machine machine, String reqMachineType, Integer positionInMachineSchedule,
-                          String dependentOn, Job job) {
+    public ProductionStep(Long id, String stepName, Integer machineHours, Integer manHours, List<Consumable> reqConsumables, Machine machine, String reqMachineType, String dependentOn, Job job) {
+        this.id = id;
         this.stepName = stepName;
         this.machineHours = machineHours;
         this.manHours = manHours;
         this.reqConsumables = reqConsumables;
-        //this.machine = machine;
+        this.machine = machine;
         this.reqMachineType = reqMachineType;
-        this.positionInMachineSchedule = positionInMachineSchedule;
         this.dependentOn = dependentOn;
-        //this.job = job;
+        this.job = job;
     }
 
-    public String getProductionStepId() {
-        return productionStepId;
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getStepName() {
@@ -85,13 +91,13 @@ public class ProductionStep {
         this.reqConsumables = reqConsumables;
     }
 
-//    public Machine getMachine() {
-//        return machine;
-//    }
-//
-//    public void setMachine(Machine machine) {
-//        this.machine = machine;
-//    }
+    public Machine getMachine() {
+        return machine;
+    }
+
+    public void setMachine(Machine machine) {
+        this.machine = machine;
+    }
 
     public String getReqMachineType() {
         return reqMachineType;
@@ -99,14 +105,6 @@ public class ProductionStep {
 
     public void setReqMachineType(String reqMachineType) {
         this.reqMachineType = reqMachineType;
-    }
-
-    public Integer getPositionInMachineSchedule() {
-        return positionInMachineSchedule;
-    }
-
-    public void setPositionInMachineSchedule(Integer positionInMachineSchedule) {
-        this.positionInMachineSchedule = positionInMachineSchedule;
     }
 
     public String getDependentOn() {
@@ -117,11 +115,26 @@ public class ProductionStep {
         this.dependentOn = dependentOn;
     }
 
-//    public Job getJob() {
-//        return job;
-//    }
-//
-//    public void setJob(Job job) {
-//        this.job = job;
-//    }
+    public Job getJob() {
+        return job;
+    }
+
+    public void setJob(Job job) {
+        this.job = job;
+    }
+
+    @Override
+    public String toString() {
+        return "ProductionStep{" +
+                "id=" + id +
+                ", stepName='" + stepName + '\'' +
+                ", machineHours=" + machineHours +
+                ", manHours=" + manHours +
+                ", reqConsumables=" + reqConsumables +
+                ", machine=" + machine +
+                ", reqMachineType='" + reqMachineType + '\'' +
+                ", dependentOn='" + dependentOn + '\'' +
+                ", job=" + job +
+                '}';
+    }
 }

@@ -14,14 +14,14 @@ public class Employee {
     @Column
     private String name;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne
     @JoinColumn(name = "individualScheduleId")
     private IndividualSchedule individualSchedule;
 
     public Employee() {
     }
 
-    public Employee(Integer id, String name, List<Job> jobs, IndividualSchedule individualSchedule) {
+    public Employee(Integer id, String name, IndividualSchedule individualSchedule) {
         this.id = id;
         this.name = name;
         this.individualSchedule = individualSchedule;

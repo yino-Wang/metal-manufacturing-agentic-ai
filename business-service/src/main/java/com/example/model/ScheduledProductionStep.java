@@ -1,34 +1,39 @@
 package com.example.model;
 
+import com.example.model.valueObjects.Consumable;
 import jakarta.persistence.*;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Date;
+import java.util.List;
 
 @Entity
-public class ScheduledProdutionStep {
-
+public class ScheduledProductionStep {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "scheduledProductionStepId")
-    private String scheduledProductionStepId;
+    private Long scheduledProductionStepId;
     @Column(name="productionStepName")
     private String productionStepName;
-
     //assigned inventory???
     @ElementCollection
     private List<Consumable> reqConsumables;
-//    @Column(name="assignedMachine")
-//    private Machine machine;
-//    @Column(name="machineScheduleId")
-//    private MachineSchedule machineSchedule;
+
+    @ManyToOne
+    @JoinColumn(name="assignedMachine")
+    private Machine machine;
+
+    @ManyToOne
+    @JoinColumn(name="machineScheduleId")
+    private MachineSchedule machineSchedule;
+
+    @ManyToOne
+    @JoinColumn(name="scheduledJobId")
+    private ScheduledJob scheduledJob;
+
     @Column(name="startTime")
     private Date startTime;
     @Column(name="endTime")
     private Date endTime;
-//    @Column(name="scheduledJobId")
-//    private ScheduledJob scheduledJob;
     @Column(name="status")
     private String status;
     @Column(name="priority")
@@ -36,30 +41,31 @@ public class ScheduledProdutionStep {
     @Column(name="queueOrderNumber")
     private Integer queueOrderNumber;
 
-    public ScheduledProdutionStep() {
+    public ScheduledProductionStep() {
     }
 
-    public ScheduledProdutionStep(String scheduledProductionStepId, String productionStepName, List<Consumable> reqConsumables,
-                                  Machine machine, MachineSchedule machineSchedule, Date startTime, Date endTime,
-                                  ScheduledJob scheduledJob, String status, Integer priority, Integer queueOrderNumber) {
+    public ScheduledProductionStep(Long scheduledProductionStepId, String productionStepName,
+                                   List<Consumable> reqConsumables, Machine machine, MachineSchedule machineSchedule,
+                                   ScheduledJob scheduledJob, Date startTime, Date endTime, String status,
+                                   Integer priority, Integer queueOrderNumber) {
         this.scheduledProductionStepId = scheduledProductionStepId;
         this.productionStepName = productionStepName;
         this.reqConsumables = reqConsumables;
-        //this.machine = machine;
-        //this.machineSchedule = machineSchedule;
+        this.machine = machine;
+        this.machineSchedule = machineSchedule;
+        this.scheduledJob = scheduledJob;
         this.startTime = startTime;
         this.endTime = endTime;
-        //this.scheduledJob = scheduledJob;
         this.status = status;
         this.priority = priority;
         this.queueOrderNumber = queueOrderNumber;
     }
 
-    public String getScheduledProductionStepId() {
+    public Long getScheduledProductionStepId() {
         return scheduledProductionStepId;
     }
 
-    public void setScheduledProductionStepId(String scheduledProductionStepId) {
+    public void setScheduledProductionStepId(Long scheduledProductionStepId) {
         this.scheduledProductionStepId = scheduledProductionStepId;
     }
 
@@ -79,21 +85,29 @@ public class ScheduledProdutionStep {
         this.reqConsumables = reqConsumables;
     }
 
-//    public Machine getMachine() {
-//        return machine;
-//    }
-//
-//    public void setMachine(Machine machine) {
-//        this.machine = machine;
-//    }
+    public Machine getMachine() {
+        return machine;
+    }
 
-//    public MachineSchedule getMachineSchedule() {
-//        return machineSchedule;
-//    }
-//
-//    public void setMachineSchedule(MachineSchedule machineSchedule) {
-//        this.machineSchedule = machineSchedule;
-//    }
+    public void setMachine(Machine machine) {
+        this.machine = machine;
+    }
+
+    public MachineSchedule getMachineSchedule() {
+        return machineSchedule;
+    }
+
+    public void setMachineSchedule(MachineSchedule machineSchedule) {
+        this.machineSchedule = machineSchedule;
+    }
+
+    public ScheduledJob getScheduledJob() {
+        return scheduledJob;
+    }
+
+    public void setScheduledJob(ScheduledJob scheduledJob) {
+        this.scheduledJob = scheduledJob;
+    }
 
     public Date getStartTime() {
         return startTime;
@@ -110,14 +124,6 @@ public class ScheduledProdutionStep {
     public void setEndTime(Date endTime) {
         this.endTime = endTime;
     }
-
-//    public ScheduledJob getScheduledJob() {
-//        return scheduledJob;
-//    }
-//
-//    public void setScheduledJob(ScheduledJob scheduledJob) {
-//        this.scheduledJob = scheduledJob;
-//    }
 
     public String getStatus() {
         return status;
@@ -146,14 +152,14 @@ public class ScheduledProdutionStep {
     @Override
     public String toString() {
         return "ScheduledProdutionStep{" +
-                "scheduledProductionStepId='" + scheduledProductionStepId + '\'' +
+                "scheduledProductionStepId=" + scheduledProductionStepId +
                 ", productionStepName='" + productionStepName + '\'' +
                 ", reqConsumables=" + reqConsumables +
-                //", machine=" + machine +
-                //", machineSchedule=" + machineSchedule +
+                ", machine=" + machine +
+                ", machineSchedule=" + machineSchedule +
+                ", scheduledJob=" + scheduledJob +
                 ", startTime=" + startTime +
                 ", endTime=" + endTime +
-                //", scheduledJob=" + scheduledJob +
                 ", status='" + status + '\'' +
                 ", priority=" + priority +
                 ", queueOrderNumber=" + queueOrderNumber +

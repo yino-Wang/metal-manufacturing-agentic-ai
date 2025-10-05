@@ -10,50 +10,39 @@ public class MachineSchedule {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "machineScheduleId")
-    private Integer machineScheduleId;
+    private Long machineScheduleId;
 
-//    @Column(name = "currentProductionStepId")
-//    private ProductionStep productionStep;
+    @OneToMany(mappedBy = "machineSchedule")
+    private List<ScheduledProductionStep> scheduledProductionSteps = new ArrayList<>();
 
-//    @OneToMany(mappedBy = "machineSchedule")
-//    private List<ScheduledProdutionStep> scheduledProdutionSteps = new ArrayList<>();
-
-    @OneToOne(mappedBy = "machineSchedule")
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "machineId")
     private Machine machine;
 
     public MachineSchedule() {
     }
 
-    public MachineSchedule(Integer machineScheduleId, ProductionStep productionStep, List<ScheduledProdutionStep> scheduledProdutionSteps, Machine machine) {
+    public MachineSchedule(Long machineScheduleId, List<ScheduledProductionStep> scheduledProductionSteps, Machine machine) {
         this.machineScheduleId = machineScheduleId;
-        //this.productionStep = productionStep;
-        //this.scheduledProdutionSteps = scheduledProdutionSteps;
+        this.scheduledProductionSteps = scheduledProductionSteps;
         this.machine = machine;
     }
 
-    public Integer getMachineScheduleId() {
+    public Long getMachineScheduleId() {
         return machineScheduleId;
     }
 
-    public void setMachineScheduleId(Integer machineScheduleId) {
+    public void setMachineScheduleId(Long machineScheduleId) {
         this.machineScheduleId = machineScheduleId;
     }
 
-//    public ProductionStep getProductionStep() {
-//        return productionStep;
-//    }
-//
-//    public void setProductionStep(ProductionStep productionStep) {
-//        this.productionStep = productionStep;
-//    }
+    public List<ScheduledProductionStep> getScheduledProductionSteps() {
+        return scheduledProductionSteps;
+    }
 
-//    public List<ScheduledProdutionStep> getScheduledProdutionSteps() {
-//        return scheduledProdutionSteps;
-//    }
-//
-//    public void setScheduledProdutionSteps(List<ScheduledProdutionStep> scheduledProdutionSteps) {
-//        this.scheduledProdutionSteps = scheduledProdutionSteps;
-//    }
+    public void setScheduledProductionSteps(List<ScheduledProductionStep> scheduledProductionSteps) {
+        this.scheduledProductionSteps = scheduledProductionSteps;
+    }
 
     public Machine getMachine() {
         return machine;
@@ -67,8 +56,7 @@ public class MachineSchedule {
     public String toString() {
         return "MachineSchedule{" +
                 "machineScheduleId=" + machineScheduleId +
-                //", productionStep=" + productionStep +
-                //", scheduledProdutionSteps=" + scheduledProdutionSteps +
+                ", scheduledProductionSteps=" + scheduledProductionSteps +
                 ", machine=" + machine +
                 '}';
     }
