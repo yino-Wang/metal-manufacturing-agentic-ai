@@ -11,7 +11,9 @@ import com.example.model.MachineNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class ReportService {
@@ -35,10 +37,24 @@ public class ReportService {
     }
 
     @Transactional
+    public List<MachineDto> findAllMachines() {
+        return this.machineRepository.findAll().stream()
+                .map(this::mapMachineToDto)
+                .toList();
+    }
+
+    @Transactional
     public ReportDto getReport(String reportId) {
         Report report = this.reportRepository.findById(reportId)
                 .orElseThrow(() -> new ReportNotFoundException(reportId));
         return mapReportToDto(report);
+    }
+
+    @Transactional
+    public MachineDto getMachine(String machineId) {
+        Machine machine = this.machineRepository.findById(machineId)
+                .orElseThrow(() -> new MachineNotFoundException(machineId));
+        return mapMachineToDto(machine);
     }
 
     @Transactional
@@ -49,32 +65,64 @@ public class ReportService {
     }
 
     @Transactional
-    public void removeReport(String reportId) {
-        Report report = reportRepository.findById(reportId)
-                .orElseThrow(() -> new ReportNotFoundException(reportId));
-        reportRepository.delete(report);
-    }
-
-    @Transactional
-    public List<MachineDto> findAllMachines() {
-        return this.machineRepository.findAll().stream()
-                .map(this::mapMachineToDto)
-                .toList();
-    }
-
-
-    @Transactional
-    public MachineDto getMachine(String machineId) {
-        Machine machine = this.machineRepository.findById(machineId)
-                .orElseThrow(() -> new MachineNotFoundException(machineId));
-        return mapMachineToDto(machine);
-    }
-
-    @Transactional
     public void addMachine(MachineDto machineDto) {
         Machine machine = new Machine();
         machine = mapDtoToMachine(machineDto);
         Machine savedMachine = machineRepository.save(machine);
+    }
+
+    public void patchReport(String reportId, Map<String, Object> updates) {
+        Report report = reportRepository.findById(reportId)
+                .orElseThrow(() -> new ReportNotFoundException(reportId));
+
+        // You can't patch reportId
+        if (updates.containsKey("reportDate")) {
+            report.setReportDate(LocalDate.parse((String) updates.get("reportDate")));
+        }
+        if (updates.containsKey("machineId")) {
+            String machineId = (String) updates.get("machineId");
+            Machine machine = machineRepository.findById(machineId)
+                    .orElseThrow(() -> new MachineNotFoundException(machineId));
+            report.setMachine(machine);
+        }
+        if (updates.containsKey("issue")) {
+            report.setIssue((String) updates.get("issue"));
+        }
+        if (updates.containsKey("solution")) {
+            report.setSolution((String) updates.get("solution"));
+        }
+
+        reportRepository.save(report);
+    }
+
+    public void patchMachine(String machineId, Map<String, Object> updates) {
+        Machine machine = machineRepository.findById(machineId)
+                .orElseThrow(() -> new MachineNotFoundException(machineId));
+
+        // You can't patch machineId
+        if (updates.containsKey("reports")) {
+            @SuppressWarnings("unchecked")
+            List<Map<String, Object>> reportUpdates = (List<Map<String, Object>>) updates.get("reports");
+            List<Report> reports = reportUpdates.stream()
+                    .map(reportMap -> {
+                        String reportId = (String) reportMap.get("reportId");
+                        Report report = reportRepository.findById(reportId)
+                                .orElseThrow(() -> new ReportNotFoundException(reportId));
+                        // Optionally patch report fields here if needed
+                        return report;
+                    })
+                    .toList();
+            machine.setMaintenanceReports(reports);
+        }
+
+        machineRepository.save(machine);
+    }
+
+    @Transactional
+    public void removeReport(String reportId) {
+        Report report = reportRepository.findById(reportId)
+                .orElseThrow(() -> new ReportNotFoundException(reportId));
+        reportRepository.delete(report);
     }
 
     @Transactional
