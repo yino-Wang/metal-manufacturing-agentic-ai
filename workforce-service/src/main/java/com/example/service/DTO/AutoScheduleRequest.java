@@ -7,7 +7,7 @@ import java.util.Date;
 public class AutoScheduleRequest {
     private Date startDate;
     private Date endDate;
-    private Integer jobId;
+    private Long jobId;
     private int requiredEmployees;
     private String shiftType;
 
@@ -23,10 +23,10 @@ public class AutoScheduleRequest {
     public void setEndDate(Date endDate) {
         this.endDate = endDate; }
 
-    public Integer getJobId() {
+    public Long getJobId() {
         return jobId; }
 
-    public void setJobId(Integer jobId) {
+    public void setJobId(Long jobId) {
         this.jobId = jobId; }
 
     public int getRequiredEmployees() {

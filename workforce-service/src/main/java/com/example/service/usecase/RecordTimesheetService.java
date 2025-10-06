@@ -10,25 +10,25 @@ import com.example.infrastructure.repository.TimesheetEventRepository;
 import com.example.domain.model.entities.ShiftSchedule;
 import com.example.domain.model.commands.RecordTimesheetCommand;
 import com.example.infrastructure.messaging.TimesheetEventPublisher;
+import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
 import java.util.Date;
 
+@Service
 public class RecordTimesheetService {
     private final TimesheetRepository timesheetRepository;
     private final EmployeeRepository employeeRepository;
     private final ShiftPlanRepository shiftPlanRepository;
     private final TimesheetEventRepository timesheetEventRepository;
-    private final RestTemplate restTemplate;
     private final TimesheetEventPublisher timesheetEventPublisher;
 
-    public RecordTimesheetService(TimesheetRepository timesheetRepository, EmployeeRepository employeeRepository, ShiftPlanRepository shiftPlanRepository, TimesheetEventRepository timesheetEventRepository, RestTemplate restTemplate, TimesheetEventPublisher timesheetEventPublisher) {
+    public RecordTimesheetService(TimesheetRepository timesheetRepository, EmployeeRepository employeeRepository, ShiftPlanRepository shiftPlanRepository, TimesheetEventRepository timesheetEventRepository, TimesheetEventPublisher timesheetEventPublisher) {
         this.timesheetRepository = timesheetRepository;
         this.employeeRepository = employeeRepository;
         this.shiftPlanRepository = shiftPlanRepository;
         this.timesheetEventRepository = timesheetEventRepository;
-        this.restTemplate = restTemplate;
         this.timesheetEventPublisher = timesheetEventPublisher;
     }
 

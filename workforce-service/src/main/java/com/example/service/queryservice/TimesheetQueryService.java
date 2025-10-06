@@ -25,14 +25,14 @@ public class TimesheetQueryService {
      * Find all timesheets for a given employee.
      */
     public List<Timesheet> findByEmployeeId(Long employeeId) {
-        return timesheetRepository.findByEmployee_EmployeeId(employeeId)
+        return timesheetRepository.findByEmployee_EmployeeId(employeeId);
     }
 
     /**
      * Find all timesheets for a given date.
      */
     public List<Timesheet> findByWorkDate(Date workDate) {
-        return timesheetRepository.findByTimesheet_WorkDate(workDate);
+        return timesheetRepository.findByWorkDate(workDate);
     }
 
     /**

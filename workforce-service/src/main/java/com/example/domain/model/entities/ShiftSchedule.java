@@ -16,7 +16,7 @@ public class ShiftSchedule {
     private Long id;
 
     @Column(name = "employee_id", nullable = false)
-    private Integer employeeId;
+    private Long employeeId;
 
     @Column(name = "shift_date", nullable = false)
     @Temporal(TemporalType.DATE)
@@ -48,7 +48,7 @@ public class ShiftSchedule {
     // 构造方法、getter、setter
     public ShiftSchedule() {}
 
-    public ShiftSchedule(Integer employeeId, Date shiftDate, String shiftType, int requiredEmployees, Employee employee, Job job, Long jobId, String status, Integer version) {
+    public ShiftSchedule(Long employeeId, Date shiftDate, String shiftType, int requiredEmployees, Employee employee, Job job, Long jobId, String status, Integer version) {
         this.employeeId = employeeId;
         this.shiftDate = shiftDate;
         this.shiftType = shiftType;
@@ -67,11 +67,9 @@ public class ShiftSchedule {
     public void setId(Long id) {
         this.id = id;}
 
-    public Integer getEmployeeId() {
-        return employeeId;}
+    public Long getEmployeeId() { return employeeId; }
 
-    public void setEmployeeId(Integer employeeId) {
-        this.employeeId = employeeId;}
+    public void setEmployeeId(Long employeeId) { this.employeeId = employeeId;}
 
     public Date getShiftDate() {
         return shiftDate;}

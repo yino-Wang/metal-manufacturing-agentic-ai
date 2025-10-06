@@ -24,7 +24,7 @@ public class ShiftPlanQueryService {
     /**
      * Find all shift schedules for a given employee.
      */
-    public List<ShiftSchedule> findByEmployeeId(Integer employeeId) {
+    public List<ShiftSchedule> findByEmployeeId(Long employeeId) {
         return shiftPlanRepository.findByEmployeeId(employeeId);
     }
 

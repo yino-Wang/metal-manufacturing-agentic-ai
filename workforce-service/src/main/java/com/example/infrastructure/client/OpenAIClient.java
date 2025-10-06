@@ -112,7 +112,7 @@ public class OpenAIClient implements LLMClient {
             if (jsonNode.isArray()) {
                 for (JsonNode node : jsonNode) {
                     ShiftSchedule schedule = new ShiftSchedule();
-                    schedule.setEmployeeId(node.get("employeeId").asInt());
+                    schedule.setEmployeeId(node.get("employeeId").asLong());
                     schedule.setShiftDate(dateFormat.parse(node.get("shiftDate").asText()));
                     schedule.setShiftType(node.get("shiftType").asText());
                     schedule.setRequiredEmployees(input.getStaffingRequirements().get(schedule.getShiftType()));
@@ -120,7 +120,7 @@ public class OpenAIClient implements LLMClient {
                 }
             } else if (jsonNode.isObject()) {
                 ShiftSchedule schedule = new ShiftSchedule();
-                schedule.setEmployeeId(jsonNode.get("employeeId").asInt());
+                schedule.setEmployeeId(jsonNode.get("employeeId").asLong());
                 schedule.setShiftDate(dateFormat.parse(jsonNode.get("shiftDate").asText()));
                 schedule.setShiftType(jsonNode.get("shiftType").asText());
                 schedule.setRequiredEmployees(input.getStaffingRequirements().get(schedule.getShiftType()));

@@ -16,7 +16,7 @@ public class Timesheet {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long timesheetId;
 
-    @Column(name = "employee_id", nullable = false)
+    @Column(name = "employee_id", nullable = false, insertable = false, updatable = false)
     private Long employeeId;
 
     @Column(name = "work_date", nullable = false)
@@ -50,7 +50,7 @@ public class Timesheet {
     @JoinColumn(name = "payslip_id")
     private Payslip payslip;
 
-    @Column(name = "payslip_id")
+    @Column(name = "payslip_id", insertable = false, updatable = false)
     private Long payslipId;
 
     // 构造方法、getter、setter

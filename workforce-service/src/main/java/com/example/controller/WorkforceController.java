@@ -68,8 +68,11 @@ public class WorkforceController {
         Employee employee = employeeRepository.findById(employeeId)
                 .orElseThrow(() -> new RuntimeException("Employee not found"));
 
-        // Get current month's payslip
-        List<Payslip> currentMonthPayslips = payslipRepository.findByEmployee_EmployeeIdAndCurrentMonth(employeeId);
+        // Get current month's payslip - using startDate for current month
+        java.util.Calendar cal = java.util.Calendar.getInstance();
+        cal.set(java.util.Calendar.DAY_OF_MONTH, 1); // First day of current month
+        Date currentMonthStart = cal.getTime();
+        List<Payslip> currentMonthPayslips = payslipRepository.findByEmployee_EmployeeIdAndStartDate(employeeId, currentMonthStart);
 
         Map<String, Object> response = new HashMap<>();
         response.put("baseSalary", employee.getSalary()); // Assuming base salary is stored in Employee entity
@@ -82,7 +85,7 @@ public class WorkforceController {
             @PathVariable Long employeeId,
             @RequestParam(required = false) String startDate,
             @RequestParam(required = false) String endDate) {
-        List<ShiftSchedule> schedules = shiftPlanQueryService.findByEmployeeId(employeeId.intValue());
+        List<ShiftSchedule> schedules = shiftPlanQueryService.findByEmployeeId(employeeId.longValue());
 
         Map<String, Object> response = new HashMap<>();
         response.put("upcomingShifts", getUpcomingShifts(schedules));

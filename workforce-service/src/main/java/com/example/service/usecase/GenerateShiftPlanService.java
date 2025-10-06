@@ -43,7 +43,7 @@ public class GenerateShiftPlanService {
     // Generate shift plan for given date range, job, required employees, and shift type
     public List<ShiftSchedule> generateShiftPlan(Date startDate,
                                            Date endDate,
-                                           Integer jobId,
+                                           Long jobId,
                                            int requiredEmployees,
                                            String shiftType) {
         // 1. find available employees
@@ -125,7 +125,7 @@ public class GenerateShiftPlanService {
 
     // Auto-generate shift plan and handle no available employee scenario
     // If no available employee, return alternative suggestions
-    public AutoScheduleResponse autoGenerateShiftPlan(Date startDate, Date endDate, Integer jobId, int requiredEmployees, String shiftType) {
+    public AutoScheduleResponse autoGenerateShiftPlan(Date startDate, Date endDate, Long jobId, int requiredEmployees, String shiftType) {
         AutoScheduleResponse response = new AutoScheduleResponse();
         try {
             List<ShiftSchedule> schedules = generateShiftPlan(startDate, endDate, jobId, requiredEmployees, shiftType);
@@ -144,7 +144,7 @@ public class GenerateShiftPlanService {
         List<Employee> allEmployees = employeeRepository.findAll();
 
         //find all scheduled employees for the given date
-        List<Integer> scheduledEmployeeIds = shiftPlanRepository.findByShiftDate(shiftDate)
+        List<Long> scheduledEmployeeIds = shiftPlanRepository.findByShiftDate(shiftDate)
                 .stream()
                 .map(ShiftSchedule::getEmployeeId)
                 .toList();
@@ -201,7 +201,7 @@ public class GenerateShiftPlanService {
 
     // Compliance validation: check labor law and company rules
     // Validate max working hours and min rest hours
-    public boolean validateCompliance(Integer employeeId, Date shiftDate) {
+    public boolean validateCompliance(Long employeeId, Date shiftDate) {
         List<ShiftSchedule> schedules = shiftPlanRepository.findByEmployeeId(employeeId);
         int totalHours = schedules.size() * 8; // Assume 8 hours per shift
         if (totalHours > 40) return false; // Max 40 hours/week
