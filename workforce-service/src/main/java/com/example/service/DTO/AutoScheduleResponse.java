@@ -1,7 +1,7 @@
 package com.example.service.DTO;
 
-import com.example.domain.model.ShiftSchedule;
-import com.example.domain.model.Employee;
+import com.example.domain.model.entities.ShiftSchedule;
+import com.example.domain.model.aggregates.Employee;
 import java.util.List;
 
 // Response DTO for auto-scheduling shifts

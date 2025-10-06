@@ -1,4 +1,6 @@
-package com.example.domain.model;
+package com.example.domain.model.entities;
+
+import com.example.domain.model.aggregates.Employee;
 
 import java.util.Date;
 import java.util.List;

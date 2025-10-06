@@ -1,8 +1,8 @@
 package com.example.infrastructure.client;
 
-import com.example.domain.model.AgentInput;
-import com.example.domain.model.ShiftSchedule;
-import com.example.domain.model.Employee;
+import com.example.domain.model.entities.AgentInput;
+import com.example.domain.model.entities.ShiftSchedule;
+import com.example.domain.model.aggregates.Employee;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import com.theokanning.openai.completion.chat.ChatCompletionRequest;

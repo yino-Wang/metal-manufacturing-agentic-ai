@@ -1,14 +1,15 @@
 package com.example.service.usecase;
 
 import com.example.domain.event.TimesheetEvent;
-import com.example.domain.model.Employee;
-import com.example.domain.model.Timesheet;
+import com.example.domain.model.aggregates.Employee;
+import com.example.domain.model.entities.Timesheet;
 import com.example.infrastructure.repository.EmployeeRepository;
 import com.example.infrastructure.repository.TimesheetRepository;
 import com.example.infrastructure.repository.ShiftPlanRepository;
 import com.example.infrastructure.repository.TimesheetEventRepository;
-import com.example.domain.model.ShiftSchedule;
-import org.springframework.context.ApplicationEventPublisher;
+import com.example.domain.model.entities.ShiftSchedule;
+import com.example.domain.model.commands.RecordTimesheetCommand;
+import com.example.infrastructure.messaging.TimesheetEventPublisher;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
@@ -20,15 +21,15 @@ public class RecordTimesheetService {
     private final ShiftPlanRepository shiftPlanRepository;
     private final TimesheetEventRepository timesheetEventRepository;
     private final RestTemplate restTemplate;
-    private final ApplicationEventPublisher eventPublisher;
+    private final TimesheetEventPublisher timesheetEventPublisher;
 
-    public RecordTimesheetService(TimesheetRepository timesheetRepository, EmployeeRepository employeeRepository, ShiftPlanRepository shiftPlanRepository, TimesheetEventRepository timesheetEventRepository, RestTemplate restTemplate, ApplicationEventPublisher eventPublisher) {
+    public RecordTimesheetService(TimesheetRepository timesheetRepository, EmployeeRepository employeeRepository, ShiftPlanRepository shiftPlanRepository, TimesheetEventRepository timesheetEventRepository, RestTemplate restTemplate, TimesheetEventPublisher timesheetEventPublisher) {
         this.timesheetRepository = timesheetRepository;
         this.employeeRepository = employeeRepository;
         this.shiftPlanRepository = shiftPlanRepository;
         this.timesheetEventRepository = timesheetEventRepository;
         this.restTemplate = restTemplate;
-        this.eventPublisher = eventPublisher;
+        this.timesheetEventPublisher = timesheetEventPublisher;
     }
 
     public void recordTimesheet(Long employeeId, Date date, Float hoursWorked, LocalDateTime clockInTime, LocalDateTime clockOutTime) {
@@ -64,7 +65,37 @@ public class RecordTimesheetService {
         // 3. Publish event
         TimesheetEvent timesheetEvent = new TimesheetEvent(timesheet);
         timesheetEventRepository.save(timesheetEvent);
-        eventPublisher.publishEvent(timesheetEvent);
+        timesheetEventPublisher.publish(timesheetEvent);
+    }
+
+    /**
+     * Record a timesheet using a command object (recommended for API integration)
+     */
+    public void recordTimesheet(RecordTimesheetCommand command) {
+        Employee employee = employeeRepository.findById(command.getEmployeeId())
+                .orElseThrow(() -> new RuntimeException("Employee not found"));
+        Timesheet timesheet = new Timesheet();
+        timesheet.setEmployeeId(command.getEmployeeId());
+        timesheet.setWorkDate(command.getWorkDate());
+        timesheet.setClockInTime(command.getClockInTime());
+        timesheet.setClockOutTime(command.getClockOutTime());
+        timesheet.setHoursWorked(command.getHoursWorked());
+        timesheet.setJobId(command.getJobId());
+        Float payRate = employee.getPay();
+        Float salaryPaid = payRate != null ? payRate * command.getHoursWorked() : 0f;
+        timesheet.setSalaryPaid(salaryPaid);
+        ShiftSchedule shiftSchedule = shiftPlanRepository.findAll().stream()
+            .filter(sp -> sp.getEmployeeId().equals(command.getEmployeeId()) && sp.getShiftDate().equals(command.getWorkDate()))
+            .findFirst().orElse(null);
+        if (shiftSchedule == null) {
+            timesheet.setStatus("EXCEPTION");
+        } else {
+            timesheet.setStatus("NORMAL");
+        }
+        timesheetRepository.save(timesheet);
+        TimesheetEvent timesheetEvent = new TimesheetEvent(timesheet);
+        timesheetEventRepository.save(timesheetEvent);
+        timesheetEventPublisher.publish(timesheetEvent);
     }
 
     // approve timesheet exception

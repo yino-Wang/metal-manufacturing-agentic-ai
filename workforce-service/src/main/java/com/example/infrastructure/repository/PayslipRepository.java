@@ -1,6 +1,6 @@
 package com.example.infrastructure.repository;
 
-import com.example.domain.model.Payslip;
+import com.example.domain.model.entities.Payslip;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

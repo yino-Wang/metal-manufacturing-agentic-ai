@@ -1,5 +1,5 @@
 package com.example.infrastructure.repository;
-import com.example.domain.model.Timesheet;
+import com.example.domain.model.entities.Timesheet;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 

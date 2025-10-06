@@ -1,5 +1,7 @@
-package com.example.domain.model;
+package com.example.domain.model.entities;
 
+import com.example.domain.model.aggregates.Employee;
+import com.example.domain.model.aggregates.Job;
 import jakarta.persistence.*;
 import java.util.Date;
 
@@ -35,7 +37,7 @@ public class ShiftSchedule {
     private Job job;
 
     @Column(name = "job_id")
-    private Integer jobId;
+    private Long jobId;
 
     @Column(name = "status")
     private String status;
@@ -46,7 +48,7 @@ public class ShiftSchedule {
     // 构造方法、getter、setter
     public ShiftSchedule() {}
 
-    public ShiftSchedule(Integer employeeId, Date shiftDate, String shiftType, int requiredEmployees, Employee employee, Job job, Integer jobId, String status, Integer version) {
+    public ShiftSchedule(Integer employeeId, Date shiftDate, String shiftType, int requiredEmployees, Employee employee, Job job, Long jobId, String status, Integer version) {
         this.employeeId = employeeId;
         this.shiftDate = shiftDate;
         this.shiftType = shiftType;
@@ -96,10 +98,10 @@ public class ShiftSchedule {
     public void setJob(Job job) {
         this.job = job; }
 
-    public Integer getJobId() {
+    public Long getJobId() {
         return jobId; }
 
-    public void setJobId(Integer jobId) {
+    public void setJobId(Long jobId) {
         this.jobId = jobId; }
 
     public String getStatus() {

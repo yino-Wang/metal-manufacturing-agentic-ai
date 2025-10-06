@@ -1,5 +1,6 @@
-package com.example.domain.model;
+package com.example.domain.model.entities;
 
+import com.example.domain.model.aggregates.Employee;
 import jakarta.persistence.*;
 import java.util.Date;
 

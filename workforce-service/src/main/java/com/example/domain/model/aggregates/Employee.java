@@ -1,10 +1,15 @@
-package com.example.domain.model;
+package com.example.domain.model.aggregates;
 
 import jakarta.persistence.*;
 import java.util.Date;
 
 /**
  * Employee entity class representing an employee in the system.
+ */
+
+/**
+ * aggregate root：Employee
+ * used to manage employee-related business operations and maintain consistency within the aggregate.
  */
 @Entity
 @Table(name = "employee")
@@ -48,9 +53,6 @@ public class Employee {
     @Column(name = "management_area")
     private String managementArea;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
 
     @Column(name = "scheduled_jobs")
     private Integer scheduledJobs;
@@ -75,12 +77,11 @@ public class Employee {
      * @param manager          whether the employee is a manager
      * @param managerName      the name of the manager
      * @param managementArea   the area managed by the manager
-     * @param user             the user associated with the employee
      * @param scheduledJobs     the number of scheduled jobs for the employee
      */
     public Employee(Long employeeId, String name, String phoneNumber, Float salary, Float pay, String skill,
                     Date startDatePayslip, Date endDatePayslip, Integer scheduleId, Boolean manager,
-                    String managerName, String managementArea, User user, Integer scheduledJobs) {
+                    String managerName, String managementArea, Integer scheduledJobs) {
         this.employeeId = employeeId;
         this.name = name;
         this.phoneNumber = phoneNumber;
@@ -93,7 +94,6 @@ public class Employee {
         this.manager = manager;
         this.managerName = managerName;
         this.managementArea = managementArea;
-        this.user = user;
         this.scheduledJobs = scheduledJobs;
     }
 
@@ -195,13 +195,7 @@ public class Employee {
         this.managementArea = managementArea;
     }
 
-    public User getUser() {
-        return user;
-    }
 
-    public void setUser(User user) {
-        this.user = user;
-    }
 
     public Integer getScheduledJobs() {
         return scheduledJobs;

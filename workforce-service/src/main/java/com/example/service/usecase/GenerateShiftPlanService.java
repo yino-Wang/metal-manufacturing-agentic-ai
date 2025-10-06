@@ -1,15 +1,16 @@
 package com.example.service.usecase;
 
 import com.example.domain.event.ShiftPublished;
-import com.example.domain.model.AgentInput;
-import com.example.domain.model.Employee;
-import com.example.domain.model.ShiftSchedule;
+import com.example.domain.model.entities.AgentInput;
+import com.example.domain.model.aggregates.Employee;
+import com.example.domain.model.entities.ShiftSchedule;
+import com.example.domain.model.commands.GenerateShiftPlanCommand;
 import com.example.infrastructure.repository.EmployeeRepository;
 import com.example.infrastructure.repository.ShiftPlanRepository;
 import com.example.infrastructure.client.OpenAIClient;
+import com.example.infrastructure.messaging.ShiftPublishedEventPublisher;
 import com.example.service.DTO.AutoScheduleResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -24,18 +25,18 @@ public class GenerateShiftPlanService {
     private final EmployeeRepository employeeRepository;
     private final ShiftPlanRepository shiftPlanRepository;
     private final OpenAIClient openAIClient;
-    private final ApplicationEventPublisher applicationEventPublisher;
+    private final ShiftPublishedEventPublisher shiftPublishedEventPublisher;
 
     @Autowired
     public GenerateShiftPlanService(
             EmployeeRepository employeeRepository,
             ShiftPlanRepository shiftPlanRepository,
-            OpenAIClient openAIClient,  // 改为 OpenAIClient
-            ApplicationEventPublisher applicationEventPublisher) {
+            OpenAIClient openAIClient,
+            ShiftPublishedEventPublisher shiftPublishedEventPublisher) {
         this.employeeRepository = employeeRepository;
         this.shiftPlanRepository = shiftPlanRepository;
-        this.openAIClient = openAIClient;  // 改为 openAIClient
-        this.applicationEventPublisher = applicationEventPublisher;
+        this.openAIClient = openAIClient;
+        this.shiftPublishedEventPublisher = shiftPublishedEventPublisher;
     }
 
     // Method to generate shift plan using OpenAI
@@ -51,7 +52,7 @@ public class GenerateShiftPlanService {
         if (availableEmployees.isEmpty()) {
             //------------------------------need to change---------------------------------
             List<Employee> alternatives = recommendAlternativeEmployees(startDate, "general", 25.0f);
-            throw new RuntimeException("无可用员工，推荐替代人选：" + alternatives);
+            throw new RuntimeException("No available employee, need alternatives：" + alternatives);
         }
         // 2. build agent input
         Map<String, Integer> staffingRequirements = new HashMap<>();
@@ -82,9 +83,43 @@ public class GenerateShiftPlanService {
         // 5. save and publish event
         List<ShiftSchedule> savedSchedules = shiftPlanRepository.saveAll(schedule);
         for (ShiftSchedule s : savedSchedules) {
-            applicationEventPublisher.publishEvent(new ShiftPublished(s));
+            shiftPublishedEventPublisher.publish(new ShiftPublished(s));
         }
 
+        return savedSchedules;
+    }
+
+    /**
+     * Generate shift plan using a command object (recommended for API integration)
+     */
+    public List<ShiftSchedule> generateShiftPlan(GenerateShiftPlanCommand command) {
+        List<Employee> availableEmployees = employeeRepository.findAvailableEmployees();
+        if (availableEmployees.isEmpty()) {
+            List<Employee> alternatives = recommendAlternativeEmployees(command.getStartDate(), command.getShiftType(), 25.0f);
+            throw new RuntimeException("No available employees, recommended alternatives: " + alternatives);
+        }
+        Map<String, Integer> staffingRequirements = new HashMap<>();
+        staffingRequirements.put(command.getShiftType(), command.getRequiredEmployees());
+        Map<String, Object> constraints = new HashMap<>();
+        constraints.put("maxHoursPerWeek", 40);
+        constraints.put("minRestHours", 12);
+        AgentInput input = new AgentInput();
+        input.setAvailableEmployees(availableEmployees);
+        input.setStartTime(command.getStartDate());
+        input.setEndTime(command.getEndDate());
+        input.setEmployeeRequirements(staffingRequirements);
+        input.setConstraints(constraints);
+        List<ShiftSchedule> schedule = openAIClient.generateShiftPlan(input);
+        for (ShiftSchedule s : schedule) {
+            s.setJobId(command.getJobId());
+            s.setShiftType(command.getShiftType());
+            s.setRequiredEmployees(command.getRequiredEmployees());
+            s.setStatus("PENDING_APPROVAL");
+        }
+        List<ShiftSchedule> savedSchedules = shiftPlanRepository.saveAll(schedule);
+        for (ShiftSchedule s : savedSchedules) {
+            shiftPublishedEventPublisher.publish(new ShiftPublished(s));
+        }
         return savedSchedules;
     }
 
@@ -165,7 +200,7 @@ public class GenerateShiftPlanService {
     }
 
     // Compliance validation: check labor law and company rules
-    // EN: Validate max working hours and min rest hours
+    // Validate max working hours and min rest hours
     public boolean validateCompliance(Integer employeeId, Date shiftDate) {
         List<ShiftSchedule> schedules = shiftPlanRepository.findByEmployeeId(employeeId);
         int totalHours = schedules.size() * 8; // Assume 8 hours per shift
@@ -182,9 +217,7 @@ public class GenerateShiftPlanService {
     // Notification: notify employee after shift plan is published/approved
     // Notify employee via event/message/email
     public void notifyEmployee(ShiftSchedule schedule) {
-        // Here you can integrate with messaging/email service
-        // For demo, just publish an event
-        applicationEventPublisher.publishEvent(new ShiftPublished(schedule));
+        shiftPublishedEventPublisher.publish(new ShiftPublished(schedule));
     }
 
     // Exception handling: trigger approval/notification when no available employee
@@ -192,11 +225,9 @@ public class GenerateShiftPlanService {
     public void handleNoAvailableEmployee(Date shiftDate, String skill, Float maxCost) {
         List<Employee> alternatives = recommendAlternativeEmployees(shiftDate, skill, maxCost);
         if (alternatives.isEmpty()) {
-            // Trigger manual approval workflow (could be an event, notification, etc.)
-            applicationEventPublisher.publishEvent("No available employee for shift on " + shiftDate + ", skill: " + skill);
+            shiftPublishedEventPublisher.publish(new ShiftPublished(null));
         } else {
-            // Notify admin with alternatives
-            applicationEventPublisher.publishEvent("Alternatives available: " + alternatives);
+            shiftPublishedEventPublisher.publish(new ShiftPublished(null));
         }
     }
 }

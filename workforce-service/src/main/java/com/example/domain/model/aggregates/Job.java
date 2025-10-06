@@ -1,10 +1,14 @@
-package com.example.domain.model;
+package com.example.domain.model.aggregates;
 
 import jakarta.persistence.*;
 import java.util.Date;
 
 /**
  * Job entity class representing a scheduled job in the system.
+ * <p>
+ * aggregate root：Job
+ * used to manage job-related business operations and maintain consistency within the aggregate.
+ * </p>
  */
 @Entity
 @Table(name = "job")
@@ -118,4 +122,3 @@ public class Job {
         this.queueOrderNumber = queueOrderNumber; }
 
 }
-

@@ -1,14 +1,14 @@
 package com.example.domain.event;
-import com.example.domain.model.Timesheet;
+import com.example.domain.model.entities.Timesheet;
 
-import jakarta.persistence.*;
-import org.springframework.context.ApplicationEvent;
-
-public class TimesheetEvent extends ApplicationEvent {
+/**
+ * Cross-service event message body: Timesheet event
+ * Used as Kafka message body for microservice communication only
+ */
+public class TimesheetEvent {
     private final Timesheet timesheet;
 
     public TimesheetEvent(Timesheet timesheet) {
-        super(timesheet);
         this.timesheet = timesheet;
     }
 
@@ -16,4 +16,3 @@ public class TimesheetEvent extends ApplicationEvent {
         return timesheet;
     }
 }
-

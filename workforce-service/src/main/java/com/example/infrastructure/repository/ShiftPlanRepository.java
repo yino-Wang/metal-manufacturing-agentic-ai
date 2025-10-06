@@ -1,6 +1,6 @@
 package com.example.infrastructure.repository;
 
-import com.example.domain.model.ShiftSchedule;
+import com.example.domain.model.entities.ShiftSchedule;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Date;

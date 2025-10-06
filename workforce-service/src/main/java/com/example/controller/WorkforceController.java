@@ -1,12 +1,16 @@
 package com.example.controller;
 
-import com.example.domain.event.TimesheetEvent;
-import com.example.domain.model.*;
+import com.example.domain.model.aggregates.Employee;
+import com.example.domain.model.entities.Payslip;
+import com.example.domain.model.entities.ShiftSchedule;
+import com.example.domain.model.entities.Timesheet;
 import com.example.infrastructure.repository.*;
 import com.example.service.DTO.AutoScheduleRequest;
 import com.example.service.DTO.AutoScheduleResponse;
 import com.example.service.usecase.GenerateShiftPlanService;
 import com.example.service.usecase.RecordTimesheetService;
+import com.example.service.queryservice.TimesheetQueryService;
+import com.example.service.queryservice.ShiftPlanQueryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +22,10 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/api/workforce")
 public class WorkforceController {
+    @Autowired
+    private TimesheetQueryService timesheetQueryService;
+    @Autowired
+    private ShiftPlanQueryService shiftPlanQueryService;
     @Autowired
     private EmployeeRepository employeeRepository;
     @Autowired
@@ -42,7 +50,7 @@ public class WorkforceController {
             @PathVariable Long employeeId,
             @RequestParam(required = false) String startDate,
             @RequestParam(required = false) String endDate) {
-        List<Timesheet> timesheets = timesheetRepository.findByEmployee_EmployeeId(employeeId);
+        List<Timesheet> timesheets = timesheetQueryService.findByEmployeeId(employeeId);
 
         // Calculate total and current period working hours
         double totalHours = timesheets.stream()
@@ -74,7 +82,7 @@ public class WorkforceController {
             @PathVariable Long employeeId,
             @RequestParam(required = false) String startDate,
             @RequestParam(required = false) String endDate) {
-        List<ShiftSchedule> schedules = shiftPlanRepository.findByEmployeeId(employeeId.intValue());
+        List<ShiftSchedule> schedules = shiftPlanQueryService.findByEmployeeId(employeeId.intValue());
 
         Map<String, Object> response = new HashMap<>();
         response.put("upcomingShifts", getUpcomingShifts(schedules));

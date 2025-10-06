@@ -1,17 +1,15 @@
 package com.example.domain.event;
 
-import com.example.domain.model.ShiftSchedule;
-import org.springframework.context.ApplicationEvent;
+import com.example.domain.model.entities.ShiftSchedule;
 
 /**
- * when a shift plan is published, this event is triggered
- * Represents the event of publishing a shift plan.
+ * Cross-service event message body: Shift schedule published event
+ * Used as Kafka message body for microservice communication only
  */
-public class ShiftPublished extends ApplicationEvent {
+public class ShiftPublished {
     private final ShiftSchedule shiftSchedule;
 
     public ShiftPublished(ShiftSchedule shiftSchedule) {
-        super(shiftSchedule);
         this.shiftSchedule = shiftSchedule;
     }
 
