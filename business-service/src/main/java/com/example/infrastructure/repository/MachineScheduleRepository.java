@@ -1,8 +1,7 @@
 package com.example.infrastructure.repository;
 
-import com.example.model.MachineSchedule;
-import com.example.model.ScheduledJob;
-import com.example.model.valueObjects.Machine;
+import com.example.domain.model.MachineSchedule;
+import com.example.domain.model.valueObjects.Machine;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
