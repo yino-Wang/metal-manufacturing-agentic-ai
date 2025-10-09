@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface MachineScheduleRepository extends JpaRepository<MachineSchedule, Long> {
-    MachineSchedule findByMachine(Machine machine);
+    MachineSchedule findByMachine(String machine);
 
     List<Machine> findAllMachines();
 

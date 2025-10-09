@@ -11,7 +11,7 @@ import java.util.List;
 @Entity
 public class ScheduledProductionStep {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    //@GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "scheduledProductionStepId")
     private Long id;
 
@@ -35,7 +35,7 @@ public class ScheduledProductionStep {
 //    @Column(name="positionInMachineSchedule")
 //    private Integer positionInMachineSchedule;
     @Column(name = "dependentOn")
-    private String dependentOn;
+    private ScheduledProductionStep dependentOn;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "jobId")
@@ -63,7 +63,7 @@ public class ScheduledProductionStep {
 
     public ScheduledProductionStep() {}
 
-    public ScheduledProductionStep(Long id, String stepName, Integer machineHours, Integer manHours, List<Consumable> reqConsumables, Machine machine, Employee employee, String reqMachineType, String dependentOn, ScheduledJob scheduledJob, IndividualSchedule individualSchedule, MachineSchedule machineSchedule, Date startTime, Date endTime, Status status, Integer priority, Integer queueOrderNumber) {
+    public ScheduledProductionStep(Long id, String stepName, Integer machineHours, Integer manHours, List<Consumable> reqConsumables, Machine machine, Employee employee, String reqMachineType, ScheduledProductionStep dependentOn, ScheduledJob scheduledJob, IndividualSchedule individualSchedule, MachineSchedule machineSchedule, Date startTime, Date endTime, Status status, Integer priority, Integer queueOrderNumber) {
         this.id = id;
         this.stepName = stepName;
         this.machineHours = machineHours;
@@ -123,6 +123,14 @@ public class ScheduledProductionStep {
         this.reqConsumables = reqConsumables;
     }
 
+    public void addConsumable(Consumable consumable) {
+        this.reqConsumables.add(consumable);
+    }
+
+    public void removeConsumable(Consumable consumable) {
+        this.reqConsumables.remove(consumable);
+    }
+
     public Machine getMachine() {
         return machine;
     }
@@ -147,11 +155,11 @@ public class ScheduledProductionStep {
         this.reqMachineType = reqMachineType;
     }
 
-    public String getDependentOn() {
+    public ScheduledProductionStep getDependentOn() {
         return dependentOn;
     }
 
-    public void setDependentOn(String dependentOn) {
+    public void setDependentOn(ScheduledProductionStep dependentOn) {
         this.dependentOn = dependentOn;
     }
 

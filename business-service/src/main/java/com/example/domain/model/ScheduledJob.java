@@ -10,13 +10,9 @@ import java.util.List;
 @Entity
 public class ScheduledJob {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    //@GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "scheduledJobId")
     private Long scheduledJobId;
-
-    @ManyToOne
-    @JoinColumn(name = "employeeId")
-    private Employee employee;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "mainSchedule_id")
@@ -47,12 +43,10 @@ public class ScheduledJob {
     @Temporal(TemporalType.DATE)
     private Date endDate;
 
-    // constructor、getter、setter
     public ScheduledJob() {}
 
     public ScheduledJob(Long scheduledJobId, Employee employee, MainSchedule mainSchedule, List<ScheduledProductionStep> scheduledProductionSteps, String customer, Date dueDate, Integer priority, Status status, Date startDate, Date endDate) {
         this.scheduledJobId = scheduledJobId;
-        this.employee = employee;
         this.mainSchedule = mainSchedule;
         this.scheduledProductionSteps = scheduledProductionSteps;
         this.customer = customer;
@@ -69,14 +63,6 @@ public class ScheduledJob {
 
     public void setScheduledJobId(Long scheduledJobId) {
         this.scheduledJobId = scheduledJobId;
-    }
-
-    public Employee getEmployee() {
-        return employee;
-    }
-
-    public void setEmployee(Employee employee) {
-        this.employee = employee;
     }
 
     public MainSchedule getMainSchedule() {
@@ -157,7 +143,6 @@ public class ScheduledJob {
     public String toString() {
         return "ScheduledJob{" +
                 "scheduledJobId=" + scheduledJobId +
-                ", employee=" + employee +
                 ", mainSchedule=" + mainSchedule +
                 ", scheduledProductionSteps=" + scheduledProductionSteps +
                 ", customer='" + customer + '\'' +

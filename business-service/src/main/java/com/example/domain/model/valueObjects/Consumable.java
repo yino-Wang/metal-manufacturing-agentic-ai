@@ -6,6 +6,9 @@ public class Consumable {
     @Column(name="name")
     private String name;
 
+    public Consumable() {
+    }
+
     public Consumable(String name) {
         this.name = name;
     }

@@ -36,7 +36,7 @@ public class SchedulesQueryService {
     public List<IndividualSchedule> findAllIndividualSchedules() { return individualScheduleRepository.findAll(); }
 
     //machineSchedule methods
-    public MachineSchedule findMachineSchedule(Machine machine) { return machineScheduleRepository.findByMachine(machine); }
+    public MachineSchedule findMachineSchedule(String machine) { return machineScheduleRepository.findByMachine(machine); }
     public List<Machine> findAllMachines() { return machineScheduleRepository.findAllMachines(); }
     public List<MachineSchedule> findAllMachineSchedules() { return machineScheduleRepository.findAll(); }
 

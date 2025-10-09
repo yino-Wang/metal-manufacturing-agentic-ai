@@ -36,7 +36,7 @@ public class getScheduleController {
     //get machine schedule by machine id
     @GetMapping("/machineSchedule/{machineId}")
     @ResponseBody
-    public MachineSchedule getMachineScheduleByMachineId(@PathVariable Machine machineId) {
+    public MachineSchedule getMachineScheduleByMachineId(@PathVariable String machineId) {
         return machineScheduleRepository.findByMachine(machineId);
     }
 

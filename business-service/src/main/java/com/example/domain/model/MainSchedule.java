@@ -8,7 +8,7 @@ import java.util.Set;
 @Entity
 public class MainSchedule {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    //@GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "mainScheduleId")
     private Long id;
 
