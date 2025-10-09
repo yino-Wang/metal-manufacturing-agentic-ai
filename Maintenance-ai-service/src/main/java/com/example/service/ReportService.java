@@ -133,6 +133,20 @@ public class ReportService {
         machineRepository.delete(machine);
     }
 
+    @Transactional
+    public List<ReportDto> allReportsDto() {
+        return reportRepository.findAll().stream()
+                .map(this::mapReportToDto)
+                .toList();
+    }
+
+    @Transactional
+    public List<MachineDto> allMachinesDto() {
+        return machineRepository.findAll().stream()
+                .map(this::mapMachineToDto)
+                .toList();
+    }
+
 
     @Transactional
     private MachineDto mapMachineToDto(Machine machine) {
