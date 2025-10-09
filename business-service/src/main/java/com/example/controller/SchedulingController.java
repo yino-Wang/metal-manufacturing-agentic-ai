@@ -1,12 +1,11 @@
 package com.example.controller;
 
 import com.example.infrastructure.repository.EmployeeRepository;
+import com.example.model.Employee;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import com.example.model.*;
-import com.example.infrastructure.repository.*;
 
 @RestController
 @RequestMapping("/api/schedules")

@@ -1,13 +1,6 @@
 package com.example;
 
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.autoconfigure.SpringBootApplication;  //ADD THIS
-import org.springframework.context.annotation.Bean;
-
-import java.time.LocalDate;
-
-import com.example.infrastructure.repository.EmployeeRepository;
-import com.example.model.Employee;
 
 
 @SpringBootApplication //ADD THIS
