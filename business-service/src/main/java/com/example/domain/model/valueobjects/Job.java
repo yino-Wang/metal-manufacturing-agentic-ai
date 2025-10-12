@@ -3,23 +3,20 @@ package com.example.domain.model.valueobjects;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 @Entity
 public class Job {
     @Id
     @GeneratedValue
     private Long id;
-    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "submitDate")
     @NotNull
-    private Date submitDate;
-    @Temporal(TemporalType.TIMESTAMP)
+    private LocalDate submitDate;
     @Column(name = "startDate")
-    private Date startDate;
-    @Temporal(TemporalType.TIMESTAMP)
+    private LocalDate startDate;
     @Column(name = "endDate")
-    private Date endDate;
+    private LocalDate endDate;
     @Column(name = "materialNeeded")
     private String materialNeeded;
     @Column(name = "materialAmount")
@@ -31,14 +28,14 @@ public class Job {
     public Job() {
     }
 
-    public Job(Date submitDate, String materialNeeded, Integer materialAmount, JobStatus jobStatus) {
+    public Job(LocalDate submitDate, String materialNeeded, Integer materialAmount, JobStatus jobStatus) {
         this.submitDate = submitDate;
         this.materialNeeded = materialNeeded;
         this.materialAmount = materialAmount;
         this.jobStatus = jobStatus;
     }
 
-    public Job(Date submitDate, Date startDate, Date endDate, String materialNeeded, Integer materialAmount, JobStatus jobStatus) {
+    public Job(LocalDate submitDate, LocalDate startDate, LocalDate endDate, String materialNeeded, Integer materialAmount, JobStatus jobStatus) {
         this.submitDate = submitDate;
         this.startDate = startDate;
         this.endDate = endDate;
@@ -55,22 +52,22 @@ public class Job {
         this.id = id;
     }
 
-    public Date getSubmitDate() {
+    public LocalDate getSubmitDate() {
         return submitDate;
     }
-    public void setSubmitDate(Date submitDate) {
+    public void setSubmitDate(LocalDate submitDate) {
         this.submitDate = submitDate;
     }
-    public Date getStartDate() {
+    public LocalDate getStartDate() {
         return startDate;
     }
-    public void setStartDate(Date startDate) {
+    public void setStartDate(LocalDate startDate) {
         this.startDate = startDate;
     }
-    public Date getEndDate() {
+    public LocalDate getEndDate() {
         return endDate;
     }
-    public void setEndDate(Date endDate) {
+    public void setEndDate(LocalDate endDate) {
         this.endDate = endDate;
     }
     public String getMaterialNeeded() {

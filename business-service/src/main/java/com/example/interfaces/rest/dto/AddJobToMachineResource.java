@@ -1,16 +1,16 @@
 package com.example.interfaces.rest.dto;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 public class AddJobToMachineResource {
     private String schedulingId;
-    private Date submitDate;
+    private LocalDate submitDate;
     private String materialNeeded;
     private int materialAmount;
 
     public AddJobToMachineResource(){ }
 
-    public AddJobToMachineResource(String schedulingId, Date submitDate, String materialNeeded, int materialAmount){
+    public AddJobToMachineResource(String schedulingId, LocalDate submitDate, String materialNeeded, int materialAmount){
         this.schedulingId = schedulingId;
         this.submitDate = submitDate;
         this.materialNeeded = materialNeeded;
@@ -23,11 +23,11 @@ public class AddJobToMachineResource {
         this.schedulingId = schedulingId;
     }
 
-    public Date getSubmitDate() {
+    public LocalDate getSubmitDate() {
         return submitDate;
     }
 
-    public void setSubmitDate(Date submitDate) {
+    public void setSubmitDate(LocalDate submitDate) {
         this.submitDate = submitDate;
     }
 

@@ -60,7 +60,7 @@ public class MachineScheduledController {
     @GetMapping("/findAllSchedulingIds")
     @ResponseBody
     public List<SchedulingId> findAllSchedulingIds(){
-        final List<SchedulingId> schedulingIdList = machineSchedulingQueryService.findAllSchedulingIds();
+        final List<SchedulingId> schedulingIdList = machineSchedulingQueryService.findAllSchedulingId();
         System.out.println("****Machine SchedulingID ****");
         schedulingIdList.forEach(x->System.out.println(x.getSchedulingId()));
         return schedulingIdList;

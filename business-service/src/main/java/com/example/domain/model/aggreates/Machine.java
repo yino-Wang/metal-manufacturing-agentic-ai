@@ -11,10 +11,10 @@ import org.springframework.data.domain.AbstractAggregateRoot;
 @NamedQueries({
         @NamedQuery(name = "Machine.findAll",
                 query = "Select m from Machine m"),
-        @NamedQuery(name = "Machine.findByBookingId",
+        @NamedQuery(name = "Machine.findBySchedulingId",
                 query = "Select m from Machine m where m.schedulingId = ?1"),
-        @NamedQuery(name = "Machine.findAllMachineScheduleIds",
-                query = "Select m.bookingId from Machine m") })
+        @NamedQuery(name = "Machine.findAllSchedulingId",
+                query = "Select m.schedulingId from Machine m") })
 public class Machine extends AbstractAggregateRoot<Machine> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

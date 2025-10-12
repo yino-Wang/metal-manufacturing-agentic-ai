@@ -7,9 +7,11 @@ import com.example.domain.model.commands.AddJobToMachineCommand;
 import com.example.domain.model.valueobjects.Job;
 import com.example.domain.model.valueobjects.JobStatus;
 import com.example.infrastructure.repositories.MachineRepository;
+import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 
+@Service
 public class MachineSchedulingCommandService {
 
     /**

@@ -33,9 +33,9 @@ public class MachineSchedulingQueryService {
      * List All Scheduling Identifiers
      * @return List<SchedulingId>
      */
-    public List<SchedulingId> findAllSchedulingIds(){
+    public List<SchedulingId> findAllSchedulingId(){
 
-        return machineRepository.findAllSchedulingIds();
+        return machineRepository.findAllSchedulingId();
     }
 
     /**

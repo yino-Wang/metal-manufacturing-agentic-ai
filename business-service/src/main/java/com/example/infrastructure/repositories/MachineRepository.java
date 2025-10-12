@@ -13,7 +13,7 @@ public interface MachineRepository extends JpaRepository<Machine, Long> {
 
     Machine findBySchedulingId(SchedulingId schedulingId);
 
-    List<SchedulingId> findAllSchedulingIds();
+    List<SchedulingId> findAllSchedulingId();
 
     List<Machine> findAll();
 

@@ -1,11 +1,11 @@
 package com.example.domain.model.commands;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 public class AddJobToMachineCommand {
 
     private String schedulingId;
-    private Date submitDate;
+    private LocalDate submitDate;
     //private String startDate; //decided by scheduling algorithm
     //private String endDate;   //decided by scheduling algorithm
     private String materialNeeded;
@@ -13,7 +13,7 @@ public class AddJobToMachineCommand {
 
     public AddJobToMachineCommand(){ }
 
-    public AddJobToMachineCommand(String schedulingId, Date submitDate, String materialNeeded, int materialAmount){
+    public AddJobToMachineCommand(String schedulingId, LocalDate submitDate, String materialNeeded, int materialAmount){
         this.schedulingId = schedulingId;
         this.submitDate = submitDate;
         this.materialNeeded = materialNeeded;
@@ -26,11 +26,11 @@ public class AddJobToMachineCommand {
         this.schedulingId = schedulingId;
     }
 
-    public Date getSubmitDate() {
+    public LocalDate getSubmitDate() {
         return submitDate;
     }
 
-    public void setSubmitDate(Date submitDate) {
+    public void setSubmitDate(LocalDate submitDate) {
         this.submitDate = submitDate;
     }
 

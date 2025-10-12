@@ -1,14 +1,14 @@
 package com.example.interfaces.rest;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 public class JobAddedToMachineEventData {
     private final String schedulingId;
-    private final Date submitDate;
+    private final LocalDate submitDate;
     private final String materialNeeded;
     private final int materialAmount;
 
-    public JobAddedToMachineEventData(String schedulingId, Date submitDate, String materialNeeded, int materialAmount) {
+    public JobAddedToMachineEventData(String schedulingId, LocalDate submitDate, String materialNeeded, int materialAmount) {
         this.schedulingId = schedulingId;
         this.submitDate = submitDate;
         this.materialNeeded = materialNeeded;
@@ -19,7 +19,7 @@ public class JobAddedToMachineEventData {
         return schedulingId;
     }
 
-    public Date getSubmitDate() {
+    public LocalDate getSubmitDate() {
         return submitDate;
     }
 
