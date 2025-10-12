@@ -1,7 +1,6 @@
 package com.example.application.outboundservices;
 
-import com.example.interfaces.rest.MachineJobScheduledEvent;
-import com.example.interfaces.rest.MachineScheduledEvent;
+import com.example.interfaces.rest.*;
 import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.event.TransactionalEventListener;
@@ -21,7 +20,12 @@ public class MachineEventPublisherService {
     }
 
     @TransactionalEventListener
-    public void handleMachineJobScheduledEvent(MachineJobScheduledEvent machineJobScheduledEvent) {
-        streamBridge.send("machineJobScheduledChannel", machineJobScheduledEvent);
+    public void handleJobAddedToMachineEvent(JobAddedToMachineEvent jobAddedToMachineEvent) {
+        streamBridge.send("jobAddedToMachineChannel", jobAddedToMachineEvent);
+    }
+
+    @TransactionalEventListener
+    public void handleMachineScheduleUpdatedEvent(MachineScheduleUpdatedEvent machineScheduleUpdatedEvent) {
+        streamBridge.send("machineScheduleUpdatedChannel", machineScheduleUpdatedEvent);
     }
 }

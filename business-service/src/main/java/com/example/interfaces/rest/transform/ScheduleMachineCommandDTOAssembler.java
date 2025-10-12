@@ -4,7 +4,7 @@ import com.example.domain.model.commands.ScheduleMachineCommand;
 import com.example.interfaces.rest.dto.ScheduleMachineResource;
 
 //bridge between the REST API’s data transfer object (DTO) and the domain command object
-public class ScheduleMachineDTOAssembler {
+public class ScheduleMachineCommandDTOAssembler {
 
     /**
      * Static method within the Assembler class

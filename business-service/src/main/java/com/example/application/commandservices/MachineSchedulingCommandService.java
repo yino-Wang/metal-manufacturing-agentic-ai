@@ -3,7 +3,9 @@ package com.example.application.commandservices;
 import com.example.domain.model.aggreates.Machine;
 import com.example.domain.model.aggreates.SchedulingId;
 import com.example.domain.model.commands.ScheduleMachineCommand;
-import com.example.domain.model.commands.AddJobToMachineScheduleCommand;
+import com.example.domain.model.commands.AddJobToMachineCommand;
+import com.example.domain.model.valueobjects.Job;
+import com.example.domain.model.valueobjects.JobStatus;
 import com.example.infrastructure.repositories.MachineRepository;
 
 import java.util.UUID;
@@ -39,14 +41,18 @@ public class MachineSchedulingCommandService {
 
     /**
      * Service Command method to assign a job to a machine
-     * @param addJobToMachineScheduleCommand
+     * @param addJobToMachineCommand
      */
 
-    public void assignJobToMachine(AddJobToMachineScheduleCommand addJobToMachineScheduleCommand) {
-        System.out.println("Update Machine Schedule Command" + addJobToMachineScheduleCommand.getSchedulingId());
+    public Job addJobToMachine(AddJobToMachineCommand addJobToMachineCommand) {
+        System.out.println("****Adding Job to Machine ****" + addJobToMachineCommand.getSchedulingId());
         Machine machine = machineRepository.findBySchedulingId(
-                new SchedulingId(addJobToMachineScheduleCommand.getSchedulingId()));
-        machine.assignJob(addJobToMachineScheduleCommand.getJobId(), addJobToMachineScheduleCommand.getJobDescription());
+                new SchedulingId(addJobToMachineCommand.getSchedulingId()));
+        machine.addJob(new
+                Job(addJobToMachineCommand.getSubmitDate(), addJobToMachineCommand.getMaterialNeeded(),
+                addJobToMachineCommand.getMaterialAmount(), JobStatus.PENDING));
         machineRepository.save(machine);
+        return new Job(addJobToMachineCommand.getSubmitDate(), addJobToMachineCommand.getMaterialNeeded(),
+                addJobToMachineCommand.getMaterialAmount(), JobStatus.PENDING);
     }
 }

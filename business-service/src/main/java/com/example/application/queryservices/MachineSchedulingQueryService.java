@@ -2,7 +2,9 @@ package com.example.application.queryservices;
 
 import com.example.domain.model.aggreates.Machine;
 import com.example.domain.model.aggreates.SchedulingId;
+import com.example.domain.model.valueobjects.Job;
 import com.example.infrastructure.repositories.MachineRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -28,7 +30,7 @@ public class MachineSchedulingQueryService {
     }
 
     /**
-     * List All Booking Identifiers
+     * List All Scheduling Identifiers
      * @return List<SchedulingId>
      */
     public List<SchedulingId> findAllSchedulingIds(){
@@ -37,11 +39,60 @@ public class MachineSchedulingQueryService {
     }
 
     /**
-     * Find a specific Cargo based on its Booking Id
+     * Find a specific Machine based on its Scheduling Id
      * @param schedulingId
-     * @return Cargo
+     * @return Machine
      */
     public Machine find(SchedulingId schedulingId){
         return machineRepository.findBySchedulingId(schedulingId);
     }
+
+    /**
+     * Find currentJob by schedule Id
+     * @param schedulingId
+     * @return Job
+     */
+    public Job findCurrentJobBySchedulingId(SchedulingId schedulingId) {
+        return machineRepository.findCurrentJobBySchedulingId(schedulingId);
+    }
+
+    /**
+     * Find all jobs scheduled for a machine by its scheduling Id
+     * @param schedulingId
+     * @return List<Job>
+     */
+    public List<Job> findAllJobsBySchedulingId(SchedulingId schedulingId) {
+        return machineRepository.findAllJobsBySchedulingId(schedulingId);
+    }
+
+    /**
+     * Returns a valid job schedule, making sure times are in order and JobStatus is correctly assigned for each job
+     */
+//    @Transactional
+//    public void updateJobSchedule() {
+//        List<Machine> machines = machineRepository.findAll();
+//        for (Machine machine : machines) {
+//            List<Job> jobs = machine.getJobs();
+//            jobs.sort((job1, job2) -> job1.getStartTime().compareTo(job2.getStartTime()));
+//            for (int i = 0; i < jobs.size(); i++) {
+//                Job job = jobs.get(i);
+//                if (i == 0) {
+//                    job.setJobStatus(Job.JobStatus.IN_PROGRESS);
+//                } else if (i == jobs.size() - 1) {
+//                    job.setJobStatus(Job.JobStatus.SCHEDULED);
+//                } else {
+//                    job.setJobStatus(Job.JobStatus.SCHEDULED);
+//                }
+//                if (i > 0) {
+//                    Job previousJob = jobs.get(i - 1);
+//                    if (job.getStartTime().isBefore(previousJob.getEndTime())) {
+//                        throw new IllegalStateException("Job times are overlapping for machine: " + machine.getSchedulingId().getSchedulingId());
+//                    }
+//                }
+//            }
+//            machine.setJobs(jobs);
+//            machineRepository.save(machine);
+//        }
+//    }
+
 }

@@ -2,6 +2,7 @@ package com.example.domain.model.valueobjects;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -12,7 +13,7 @@ public class JobList {
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name="joblist_id")
     @OrderBy("submitDate")
-    private List<Job> jobs = Collections.emptyList();
+    private List<Job> jobs = new ArrayList<>();
 
     public JobList() {}
 

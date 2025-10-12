@@ -30,19 +30,19 @@ public class CurrentJob {
         }
     }
 
-    /**
-     * Method to calculate the job status of the current job of a machine
-     */
-    private JobStatus calculateJobStatus() {
-        if (lastEvent == null || lastEvent == LastJobHandledEvent.NO_EVENT) {
-            return JobStatus.NOT_STARTED;
-        }
-
-        return switch (lastEvent.getHandlingEventType()) {
-            case "PENDING" -> JobStatus.PENDING;
-            case "IN_PROGRESS" -> JobStatus.IN_PROGRESS;
-            case "COMPLETED" -> JobStatus.COMPLETED;
-            default -> JobStatus.UNKNOWN;
-        };
-    }
+//    /**
+//     * Method to calculate the job status of the current job of a machine
+//     */
+//    private JobStatus calculateJobStatus() {
+//        if (lastEvent == null || lastEvent == LastJobHandledEvent.NO_EVENT) {
+//            return JobStatus.NOT_STARTED;
+//        }
+//
+//        return switch (lastEvent.getHandlingEventType()) {
+//            case "PENDING" -> JobStatus.PENDING;
+//            case "IN_PROGRESS" -> JobStatus.IN_PROGRESS;
+//            case "COMPLETED" -> JobStatus.COMPLETED;
+//            default -> JobStatus.UNKNOWN;
+//        };
+//    }
 }

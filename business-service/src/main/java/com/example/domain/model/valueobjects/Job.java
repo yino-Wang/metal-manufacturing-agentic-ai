@@ -31,6 +31,13 @@ public class Job {
     public Job() {
     }
 
+    public Job(Date submitDate, String materialNeeded, Integer materialAmount, JobStatus jobStatus) {
+        this.submitDate = submitDate;
+        this.materialNeeded = materialNeeded;
+        this.materialAmount = materialAmount;
+        this.jobStatus = jobStatus;
+    }
+
     public Job(Date submitDate, Date startDate, Date endDate, String materialNeeded, Integer materialAmount, JobStatus jobStatus) {
         this.submitDate = submitDate;
         this.startDate = startDate;

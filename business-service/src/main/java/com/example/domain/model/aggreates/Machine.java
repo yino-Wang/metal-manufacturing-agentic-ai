@@ -1,15 +1,9 @@
 package com.example.domain.model.aggreates;
 
 import com.example.domain.model.commands.ScheduleMachineCommand;
-import com.example.domain.model.commands.AddJobToMachineScheduleCommand;
 import com.example.domain.model.entities.Employee;
-import com.example.domain.model.valueobjects.CurrentJob;
-import com.example.domain.model.valueobjects.JobList;
-import com.example.domain.model.valueobjects.LastJobHandledEvent;
-import com.example.domain.model.valueobjects.Schedule;
-import com.example.interfaces.rest.MachineJobScheduledEventData;
-import com.example.interfaces.rest.MachineScheduledEvent;
-import com.example.interfaces.rest.MachineScheduledEventData;
+import com.example.domain.model.valueobjects.*;
+import com.example.interfaces.rest.*;
 import jakarta.persistence.*;
 import org.springframework.data.domain.AbstractAggregateRoot;
 
@@ -83,24 +77,29 @@ public class Machine extends AbstractAggregateRoot<Machine> {
     /**
      * Command Handler for the Route Cargo Command. Sets the state of the Aggregate and registers the
      * Cargo routed event
-     * @param jobList
+     * @param job
      */
 
-    public void assignJob(JobList jobList) {
-        this.jobList = jobList;
-        //Add this domain event which needs to be fired when the new jobList is saved
+    public void addJob(Job job) {
+        this.jobList.getJobs().add(job);
+        // Register a domain event representing that a job was added to the machine
         addDomainEvent(new
-                AddJobToMachineScheduleCommand(new MachineJobScheduledEventData(this.schedulingId.getSchedulingId())));
+                JobAddedToMachineEvent(
+                new JobAddedToMachineEventData(
+                        this.schedulingId.getSchedulingId(),
+                        job.getSubmitDate(),
+                        job.getMaterialNeeded(),
+                        job.getMaterialAmount())));
     }
 
-    /**
-     *
-     * @param lastJobHandledEvent
-     */
-    public void deriveCurrentJobProgress(LastJobHandledEvent lastJobHandledEvent) {
-        this.currentJob = CurrentJob.derivedFrom(getJobList(),
-                lastJobHandledEvent);
-    }
+//    /**
+//     *
+//     * @param lastJobHandledEvent
+//     */
+//    public void deriveCurrentJobProgress(LastJobHandledEvent lastJobHandledEvent) {
+//        this.currentJob = CurrentJob.derivedFrom(getJobList(),
+//                lastJobHandledEvent);
+//    }
 
 
     /**

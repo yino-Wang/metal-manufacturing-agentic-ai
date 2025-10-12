@@ -4,9 +4,8 @@ import com.example.application.commandservices.MachineSchedulingCommandService;
 import com.example.application.queryservices.MachineSchedulingQueryService;
 import com.example.domain.model.aggreates.Machine;
 import com.example.domain.model.aggreates.SchedulingId;
-import com.example.domain.model.commands.ScheduleMachineCommand;
 import com.example.interfaces.rest.dto.ScheduleMachineResource;
-import com.example.interfaces.rest.transform.ScheduleMachineDTOAssembler;
+import com.example.interfaces.rest.transform.ScheduleMachineCommandDTOAssembler;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,7 +13,7 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/machinescheduling")
-public class MachineSchedulingController {
+public class MachineScheduledController {
 
     private MachineSchedulingCommandService machineSchedulingCommandService; // Application Service Dependency
     private MachineSchedulingQueryService machineSchedulingQueryService;
@@ -23,7 +22,7 @@ public class MachineSchedulingController {
      * Provide the dependencies
      * @param machineSchedulingCommandService
      */
-    public MachineSchedulingController(MachineSchedulingCommandService machineSchedulingCommandService, MachineSchedulingQueryService machineSchedulingQueryService) {
+    public MachineScheduledController(MachineSchedulingCommandService machineSchedulingCommandService, MachineSchedulingQueryService machineSchedulingQueryService) {
         this.machineSchedulingCommandService = machineSchedulingCommandService;
         this.machineSchedulingQueryService = machineSchedulingQueryService;
     }
@@ -37,7 +36,7 @@ public class MachineSchedulingController {
     public SchedulingId scheduleMachine(@RequestBody ScheduleMachineResource scheduleMachineResource) {
         System.out.printf("****Machine Scheduled ****%s%n", scheduleMachineResource.getSchedulingId());
         SchedulingId schedulingId = machineSchedulingCommandService.scheduleMachine(
-                ScheduleMachineDTOAssembler.toCommandFromDTO(scheduleMachineResource));
+                ScheduleMachineCommandDTOAssembler.toCommandFromDTO(scheduleMachineResource));
         return schedulingId;
     }
 
@@ -54,7 +53,7 @@ public class MachineSchedulingController {
     }
 
     /**
-     * GET method to retrieve a machine
+     * GET method to retrieve a list of SchedulingIds
      * @param
      * @return List<SchedulingId>
      */

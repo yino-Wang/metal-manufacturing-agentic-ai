@@ -2,6 +2,7 @@ package com.example.infrastructure.repositories;
 
 import com.example.domain.model.aggreates.Machine;
 import com.example.domain.model.aggreates.SchedulingId;
+import com.example.domain.model.valueobjects.Job;
 import org.springframework.boot.json.JacksonJsonParser;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -15,4 +16,8 @@ public interface MachineRepository extends JpaRepository<Machine, Long> {
     List<SchedulingId> findAllSchedulingIds();
 
     List<Machine> findAll();
+
+    Job findCurrentJobBySchedulingId(SchedulingId schedulingId);
+
+    List<Job> findAllJobsBySchedulingId(SchedulingId schedulingId);
 }
