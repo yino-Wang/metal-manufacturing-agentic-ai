@@ -3,6 +3,7 @@ package com.example.controller;
 import com.example.service.dto.MachineDto;
 import com.example.service.dto.ReportDto;
 import com.example.service.ReportService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -13,7 +14,8 @@ public class ReportController {
 
     private final ReportService reportService;
 
-    public ReportController(ReportService reportService) {
+    @Autowired
+    public ReportController(ReportService reportService){
         this.reportService = reportService;
     }
 

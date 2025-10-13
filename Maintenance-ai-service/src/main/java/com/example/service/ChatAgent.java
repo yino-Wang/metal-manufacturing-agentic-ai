@@ -1,12 +1,11 @@
 package com.example.service;
 
+import com.example.service.dto.ChatMessage;
 import dev.langchain4j.service.MemoryId;
 import dev.langchain4j.service.Result;
 import dev.langchain4j.service.SystemMessage;
 import dev.langchain4j.service.UserMessage;
-import dev.langchain4j.service.spring.AiService;
 
-@AiService
 public interface ChatAgent {
 
     @SystemMessage("""
@@ -22,7 +21,7 @@ public interface ChatAgent {
          *   For example, you can ask: "Is the machine making any unusual sounds?", "Is the machine due for maintenance?", "Any warnings on the control panel?".
 
      2.  **Determine Action**:
-         *   If you have enough information to search for a solution, set the 'state' of the `ChatMessage` to 'RAG' and provide the solution in the 'solution' field. The solution should be a single paragraph including the details of the records its sourced from. For example: "Machine 4 produced poor surface finish 1 year ago, the solution was increasing coolant pressure."
+         *   If you have enough information to search for a solution, set the 'state' of the `ChatMessage` to 'RAG' and provide the machine id and issue in the 'issueDescription' field. It should be in the following format for example: "MACHINE ID: 2 | ISSUE: Producing poor surface finish and a red light flashes."
          *   If you need more information, set the 'state' of the `ChatMessage` to 'CHAT' and include a friendly question in the 'messageToUser' field to gather more details.
 
      **Important Rules**:
@@ -30,6 +29,6 @@ public interface ChatAgent {
      *   Be polite and conversational in your interactions.
      *   Do not ask for personal information from the user.
     """)
-    Result<String> assist(@MemoryId String memoryId, @UserMessage String userMessage);
+    Result<ChatMessage> chat(@MemoryId String memoryId, @UserMessage String userMessage);
 
 }

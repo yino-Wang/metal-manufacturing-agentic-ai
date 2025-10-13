@@ -4,10 +4,13 @@ import com.example.infrastructure.repository.ReportRepository;
 import com.example.infrastructure.repository.MachineRepository;
 import com.example.model.Report;
 import com.example.model.Machine;
+import com.example.service.dto.ChatMessage;
 import com.example.service.dto.ReportDto;
 import com.example.service.dto.MachineDto;
 import com.example.model.ReportNotFoundException;
 import com.example.model.MachineNotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,10 +27,6 @@ public class ReportService {
     public ReportService(ReportRepository reportRepository, MachineRepository machineRepository) {
         this.reportRepository = reportRepository;
         this.machineRepository = machineRepository;
-    }
-
-    public String recommend(String sessionId, String report) {
-        return "Report received: " + report;
     }
 
     public List<ReportDto> findAllReports() {
@@ -99,7 +98,7 @@ public class ReportService {
         Machine machine = machineRepository.findById(machineId)
                 .orElseThrow(() -> new MachineNotFoundException(machineId));
 
-        // You can't patch machineId
+        // Don't patch machineId
         if (updates.containsKey("reports")) {
             @SuppressWarnings("unchecked")
             List<Map<String, Object>> reportUpdates = (List<Map<String, Object>>) updates.get("reports");
