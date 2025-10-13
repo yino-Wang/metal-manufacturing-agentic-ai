@@ -37,6 +37,14 @@ public class ExternalAddJobToMachineService {
         //add the material quantity to the name (like keep updating it if that's a thing)
         Dictionary<>
         for (Job j : jobs) {
+            String materialName = j.getMaterialNeeded();
+            int materialAmount = j.getMaterialAmount();
+            if (Dictionary.containsKey(materialName)) {
+                int currentAmount = Dictionary.get(materialName);
+                Dictionary.put(materialName, currentAmount + materialAmount);
+            } else {
+                Dictionary.put(materialName, materialAmount);
+            }
 
         }
 
