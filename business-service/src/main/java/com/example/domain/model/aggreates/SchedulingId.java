@@ -17,4 +17,10 @@ public class SchedulingId implements Serializable {
 
     public String getSchedulingId(){return this.schedulingId;}
 
+    @Override
+    public String toString() {
+        return "SchedulingId{" +
+                "schedulingId='" + schedulingId + '\'' +
+                '}';
+    }
 }

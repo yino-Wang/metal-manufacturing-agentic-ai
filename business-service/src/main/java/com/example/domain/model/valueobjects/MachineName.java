@@ -12,4 +12,11 @@ public class MachineName {
     public MachineName(String machineName){this.machineName = machineName;}
 
     public String getMachineName(){return this.machineName;}
+
+    @Override
+    public String toString() {
+        return "MachineName{" +
+                "machineName='" + machineName + '\'' +
+                '}';
+    }
 }

@@ -9,7 +9,6 @@ import java.time.LocalDate;
 public class Job {
 
     @Column(name = "submitDate")
-    @NotNull
     private LocalDate submitDate;
     @Column(name = "startDate")
     private LocalDate startDate;
@@ -87,5 +86,18 @@ public class Job {
     }
     public void setJobStatus(JobStatus jobStatus) {
         this.jobStatus = jobStatus;
+    }
+
+    @Override
+    public String toString() {
+        return "Job{" +
+                "submitDate=" + submitDate +
+                ", startDate=" + startDate +
+                ", jobNumber=" + jobNumber +
+                ", endDate=" + endDate +
+                ", materialNeeded='" + materialNeeded + '\'' +
+                ", materialAmount=" + materialAmount +
+                ", jobStatus=" + jobStatus +
+                '}';
     }
 }

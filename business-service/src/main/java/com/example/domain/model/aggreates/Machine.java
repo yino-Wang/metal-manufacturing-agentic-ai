@@ -122,4 +122,16 @@ public class Machine extends AbstractAggregateRoot<Machine> {
         registerEvent(event);
     }
 
+    @Override
+    public String toString() {
+        return "Machine{" +
+                "id=" + id +
+                ", machineName=" + machineName +
+                ", schedulingId=" + schedulingId +
+                ", employee=" + employee +
+                ", jobList=" + jobList +
+                ", schedule=" + schedule +
+                ", currentJob=" + currentJob +
+                '}';
+    }
 }

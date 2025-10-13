@@ -56,7 +56,7 @@ public class Main {
             SchedulingIdDto schedulingId = restTemplate.postForObject(urlAddJob, job, SchedulingIdDto.class);
             System.out.println("******" + schedulingId + job + "*****");
             System.out.println(job);
-            Thread.sleep(1000);
+            Thread.sleep(4000);
         }
     }
 }

@@ -43,4 +43,14 @@ public class CurrentJob {
 //            default -> JobStatus.UNKNOWN;
 //        };
 //    }
+
+
+    @Override
+    public String toString() {
+        return "CurrentJob{" +
+                "currentJobStatus=" + currentJobStatus +
+                ", lastEvent=" + lastEvent +
+                ", nextExpectedActivity=" + nextExpectedActivity +
+                '}';
+    }
 }

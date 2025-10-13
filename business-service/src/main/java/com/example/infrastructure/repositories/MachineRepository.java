@@ -20,7 +20,7 @@ public interface MachineRepository extends JpaRepository<Machine, Long> {
 
     Job findCurrentJobBySchedulingId(SchedulingId schedulingId);
 
-    List<Job> findAllJobsBySchedulingId(SchedulingId schedulingId);
+    Machine findAllJobsBySchedulingId(SchedulingId schedulingId);
 
     Machine findByMachineName(MachineName machineName);
 }

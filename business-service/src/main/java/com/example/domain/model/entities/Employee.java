@@ -17,4 +17,11 @@ public class Employee {
     public String getEmployeeName() {
         return this.employeeName;
     }
+
+    @Override
+    public String toString() {
+        return "Employee{" +
+                "employeeName='" + employeeName + '\'' +
+                '}';
+    }
 }

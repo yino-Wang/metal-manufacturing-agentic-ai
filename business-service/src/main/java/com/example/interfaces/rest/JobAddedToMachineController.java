@@ -2,6 +2,7 @@ package com.example.interfaces.rest;
 
 import com.example.application.commandservices.MachineSchedulingCommandService;
 import com.example.application.queryservices.MachineSchedulingQueryService;
+import com.example.domain.model.aggreates.Machine;
 import com.example.domain.model.aggreates.SchedulingId;
 import com.example.domain.model.valueobjects.Job;
 import com.example.interfaces.rest.dto.AddJobToMachineResource;
@@ -43,13 +44,14 @@ public class JobAddedToMachineController {
     /**
      * GET method to retrieve all jobs for a scheduling ID
      * @param schedulingId
-     * @return List<Job>
+     * @return Machine
      */
     @GetMapping("/findJobsBySchedulingId")
     @ResponseBody
-    public List<Job> findAllJobsBySchedulingId(@RequestParam("schedulingId") String schedulingId) {
+    public String findAllJobsBySchedulingId(@RequestParam("schedulingId") String schedulingId) {
         System.out.println("****Finding Jobs for Machine SchedulingID ****" + schedulingId);
-        return machineSchedulingQueryService.findAllJobsBySchedulingId(new SchedulingId(schedulingId));
+        Machine machine = machineSchedulingQueryService.findAllJobsBySchedulingId(new SchedulingId(schedulingId));
+        return machine.toString();
     }
 
     /**
