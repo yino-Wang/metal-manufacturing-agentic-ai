@@ -26,17 +26,20 @@ public class GenerateShiftPlanService {
     private final ShiftPlanRepository shiftPlanRepository;
     private final OpenAIClient openAIClient;
     private final ShiftPublishedEventPublisher shiftPublishedEventPublisher;
+    private final EmployeeNotificationService employeeNotificationService;
 
     @Autowired
     public GenerateShiftPlanService(
             EmployeeRepository employeeRepository,
             ShiftPlanRepository shiftPlanRepository,
             OpenAIClient openAIClient,
-            ShiftPublishedEventPublisher shiftPublishedEventPublisher) {
+            ShiftPublishedEventPublisher shiftPublishedEventPublisher,
+            EmployeeNotificationService employeeNotificationService) {
         this.employeeRepository = employeeRepository;
         this.shiftPlanRepository = shiftPlanRepository;
         this.openAIClient = openAIClient;
         this.shiftPublishedEventPublisher = shiftPublishedEventPublisher;
+        this.employeeNotificationService = employeeNotificationService;
     }
 
     // Method to generate shift plan using OpenAI
@@ -194,8 +197,10 @@ public class GenerateShiftPlanService {
         Integer currentVersion = schedule.getVersion() == null ? 1 : schedule.getVersion() + 1;
         schedule.setVersion(currentVersion);
         ShiftSchedule saved = shiftPlanRepository.save(schedule);
-        // Notify employee after approval
+
+        // Notify employee after approval - use direct notification service
         notifyEmployee(saved);
+
         return saved;
     }
 
@@ -215,19 +220,40 @@ public class GenerateShiftPlanService {
     }
 
     // Notification: notify employee after shift plan is published/approved
-    // Notify employee via event/message/email
+    // Notify employee via direct notification service and event/message
     public void notifyEmployee(ShiftSchedule schedule) {
-        shiftPublishedEventPublisher.publish(new ShiftPublished(schedule));
+        try {
+            // 1. Send direct notification to employee
+            employeeNotificationService.notifyEmployeeOfShiftAssignment(schedule, null);
+
+            // 2. Also publish event for other services (optional, keep for compatibility)
+            shiftPublishedEventPublisher.publish(new ShiftPublished(schedule));
+
+        } catch (Exception e) {
+            System.err.println("Failed to notify employee " + schedule.getEmployeeId() + ": " + e.getMessage());
+            // Still publish event as fallback
+            shiftPublishedEventPublisher.publish(new ShiftPublished(schedule));
+        }
     }
 
     // Exception handling: trigger approval/notification when no available employee
     // If no available employee, notify admin for manual approval
     public void handleNoAvailableEmployee(Date shiftDate, String skill, Float maxCost) {
         List<Employee> alternatives = recommendAlternativeEmployees(shiftDate, skill, maxCost);
+
+        System.out.println("No available employees found for shift on " + shiftDate);
+        System.out.println("Required skill: " + skill + ", Max cost: " + maxCost);
+
         if (alternatives.isEmpty()) {
-            shiftPublishedEventPublisher.publish(new ShiftPublished(null));
+            System.out.println("No alternative employees found. Connecting admin for manual staffing...");
+
         } else {
-            shiftPublishedEventPublisher.publish(new ShiftPublished(null));
+            System.out.println("Found " + alternatives.size() + " alternative employees:");
+            for (Employee alt : alternatives) {
+                System.out.println("- Employee ID: " + alt.getEmployeeId() +
+                                 ", Skill: " + alt.getSkill() +
+                                 ", Pay: " + alt.getPay());
+            }
         }
     }
 }
