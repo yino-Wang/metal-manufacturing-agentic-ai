@@ -12,7 +12,9 @@ public class AddJobToMachineCommandDTOAssembler {
      */
     public static AddJobToMachineCommand toCommandFromDTO(AddJobToMachineResource addJobToMachineResource){
         return new AddJobToMachineCommand(
-                addJobToMachineResource.getSchedulingId(),
+                //addJobToMachineResource.getSchedulingId(),
+                addJobToMachineResource.getMachineName(),
+                addJobToMachineResource.getJobNumber(),
                 addJobToMachineResource.getSubmitDate(),
                 addJobToMachineResource.getMaterialNeeded(),
                 addJobToMachineResource.getMaterialAmount()

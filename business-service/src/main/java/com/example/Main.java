@@ -41,17 +41,21 @@ public class Main {
         String[] materialNeeded = {"steel", "wood", "nails", "iron"};
         int materialOptions = materialNeeded.length;
         LocalDate day = LocalDate.now();
+        int jobNumber = 0;
         while (true) {
+            jobNumber = jobNumber + 1;
             int materialAmount = rand.nextInt(maxMaterials) + 1; //at least 1 material
             int r1 = rand.nextInt(numMachines);
             String machineId = machines[r1];
             int material = rand.nextInt(materialOptions);
             String materialName = materialNeeded[material];
             LocalDate submitDate = day.plusDays(rand.nextInt(10)); //submit date within the next 10 days
-            AddJobToMachineResource job = new AddJobToMachineResource(machineId, submitDate, materialName, materialAmount);
+            System.out.println("Adding job " + jobNumber + " to " + machineId + " for " + materialAmount + " of " + materialName + " on " + submitDate);
+            AddJobToMachineResource job = new AddJobToMachineResource(jobNumber, machineId, submitDate, materialName, materialAmount);
+            System.out.println("Posting job: " + job.toString());
             SchedulingIdDto schedulingId = restTemplate.postForObject(urlAddJob, job, SchedulingIdDto.class);
             System.out.println("******" + schedulingId + job + "*****");
-            //System.out.println(entry);
+            System.out.println(job);
             Thread.sleep(1000);
         }
     }

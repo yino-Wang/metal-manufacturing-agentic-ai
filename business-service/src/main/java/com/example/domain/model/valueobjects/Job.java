@@ -7,14 +7,15 @@ import java.time.LocalDate;
 
 @Entity
 public class Job {
-    @Id
-    @GeneratedValue
-    private Long id;
+
     @Column(name = "submitDate")
     @NotNull
     private LocalDate submitDate;
     @Column(name = "startDate")
     private LocalDate startDate;
+    @Id
+    @Column(name = "jobNumber")
+    private Integer jobNumber;
     @Column(name = "endDate")
     private LocalDate endDate;
     @Column(name = "materialNeeded")
@@ -28,7 +29,8 @@ public class Job {
     public Job() {
     }
 
-    public Job(LocalDate submitDate, String materialNeeded, Integer materialAmount, JobStatus jobStatus) {
+    public Job(int jobNumber, LocalDate submitDate, String materialNeeded, Integer materialAmount, JobStatus jobStatus) {
+        this.jobNumber = jobNumber;
         this.submitDate = submitDate;
         this.materialNeeded = materialNeeded;
         this.materialAmount = materialAmount;
@@ -44,14 +46,12 @@ public class Job {
         this.jobStatus = jobStatus;
     }
 
-    public Long getId() {
-        return id;
+    public Integer getJobNumber() {
+        return jobNumber;
     }
-
-    public void setId(Long id) {
-        this.id = id;
+    public void setJobNumber(Integer jobNumber) {
+        this.jobNumber = jobNumber;
     }
-
     public LocalDate getSubmitDate() {
         return submitDate;
     }

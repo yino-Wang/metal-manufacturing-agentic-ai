@@ -7,6 +7,11 @@ import com.example.interfaces.rest.*;
 import jakarta.persistence.*;
 import org.springframework.data.domain.AbstractAggregateRoot;
 
+import com.example.interfaces.rest.JobAddedToMachineEventData;
+import com.example.interfaces.rest.JobAddedToMachineEvent;
+import com.example.interfaces.rest.MachineScheduledEventData;
+import com.example.interfaces.rest.MachineScheduledEvent;
+
 @Entity
 @NamedQueries({
         @NamedQuery(name = "Machine.findAll",
@@ -14,11 +19,15 @@ import org.springframework.data.domain.AbstractAggregateRoot;
         @NamedQuery(name = "Machine.findBySchedulingId",
                 query = "Select m from Machine m where m.schedulingId = ?1"),
         @NamedQuery(name = "Machine.findAllSchedulingId",
-                query = "Select m.schedulingId from Machine m") })
+                query = "Select m.schedulingId from Machine m"),
+        @NamedQuery(name = "Machine.findByMachineName",
+                query = "Select m from Machine m where m.machineName = ?1")})
 public class Machine extends AbstractAggregateRoot<Machine> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Embedded
+    private MachineName machineName; // Name of the Machine
     @Embedded
     private SchedulingId schedulingId; // Aggregate Identifier
     @Embedded
@@ -42,6 +51,7 @@ public class Machine extends AbstractAggregateRoot<Machine> {
      */
     public Machine(ScheduleMachineCommand scheduleMachineCommand) {
         this.schedulingId = new SchedulingId(scheduleMachineCommand.getSchedulingId());
+        this.machineName = new MachineName(scheduleMachineCommand.getMachineName());
         this.employee = new Employee(scheduleMachineCommand.getEmployeeName());
         this.jobList = JobList.EMPTY_LIST; //Empty Job List since the Machine has no jobs assigned yet
         this.schedule = new Schedule(); //Empty Schedule since the Machine has no jobs scheduled yet
@@ -49,7 +59,7 @@ public class Machine extends AbstractAggregateRoot<Machine> {
         // Registering the Machine Scheduled Event
         addDomainEvent(new
                 MachineScheduledEvent(
-                new MachineScheduledEventData(schedulingId.getSchedulingId(),
+                new MachineScheduledEventData(machineName.getMachineName(),
                         scheduleMachineCommand.getEmployeeName())
         ));
     }
@@ -87,6 +97,8 @@ public class Machine extends AbstractAggregateRoot<Machine> {
                 JobAddedToMachineEvent(
                 new JobAddedToMachineEventData(
                         this.schedulingId.getSchedulingId(),
+                        job.getJobNumber(),
+                        this.machineName.getMachineName(),
                         job.getSubmitDate(),
                         job.getMaterialNeeded(),
                         job.getMaterialAmount())));

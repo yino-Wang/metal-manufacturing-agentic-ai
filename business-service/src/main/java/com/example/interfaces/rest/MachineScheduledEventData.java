@@ -2,22 +2,26 @@ package com.example.interfaces.rest;
 
 public class MachineScheduledEventData {
 
-    private String schedulingId;
+    private String machineName;
     private String employeeName;
 
     public MachineScheduledEventData() {}
 
-    public MachineScheduledEventData(String schedulingId, String employeeName) {
-        this.schedulingId = schedulingId;
+    public MachineScheduledEventData(String machineName) {
+        this.machineName = machineName;
+    }
+
+    public MachineScheduledEventData(String machineName, String employeeName) {
+        this.machineName = machineName;
         this.employeeName = employeeName;
     }
 
-    public String getSchedulingId() {
-        return schedulingId;
+    public String getMachineName() {
+        return machineName;
     }
 
-    public void setSchedulingId(String schedulingId) {
-        this.schedulingId = schedulingId;
+    public void setMachineName(String machineName) {
+        this.machineName = machineName;
     }
 
     public String getEmployeeName() {
@@ -31,7 +35,7 @@ public class MachineScheduledEventData {
     @Override
     public String toString() {
         return "MachineScheduledEventData{" +
-                "schedulingId='" + schedulingId + '\'' +
+                "schedulingId='" + machineName + '\'' +
                 ", employeeName='" + employeeName + '\'' +
                 '}';
     }

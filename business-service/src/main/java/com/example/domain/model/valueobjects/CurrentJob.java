@@ -1,10 +1,8 @@
 package com.example.domain.model.valueobjects;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Embedded;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
+import jakarta.persistence.*;
 
+@Embeddable
 public class CurrentJob {
     @Enumerated(EnumType.STRING)
     @Column(name = "currentJobStatus")

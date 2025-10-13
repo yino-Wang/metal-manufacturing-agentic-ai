@@ -5,6 +5,8 @@ import java.time.LocalDate;
 public class AddJobToMachineCommand {
 
     private String schedulingId;
+    private String machineName;
+    private int jobNumber;
     private LocalDate submitDate;
     //private String startDate; //decided by scheduling algorithm
     //private String endDate;   //decided by scheduling algorithm
@@ -13,8 +15,10 @@ public class AddJobToMachineCommand {
 
     public AddJobToMachineCommand(){ }
 
-    public AddJobToMachineCommand(String schedulingId, LocalDate submitDate, String materialNeeded, int materialAmount){
-        this.schedulingId = schedulingId;
+    public AddJobToMachineCommand(String machineName, int jobNumber, LocalDate submitDate, String materialNeeded, int materialAmount){
+        //this.schedulingId = schedulingId;
+        this.machineName = machineName;
+        this.jobNumber = jobNumber;
         this.submitDate = submitDate;
         this.materialNeeded = materialNeeded;
         this.materialAmount = materialAmount;
@@ -24,6 +28,13 @@ public class AddJobToMachineCommand {
 
     public void setSchedulingId(String schedulingId) {
         this.schedulingId = schedulingId;
+    }
+
+    public String getMachineName() {
+        return machineName;
+    }
+    public void setMachineName(String machineName) {
+        this.machineName = machineName;
     }
 
     public LocalDate getSubmitDate() {
@@ -49,6 +60,12 @@ public class AddJobToMachineCommand {
         this.materialAmount = materialAmount;
     }
 
+    public int getJobNumber() {
+        return jobNumber;
+    }
+    public void setJobNumber(int jobNumber) {
+        this.jobNumber = jobNumber;
+    }
 
 
 }

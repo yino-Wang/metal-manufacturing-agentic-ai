@@ -6,6 +6,7 @@ import com.example.domain.model.commands.ScheduleMachineCommand;
 import com.example.domain.model.commands.AddJobToMachineCommand;
 import com.example.domain.model.valueobjects.Job;
 import com.example.domain.model.valueobjects.JobStatus;
+import com.example.domain.model.valueobjects.MachineName;
 import com.example.infrastructure.repositories.MachineRepository;
 import org.springframework.stereotype.Service;
 
@@ -47,14 +48,15 @@ public class MachineSchedulingCommandService {
      */
 
     public Job addJobToMachine(AddJobToMachineCommand addJobToMachineCommand) {
-        System.out.println("****Adding Job to Machine ****" + addJobToMachineCommand.getSchedulingId());
-        Machine machine = machineRepository.findBySchedulingId(
-                new SchedulingId(addJobToMachineCommand.getSchedulingId()));
+        System.out.println("Adding job: " + addJobToMachineCommand);
+        System.out.println("****Adding Job to Machine ****" + addJobToMachineCommand.getJobNumber());
+        Machine machine = machineRepository.findByMachineName(
+                new MachineName(addJobToMachineCommand.getMachineName()));
         machine.addJob(new
-                Job(addJobToMachineCommand.getSubmitDate(), addJobToMachineCommand.getMaterialNeeded(),
+                Job(addJobToMachineCommand.getJobNumber(), addJobToMachineCommand.getSubmitDate(), addJobToMachineCommand.getMaterialNeeded(),
                 addJobToMachineCommand.getMaterialAmount(), JobStatus.PENDING));
         machineRepository.save(machine);
-        return new Job(addJobToMachineCommand.getSubmitDate(), addJobToMachineCommand.getMaterialNeeded(),
+        return new Job(addJobToMachineCommand.getJobNumber(), addJobToMachineCommand.getSubmitDate(), addJobToMachineCommand.getMaterialNeeded(),
                 addJobToMachineCommand.getMaterialAmount(), JobStatus.PENDING);
     }
 }

@@ -38,7 +38,7 @@ public class StreamProcessor {
 
             // Transform the input stream: extract schedulingId and material amount.
             KTable<Windowed<String>, Integer> totalMaterials = inputStream.map((key, value) -> {
-                        String schedulingId = value.getJobAddedToMachineEventData().getSchedulingId();
+                        String schedulingId = value.getJobAddedToMachineEventData().getMachineName();
                         Integer materialAmount = value.getJobAddedToMachineEventData().getMaterialAmount();
                         return KeyValue.pair(schedulingId, materialAmount);
                     }).

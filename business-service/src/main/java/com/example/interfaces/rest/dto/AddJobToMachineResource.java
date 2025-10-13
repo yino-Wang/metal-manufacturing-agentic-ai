@@ -3,24 +3,28 @@ package com.example.interfaces.rest.dto;
 import java.time.LocalDate;
 
 public class AddJobToMachineResource {
-    private String schedulingId;
+    private int jobNumber;
+    private String machineName;
     private LocalDate submitDate;
     private String materialNeeded;
     private int materialAmount;
 
     public AddJobToMachineResource(){ }
 
-    public AddJobToMachineResource(String schedulingId, LocalDate submitDate, String materialNeeded, int materialAmount){
-        this.schedulingId = schedulingId;
+    public AddJobToMachineResource(int jobNumber, String machineId, LocalDate submitDate, String materialName, int materialAmount) {
+        this.jobNumber = jobNumber;
+        this.machineName = machineId;
         this.submitDate = submitDate;
-        this.materialNeeded = materialNeeded;
+        this.materialNeeded = materialName;
         this.materialAmount = materialAmount;
     }
 
-    public String getSchedulingId() {return schedulingId;}
+    public String getMachineName() {
+        return machineName;
+    }
 
-    public void setSchedulingId(String schedulingId) {
-        this.schedulingId = schedulingId;
+    public void setMachineName(String machineName) {
+        this.machineName = machineName;
     }
 
     public LocalDate getSubmitDate() {
@@ -45,4 +49,23 @@ public class AddJobToMachineResource {
     public void setMaterialAmount(int materialAmount) {
         this.materialAmount = materialAmount;
     }
+
+    public int getJobNumber() {
+        return jobNumber;
+    }
+    public void setJobNumber(int jobNumber) {
+        this.jobNumber = jobNumber;
+    }
+
+    @Override
+    public String toString() {
+        return "AddJobToMachineResource{" +
+                "machineName='" + machineName + '\'' +
+                ", jobNumber=" + jobNumber +
+                ", submitDate=" + submitDate +
+                ", materialNeeded='" + materialNeeded + '\'' +
+                ", materialAmount=" + materialAmount +
+                '}';
+    }
+
 }

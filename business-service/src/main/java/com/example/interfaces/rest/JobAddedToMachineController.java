@@ -34,7 +34,7 @@ public class JobAddedToMachineController {
     @PostMapping
     @ResponseBody
     public Job addJobToMachine(@RequestBody AddJobToMachineResource addJobToMachineResource) {
-        System.out.println("****Job Added to Machine ****" + addJobToMachineResource.getSchedulingId());
+        System.out.println("****Job Added to Machine ****" + addJobToMachineResource.getMachineName());
         Job job = machineSchedulingCommandService.addJobToMachine(
                 AddJobToMachineCommandDTOAssembler.toCommandFromDTO(addJobToMachineResource));
         return job;

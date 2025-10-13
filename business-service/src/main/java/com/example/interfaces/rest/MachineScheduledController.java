@@ -34,7 +34,7 @@ public class MachineScheduledController {
     @PostMapping
     @ResponseBody
     public SchedulingId scheduleMachine(@RequestBody ScheduleMachineResource scheduleMachineResource) {
-        System.out.printf("****Machine Scheduled ****%s%n", scheduleMachineResource.getSchedulingId());
+        System.out.printf("****Machine Scheduled ****%s%n", scheduleMachineResource.getMachineName());
         SchedulingId schedulingId = machineSchedulingCommandService.scheduleMachine(
                 ScheduleMachineCommandDTOAssembler.toCommandFromDTO(scheduleMachineResource));
         return schedulingId;

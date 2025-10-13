@@ -14,7 +14,8 @@ public class ScheduleMachineCommandDTOAssembler {
     public static ScheduleMachineCommand toCommandFromDTO(ScheduleMachineResource scheduleMachineResource){
 
         return new ScheduleMachineCommand(
-                scheduleMachineResource.getSchedulingId(),
+                //scheduleMachineResource.getSchedulingId(),
+                scheduleMachineResource.getMachineName(),
                 scheduleMachineResource.getEmployeeName());
     }
 }

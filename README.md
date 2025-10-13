@@ -106,7 +106,7 @@ curl -X POST -H "Content-Type:application/json" -d "{\"bookingId\":\"$bookingId\
 
 Book a cargo:
 ```shell
-curl -X POST -H "Content-Type:application/json" -d "{\"bookingAmount\":100,\"originLocation\":\"CNHKG\",\"destLocation\":\"USNYC\",\"destArrivalDeadline\":\"2019-09-28\"}" http://localhost:8787/cargobooking
+curl -X POST -H "Content-Type:application/json" -d "{\"schedulingId\":\"Machine1\",\"employeeName\":\"John Smith\"}" http://localhost:8787/machinescheduling
 ```
 Check all booked cargoes:
 ```shell
