@@ -49,79 +49,40 @@ curl -X GET -H "Content-Type:application/json" http://localhost:8787/streamquery
 ```
 
 ### Adding Jobs and Machine scheduling
-##### MacOS and Linux
-Book a cargo:
-```shell
-curl -X POST -H "Content-Type:application/json" -d "{\"bookingAmount\":100,\"originLocation\":\"CNHKG\",\"destLocation\":\"USNYC\",\"destArrivalDeadline\":\"2019-09-28\"}" http://localhost:8787/cargobooking
-```
-Check all booked cargoes:
-```shell
-curl -X GET -H "Content-Type:application/json" http://localhost:8787/cargobooking/findAllBookingIds
-```
-Assign a route (replace `<<bookingId>>` with the returned book key):
-```shell
-bookingId="<<bookingId>>"
-```
-```shell
-curl -X POST -H "Content-Type:application/json" -d "{\"bookingId\":\"$bookingId\"}" http://localhost:8787/cargorouting
-```
-Received at port:
-```shell
-curl -X POST -H "Content-Type:application/json" -d "{\"bookingId\":\"$bookingId\",\"unLocode\":\"CNHKG\",\"handlingType\":\"RECEIVE\",\"completionTime\":\"2019-08-23\",\"voyageNumber\":\"\"}" http://localhost:8786/cargohandling
-```
-Loaded onto carrier:
-```shell
-curl -X POST -H "Content-Type:application/json" -d "{\"bookingId\":\"$bookingId\",\"unLocode\":\"CNHKG\",\"handlingType\":\"LOAD\",\"completionTime\":\"2019-08-25\",\"voyageNumber\":\"0100S\"}" http://localhost:8786/cargohandling
-```
-Unloaded:
-```shell
-curl -X POST -H "Content-Type:application/json" -d "{\"bookingId\":\"$bookingId\",\"unLocode\":\"CNHGH\",\"handlingType\":\"UNLOAD\",\"completionTime\":\"2019-08-28\",\"voyageNumber\":\"0100S\"}" http://localhost:8786/cargohandling
-```
-Loaded onto next carrier:
-```shell
-curl -X POST -H "Content-Type:application/json" -d "{\"bookingId\":\"$bookingId\",\"unLocode\":\"CNHGH\",\"handlingType\":\"LOAD\",\"completionTime\":\"2019-09-01\",\"voyageNumber\":\"0101S\"}" http://localhost:8786/cargohandling
-```
-Unloaded:
-```shell
-curl -X POST -H "Content-Type:application/json" -d "{\"bookingId\":\"$bookingId\",\"unLocode\":\"JNTKO\",\"handlingType\":\"UNLOAD\",\"completionTime\":\"2019-09-10\",\"voyageNumber\":\"0101S\"}" http://localhost:8786/cargohandling
-```
-Loaded onto next carrier:
-```shell
-curl -X POST -H "Content-Type:application/json" -d "{\"bookingId\":\"$bookingId\",\"unLocode\":\"JNTKO\",\"handlingType\":\"LOAD\",\"completionTime\":\"2019-09-15\",\"voyageNumber\":\"0102S\"}" http://localhost:8786/cargohandling
-```
-Unloaded:
-```shell
-curl -X POST -H "Content-Type:application/json" -d "{\"bookingId\":\"$bookingId\",\"unLocode\":\"USNYC\",\"handlingType\":\"UNLOAD\",\"completionTime\":\"2019-09-25\",\"voyageNumber\":\"0102S\"}" http://localhost:8786/cargohandling
-```
-Customs:
-```shell
-curl -X POST -H "Content-Type:application/json" -d "{\"bookingId\":\"$bookingId\",\"unLocode\":\"USNYC\",\"handlingType\":\"CUSTOMS\",\"completionTime\":\"2019-09-26\",\"voyageNumber\":\"\"}" http://localhost:8786/cargohandling
-```
-Claimed:
-```shell
-curl -X POST -H "Content-Type:application/json" -d "{\"bookingId\":\"$bookingId\",\"unLocode\":\"USNYC\",\"handlingType\":\"CLAIM\",\"completionTime\":\"2019-09-28\",\"voyageNumber\":\"\"}" http://localhost:8786/cargohandling
-```
-
 #### Windows CMD
 
-Book a cargo:
+Schedule a machine:
 ```shell
 curl -X POST -H "Content-Type:application/json" -d "{\"schedulingId\":\"Machine1\",\"employeeName\":\"John Smith\"}" http://localhost:8787/machinescheduling
 ```
-Check all booked cargoes:
+Get all scheduledIds of all machines:
 ```shell
-curl -X GET -H "Content-Type:application/json" http://localhost:8787/cargobooking/findAllBookingIds
+curl -X GET -H "Content-Type:application/json" http://localhost:8787/machinescheduling/findAllSchedulingIds
 ```
-Assign a route (replace `<<bookingId>>` with the returned book key):
+Find a machine from a schedulingId - also shows all allocated jobs (replace `<<schedulingId>>` with the returned book key):
 ```shell
-set bookingId=<<bookingId>>
+set schedulingId=<<schedulingId>>
 ```
 ```shell
-curl -X POST -H "Content-Type:application/json" -d "{\"bookingId\":\"%bookingId%\"}" http://localhost:8787/cargorouting
+curl "http://localhost:8787/machinescheduling/findMachine?schedulingId=%schedulingId%"
 ```
-Received at port:
+Add a new job to a machine:
 ```shell
-curl -X POST -H "Content-Type:application/json" -d "{\"bookingId\":\"%bookingId%\",\"unLocode\":\"CNHKG\",\"handlingType\":\"RECEIVE\",\"completionTime\":\"2019-08-23\",\"voyageNumber\":\"\"}" http://localhost:8786/cargohandling
+curl -X POST -H "Content-Type:application/json" -d "{\"machineName\":\"machine1\",\"jobNumber\":1000,\"materialNeeded\":\"wood\",\"materialAmount\":23}" http://localhost:8787/addJobToMachine
+```
+Find all the jobs of a specific machine via schedulingId
+```shell
+set schedulingId=<<schedulingId>>
+```
+```shell
+curl "http://localhost:8787/addJobToMachine/findJobsBySchedulingId?schedulingId=%schedulingId%"
+```
+Find the first scheduled job of a specific machine via schedulingId
+```shell
+set schedulingId=<<schedulingId>>
+```
+```shell
+curl "http://localhost:8787/addJobToMachine/findCurrentJobBySchedulingId?schedulingId=%schedulingId%"
 ```
 Loaded onto carrier:
 ```shell

@@ -59,9 +59,9 @@ public class MachineSchedulingQueryService {
     /**
      * Find all jobs scheduled for a machine by its scheduling Id
      * @param schedulingId
-     * @return List<Job>
+     * @return Machine
      */
-    public List<Job> findAllJobsBySchedulingId(SchedulingId schedulingId) {
+    public Machine findAllJobsBySchedulingId(SchedulingId schedulingId) {
         return machineRepository.findAllJobsBySchedulingId(schedulingId);
     }
 

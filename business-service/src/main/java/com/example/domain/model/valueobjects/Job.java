@@ -9,7 +9,6 @@ import java.time.LocalDate;
 public class Job {
 
     @Column(name = "submitDate")
-    @NotNull
     private LocalDate submitDate;
     @Column(name = "startDate")
     private LocalDate startDate;
@@ -25,12 +24,18 @@ public class Job {
     @Enumerated(EnumType.STRING)
     @Column(name = "jobStatus")
     private JobStatus jobStatus;
+    @Column(name="jobTimeNeededDays")
+    private Integer jobTimeNeededDays;
+    @Column(name="priority")
+    private Integer priority;
 
     public Job() {
     }
 
-    public Job(int jobNumber, LocalDate submitDate, String materialNeeded, Integer materialAmount, JobStatus jobStatus) {
+    public Job(int jobNumber, int jobTimeNeededDays, int priority, LocalDate submitDate, String materialNeeded, Integer materialAmount, JobStatus jobStatus) {
         this.jobNumber = jobNumber;
+        this.jobTimeNeededDays = jobTimeNeededDays;
+        this.priority = priority;
         this.submitDate = submitDate;
         this.materialNeeded = materialNeeded;
         this.materialAmount = materialAmount;
@@ -87,5 +92,20 @@ public class Job {
     }
     public void setJobStatus(JobStatus jobStatus) {
         this.jobStatus = jobStatus;
+    }
+
+    @Override
+    public String toString() {
+        return "Job{" +
+                "submitDate=" + submitDate +
+                ", startDate=" + startDate +
+                ", jobNumber=" + jobNumber +
+                ", endDate=" + endDate +
+                ", materialNeeded='" + materialNeeded + '\'' +
+                ", materialAmount=" + materialAmount +
+                ", jobStatus=" + jobStatus +
+                ", jobTimeNeededDays=" + jobTimeNeededDays +
+                ", priority=" + priority +
+                '}';
     }
 }

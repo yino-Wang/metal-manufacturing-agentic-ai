@@ -20,6 +20,13 @@ public class Schedule {
     }
 
     public List<Job> getJobs() {
-        return Collections.unmodifiableList(jobs);
+        return jobs;
+    }
+
+    @Override
+    public String toString() {
+        return "Schedule{" +
+                "jobs=" + jobs +
+                '}';
     }
 }

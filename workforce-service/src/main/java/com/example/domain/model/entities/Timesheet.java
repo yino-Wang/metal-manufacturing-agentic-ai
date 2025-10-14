@@ -1,5 +1,6 @@
-package com.example.domain.model;
+package com.example.domain.model.entities;
 
+import com.example.domain.model.aggregates.Employee;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -15,7 +16,7 @@ public class Timesheet {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long timesheetId;
 
-    @Column(name = "employee_id", nullable = false)
+    @Column(name = "employee_id", nullable = false, insertable = false, updatable = false)
     private Long employeeId;
 
     @Column(name = "work_date", nullable = false)
@@ -27,6 +28,9 @@ public class Timesheet {
 
     @Column(name = "clock_out_time")
     private LocalDateTime ClockOutTime;
+
+    @Column(name = "job_id")
+    private Long jobId;
 
     @Column(name = "hours_worked")
     private Float hoursWorked = ClockOutTime != null && ClockInTime != null ?
@@ -46,13 +50,13 @@ public class Timesheet {
     @JoinColumn(name = "payslip_id")
     private Payslip payslip;
 
-    @Column(name = "payslip_id")
+    @Column(name = "payslip_id", insertable = false, updatable = false)
     private Long payslipId;
 
     // 构造方法、getter、setter
     public Timesheet() {}
 
-    public Timesheet(Long timesheetId, Long employeeId, Date workDate, LocalDateTime clockInTime, LocalDateTime clockOutTime, Float salaryPaid) {
+    public Timesheet(Long timesheetId, Long employeeId, Date workDate, LocalDateTime clockInTime, LocalDateTime clockOutTime, Float salaryPaid, Long jobId, String status) {
         this.timesheetId = timesheetId;
         this.employeeId = employeeId;
         this.workDate = workDate;
@@ -61,18 +65,25 @@ public class Timesheet {
         this.hoursWorked = clockOutTime != null && clockInTime != null ?
             (float) java.time.Duration.between(clockInTime, clockOutTime).toHours() : 0;
         this.salaryPaid = salaryPaid;
+        this.jobId = jobId;
+        this.status = status;
     }
 
     // ...getter和setter方法...
     public Long getTimesheetId() {
+
         return timesheetId;
     }
-    public void setTimesheetId(Long id) {
+
+    public void setTimesheetId(Long id)
+    {
         this.timesheetId = timesheetId;
     }
     public Long getEmployeeId() {
+
         return employeeId;
     }
+
     public void setEmployeeId(Long employeeId) {
         this.employeeId = employeeId;}
 
@@ -107,16 +118,36 @@ public class Timesheet {
         ClockOutTime = clockOutTime;}
 
     public String getStatus() {
+
         return status;
     }
+
     public void setStatus(String status) {
+
         this.status = status;
     }
 
-    public Employee getEmployee() { return employee; }
-    public void setEmployee(Employee employee) { this.employee = employee; }
-    public Payslip getPayslip() { return payslip; }
-    public void setPayslip(Payslip payslip) { this.payslip = payslip; }
-    public Long getPayslipId() { return payslipId; }
-    public void setPayslipId(Long payslipId) { this.payslipId = payslipId; }
+    public Employee getEmployee() {
+        return employee; }
+
+    public void setEmployee(Employee employee) {
+        this.employee = employee; }
+
+    public Payslip getPayslip() {
+        return payslip; }
+
+    public void setPayslip(Payslip payslip) {
+        this.payslip = payslip; }
+
+    public Long getPayslipId() {
+        return payslipId; }
+
+    public void setPayslipId(Long payslipId) {
+        this.payslipId = payslipId;
+    }
+    public Long getJobId() {
+        return jobId; }
+
+    public void setJobId(Long jobId) {
+        this.jobId = jobId;}
 }

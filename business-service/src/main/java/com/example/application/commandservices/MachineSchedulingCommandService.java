@@ -10,6 +10,7 @@ import com.example.domain.model.valueobjects.MachineName;
 import com.example.infrastructure.repositories.MachineRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.UUID;
 
 @Service
@@ -52,11 +53,14 @@ public class MachineSchedulingCommandService {
         System.out.println("****Adding Job to Machine ****" + addJobToMachineCommand.getJobNumber());
         Machine machine = machineRepository.findByMachineName(
                 new MachineName(addJobToMachineCommand.getMachineName()));
+
         machine.addJob(new
-                Job(addJobToMachineCommand.getJobNumber(), addJobToMachineCommand.getSubmitDate(), addJobToMachineCommand.getMaterialNeeded(),
+                Job(addJobToMachineCommand.getJobNumber(), addJobToMachineCommand.getJobTimeNeededDays(), addJobToMachineCommand.getPriority(),
+                addJobToMachineCommand.getSubmitDate(), addJobToMachineCommand.getMaterialNeeded(),
                 addJobToMachineCommand.getMaterialAmount(), JobStatus.PENDING));
         machineRepository.save(machine);
-        return new Job(addJobToMachineCommand.getJobNumber(), addJobToMachineCommand.getSubmitDate(), addJobToMachineCommand.getMaterialNeeded(),
+        return new Job(addJobToMachineCommand.getJobNumber(), addJobToMachineCommand.getJobTimeNeededDays(), addJobToMachineCommand.getPriority(),
+                addJobToMachineCommand.getSubmitDate(), addJobToMachineCommand.getMaterialNeeded(),
                 addJobToMachineCommand.getMaterialAmount(), JobStatus.PENDING);
     }
 }

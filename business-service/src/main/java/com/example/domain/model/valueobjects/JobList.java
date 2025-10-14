@@ -25,4 +25,12 @@ public class JobList {
         return jobs;
     }
 
+    @Override
+    public String toString() {
+        StringBuilder jobToString = new StringBuilder("JobList: \n");
+        for (Job j : jobs) {
+            jobToString.append(j.toString()).append("\n");
+        }
+        return jobToString.toString();
+    }
 }

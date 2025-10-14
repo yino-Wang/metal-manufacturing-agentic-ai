@@ -5,11 +5,20 @@ import java.time.LocalDate;
 public class AddJobToMachineResource {
     private int jobNumber;
     private String machineName;
+    private int jobTimeNeededDays;
     private LocalDate submitDate;
     private String materialNeeded;
     private int materialAmount;
 
     public AddJobToMachineResource(){ }
+
+    public AddJobToMachineResource(int jobNumber, String machineId, String materialName, int materialAmount) {
+        this.jobNumber = jobNumber;
+        this.machineName = machineId;
+        this.submitDate = LocalDate.now();
+        this.materialNeeded = materialName;
+        this.materialAmount = materialAmount;
+    }
 
     public AddJobToMachineResource(int jobNumber, String machineId, LocalDate submitDate, String materialName, int materialAmount) {
         this.jobNumber = jobNumber;

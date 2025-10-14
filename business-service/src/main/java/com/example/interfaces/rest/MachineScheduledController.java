@@ -47,7 +47,7 @@ public class MachineScheduledController {
      */
     @GetMapping("/findMachine")
     @ResponseBody
-    public Machine findBySchedulingId(@RequestParam("bookingId") String schedulingId){
+    public Machine findBySchedulingId(@RequestParam("schedulingId") String schedulingId){
         System.out.println("****Machine SchedulingID ****"+schedulingId);
         return machineSchedulingQueryService.find(new SchedulingId(schedulingId));
     }
