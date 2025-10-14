@@ -1,6 +1,6 @@
 package com.example;
 
-import com.example.infrastructure.agentic.ModelLogger;
+//import com.example.infrastructure.agentic.ModelLogger;
 import com.example.interfaces.rest.dto.AddJobToMachineResource;
 import com.example.interfaces.rest.dto.ScheduleMachineResource;
 import com.example.interfaces.rest.dto.SchedulingIdDto;
@@ -69,6 +69,6 @@ public class Main {
         }
     }
 
-    @Bean
-    ChatModelListener chatModelLogger() {return new ModelLogger();}
+//    @Bean
+//    ChatModelListener chatModelLogger() {return new ModelLogger();}
 }

@@ -1,5 +1,5 @@
-package com.example.application.agentService.dto;
-
-public enum State {
-    CHAT, RAG
-}
+//package com.example.application.agentService.dto;
+//
+//public enum State {
+//    CHAT, RAG
+//}
