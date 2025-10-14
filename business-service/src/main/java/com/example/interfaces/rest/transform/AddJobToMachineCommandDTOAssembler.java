@@ -14,6 +14,8 @@ public class AddJobToMachineCommandDTOAssembler {
         return new AddJobToMachineCommand(
                 //addJobToMachineResource.getSchedulingId(),
                 addJobToMachineResource.getMachineName(),
+                addJobToMachineResource.getJobTimeNeededDays(),
+                addJobToMachineResource.getPriority(),
                 addJobToMachineResource.getJobNumber(),
                 addJobToMachineResource.getSubmitDate(),
                 addJobToMachineResource.getMaterialNeeded(),
