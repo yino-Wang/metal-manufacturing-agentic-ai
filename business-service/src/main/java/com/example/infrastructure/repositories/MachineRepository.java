@@ -4,7 +4,6 @@ import com.example.domain.model.aggreates.Machine;
 import com.example.domain.model.aggreates.SchedulingId;
 import com.example.domain.model.valueobjects.Job;
 import com.example.domain.model.valueobjects.MachineName;
-import org.springframework.boot.json.JacksonJsonParser;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

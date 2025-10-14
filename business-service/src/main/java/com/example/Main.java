@@ -1,9 +1,12 @@
 package com.example;
 
+import com.example.infrastructure.agentic.ModelLogger;
 import com.example.interfaces.rest.dto.AddJobToMachineResource;
 import com.example.interfaces.rest.dto.ScheduleMachineResource;
 import com.example.interfaces.rest.dto.SchedulingIdDto;
+import dev.langchain4j.model.chat.listener.ChatModelListener;
 import org.springframework.boot.autoconfigure.SpringBootApplication;  //ADD THIS
+import org.springframework.context.annotation.Bean;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDate;
@@ -65,4 +68,7 @@ public class Main {
             Thread.sleep(1000);
         }
     }
+
+    @Bean
+    ChatModelListener chatModelLogger() {return new ModelLogger();}
 }

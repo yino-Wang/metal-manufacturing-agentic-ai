@@ -10,7 +10,6 @@ import com.example.domain.model.valueobjects.MachineName;
 import com.example.infrastructure.repositories.MachineRepository;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.UUID;
 
 @Service

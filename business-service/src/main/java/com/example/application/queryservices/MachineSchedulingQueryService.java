@@ -4,7 +4,6 @@ import com.example.domain.model.aggreates.Machine;
 import com.example.domain.model.aggreates.SchedulingId;
 import com.example.domain.model.valueobjects.Job;
 import com.example.infrastructure.repositories.MachineRepository;
-import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
