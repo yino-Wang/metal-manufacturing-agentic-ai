@@ -5,6 +5,7 @@ import java.time.LocalDate;
 public class AddJobToMachineResource {
     private int jobNumber;
     private String machineName;
+    private int jobTimeNeededDays;
     private LocalDate submitDate;
     private String materialNeeded;
     private int materialAmount;
