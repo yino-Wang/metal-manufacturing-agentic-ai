@@ -21,7 +21,7 @@ public class LowStockEvent {
     public int getQuantity() { return quantity; }
 
     public String getMessage() {
-        return "⚠ LOW STOCK ALERT: " + name +
+        return "LOW STOCK ALERT: " + name +
                 " has only " + quantity + " units left (below 500).";
     }
 }
