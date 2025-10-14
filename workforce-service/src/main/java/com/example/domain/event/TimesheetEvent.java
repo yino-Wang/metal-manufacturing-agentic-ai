@@ -1,71 +1,87 @@
 package com.example.domain.event;
-import com.example.domain.model.Timesheet;
-import com.example.service.RecordTimesheetService;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
 
+import com.example.domain.model.entities.Timesheet;
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
+/**
+ * Cross-service event message body: Timesheet event
+ * Used as Kafka message body for microservice communication 
+ * and persisted for event sourcing/audit trail
+ */
 @Entity
+@Table(name = "timesheet_event")
 public class TimesheetEvent {
     @Id
-    @GeneratedValue
-    private Long id;
-    @Column
-    private Long timesheetId;
-    @Column
-    private String eventName; // e.g., "CREATED", "UPDATED", "DELETED"
-    @Column
-    private String timestamp;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long eventId;
 
-    // Constructors, getters, and setters
-    public TimesheetEvent() {}
-    public TimesheetEvent(Long timesheetId, String eventName, String timestamp) {
-        this.timesheetId = timesheetId;
-        this.eventName = eventName;
-        this.timestamp = timestamp;
+    @ManyToOne
+    @JoinColumn(name = "timesheet_id", referencedColumnName = "timesheetId")
+    private Timesheet timesheet;
+
+    @Column(name = "event_type")
+    private String eventType; // CREATE, UPDATE, APPROVE, REJECT, etc.
+
+    @Column(name = "event_timestamp")
+    private LocalDateTime eventTimestamp;
+
+    @Column(name = "event_data", length = 1000)
+    private String eventData; // JSON string for additional event details
+
+    // Constructors
+    public TimesheetEvent() {
+        this.eventTimestamp = LocalDateTime.now();
     }
 
-    public TimesheetEvent(RecordTimesheetService recordTimesheetService, Timesheet timesheet) {
-        this.timesheetId = timesheet.getId();
-        this.eventName = "";
-        this.timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+    public TimesheetEvent(Timesheet timesheet) {
+        this();
+        this.timesheet = timesheet;
     }
 
-
-    public Long getId() {
-        return id;
+    public TimesheetEvent(Timesheet timesheet, String eventType) {
+        this(timesheet);
+        this.eventType = eventType;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    // Getters and Setters
+    public Long getEventId() {
+        return eventId;
     }
 
-    public Long getTimesheetId() {
-        return timesheetId;
+    public void setEventId(Long eventId) {
+        this.eventId = eventId;
     }
 
-    public void setTimesheetId(Long timesheetId) {
-        this.timesheetId = timesheetId;
+    public Timesheet getTimesheet() {
+        return timesheet;
     }
 
-    public String getEventName() {
-        return eventName;
+    public void setTimesheet(Timesheet timesheet) {
+        this.timesheet = timesheet;
     }
 
-    public void setEventName(String eventType) {
-        this.eventName = eventType;
+    public String getEventType() {
+        return eventType;
     }
 
-    public String getTimestamp() {
-        return timestamp;
+    public void setEventType(String eventType) {
+        this.eventType = eventType;
     }
 
-    public void setTimestamp(String timestamp) {
-        this.timestamp = timestamp;
+    public LocalDateTime getEventTimestamp() {
+        return eventTimestamp;
     }
 
+    public void setEventTimestamp(LocalDateTime eventTimestamp) {
+        this.eventTimestamp = eventTimestamp;
+    }
+
+    public String getEventData() {
+        return eventData;
+    }
+
+    public void setEventData(String eventData) {
+        this.eventData = eventData;
+    }
 }
