@@ -4,13 +4,11 @@ import com.example.application.commandservices.MachineSchedulingCommandService;
 import com.example.application.queryservices.MachineSchedulingQueryService;
 import com.example.domain.model.aggreates.Machine;
 import com.example.domain.model.aggreates.SchedulingId;
-import com.example.domain.model.valueobjects.Job;
+import com.example.domain.model.entities.Job;
 import com.example.interfaces.rest.dto.AddJobToMachineResource;
 import com.example.interfaces.rest.transform.AddJobToMachineCommandDTOAssembler;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @Controller
 @RequestMapping("/addJobToMachine")

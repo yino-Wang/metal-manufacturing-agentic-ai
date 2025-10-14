@@ -4,7 +4,7 @@
 //import org.springframework.web.client.RestTemplate;
 //import org.springframework.web.util.UriComponentsBuilder;
 //import com.example.domain.model.aggreates.Machine;
-//import com.example.domain.model.valueobjects.Job;
+//import com.example.domain.model.entities.Job;
 //
 //import java.util.ArrayList;
 //import java.util.List;

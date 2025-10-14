@@ -4,13 +4,12 @@ import com.example.domain.model.aggreates.Machine;
 import com.example.domain.model.aggreates.SchedulingId;
 import com.example.domain.model.commands.ScheduleMachineCommand;
 import com.example.domain.model.commands.AddJobToMachineCommand;
-import com.example.domain.model.valueobjects.Job;
+import com.example.domain.model.entities.Job;
 import com.example.domain.model.valueobjects.JobStatus;
 import com.example.domain.model.valueobjects.MachineName;
 import com.example.infrastructure.repositories.MachineRepository;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.UUID;
 
 @Service
