@@ -1,6 +1,6 @@
 package com.example.infrastructure.repository;
 
-import com.example.domain.model.IndividualSchedule;
+import com.example.domain.model.entities.IndividualSchedule;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

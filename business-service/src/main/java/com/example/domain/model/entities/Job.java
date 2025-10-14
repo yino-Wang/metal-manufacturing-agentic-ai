@@ -24,12 +24,18 @@ public class Job {
     @Enumerated(EnumType.STRING)
     @Column(name = "jobStatus")
     private JobStatus jobStatus;
+    @Column(name="jobTimeNeededDays")
+    private Integer jobTimeNeededDays;
+    @Column(name="priority")
+    private Integer priority;
 
     public Job() {
     }
 
-    public Job(int jobNumber, LocalDate submitDate, String materialNeeded, Integer materialAmount, JobStatus jobStatus) {
+    public Job(int jobNumber, int jobTimeNeededDays, int priority, LocalDate submitDate, String materialNeeded, Integer materialAmount, JobStatus jobStatus) {
         this.jobNumber = jobNumber;
+        this.jobTimeNeededDays = jobTimeNeededDays;
+        this.priority = priority;
         this.submitDate = submitDate;
         this.materialNeeded = materialNeeded;
         this.materialAmount = materialAmount;
@@ -57,6 +63,23 @@ public class Job {
     public void setSubmitDate(LocalDate submitDate) {
         this.submitDate = submitDate;
     }
+
+    public Integer getJobTimeNeededDays() {
+        return jobTimeNeededDays;
+    }
+
+    public void setJobTimeNeededDays(Integer jobTimeNeededDays) {
+        this.jobTimeNeededDays = jobTimeNeededDays;
+    }
+
+    public Integer getPriority() {
+        return priority;
+    }
+
+    public void setPriority(Integer priority) {
+        this.priority = priority;
+    }
+
     public LocalDate getStartDate() {
         return startDate;
     }
@@ -88,6 +111,8 @@ public class Job {
         this.jobStatus = jobStatus;
     }
 
+
+
     @Override
     public String toString() {
         return "Job{" +
@@ -98,6 +123,8 @@ public class Job {
                 ", materialNeeded='" + materialNeeded + '\'' +
                 ", materialAmount=" + materialAmount +
                 ", jobStatus=" + jobStatus +
+                ", jobTimeNeededDays=" + jobTimeNeededDays +
+                ", priority=" + priority +
                 '}';
     }
 }

@@ -98,6 +98,8 @@ public class Machine extends AbstractAggregateRoot<Machine> {
                 new JobAddedToMachineEventData(
                         this.schedulingId.getSchedulingId(),
                         job.getJobNumber(),
+                        job.getJobTimeNeededDays(),
+                        job.getPriority(),
                         this.machineName.getMachineName(),
                         job.getSubmitDate(),
                         job.getMaterialNeeded(),

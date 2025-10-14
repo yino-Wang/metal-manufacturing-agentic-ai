@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Scheduling Agent</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            font-size: 1.5em;
+        }
+
+        #conversation-container {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            padding: 10px;
+        }
+
+        #conversation {
+            width: 100%;
+            max-width: 600px;
+            background-color: white;
+            border-radius: 10px;
+            padding: 15px;
+            overflow-y: auto;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        .message {
+            max-width: 70%;
+            margin: 5px 0;
+            padding: 10px 15px;
+            border-radius: 20px;
+            clear: both;
+            word-wrap: break-word;
+        }
+
+        .user-message {
+            background-color: #DCF8C6;
+            float: right;
+            text-align: right;
+        }
+
+        .agent-message {
+            background-color: #E8E8E8;
+            float: left;
+            text-align: left;
+        }
+
+        #input-area {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 10px;
+            background-color: #f1f1f1;
+            border-top: 1px solid #ccc;
+        }
+
+        #message {
+            flex: 1;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            resize: none;
+            margin-right: 10px;
+        }
+
+        #sendBtn {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #sendBtn:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+<header>Scheduling Agent</header>
+
+<div id="conversation-container">
+    <div id="conversation"></div>
+</div>
+
+<div id="input-area">
+    <textarea id="message" placeholder="Type your message..." rows="2"></textarea>
+    <button id="sendBtn" onclick="sendMessage()">Send</button>
+</div>
+
+<script>
+    let socket;
+    const conversation = document.getElementById('conversation');
+    const messageInput = document.getElementById('message');
+
+    // Generate random 10-character alphanumeric sessionId
+    const sessionId = Array.from({ length: 10 }, () =>
+        Math.random().toString(36).charAt(2)
+    ).join('');
+
+    // Show welcome message with sessionId
+    appendMessage(`Welcome! Your session ID is: ${sessionId}`, 'agent-message');
+
+    function connect() {
+        socket = new WebSocket("ws://localhost:8080/chat");
+
+        socket.onopen = () => console.log("[open] Connection established");
+
+        socket.onmessage = (event) => {
+            appendMessage(event.data, 'agent-message');
+        };
+
+        socket.onclose = (event) => {
+            if (event.wasClean) {
+                console.log(`[close] Connection closed cleanly, code=${event.code} reason=${event.reason}`);
+            } else {
+                console.log('[close] Connection died');
+            }
+        };
+
+        socket.onerror = (error) => console.log(`[error] ${error.message}`);
+    }
+
+    function appendMessage(text, type) {
+        const message = document.createElement('div');
+        message.className = `message ${type}`;
+        message.textContent = text;
+        conversation.appendChild(message);
+        conversation.scrollTop = conversation.scrollHeight;
+    }
+
+    function sendMessage() {
+        const text = messageInput.value.trim();
+        if (text) {
+            appendMessage(text, 'user-message');
+            socket.send(`${sessionId}:${text}`);
+            messageInput.value = '';
+            messageInput.focus();
+        }
+    }
+
+    // Add Shift+Enter shortcut to send
+    messageInput.addEventListener('keydown', function(event) {
+        if (event.key === 'Enter' && event.shiftKey) {
+            event.preventDefault();
+            sendMessage();
+        }
+    });
+
+    connect();
+</script>
+</body>
+</html>
