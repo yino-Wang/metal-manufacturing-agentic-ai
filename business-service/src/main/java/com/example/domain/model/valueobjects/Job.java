@@ -63,6 +63,23 @@ public class Job {
     public void setSubmitDate(LocalDate submitDate) {
         this.submitDate = submitDate;
     }
+
+    public Integer getJobTimeNeededDays() {
+        return jobTimeNeededDays;
+    }
+
+    public void setJobTimeNeededDays(Integer jobTimeNeededDays) {
+        this.jobTimeNeededDays = jobTimeNeededDays;
+    }
+
+    public Integer getPriority() {
+        return priority;
+    }
+
+    public void setPriority(Integer priority) {
+        this.priority = priority;
+    }
+
     public LocalDate getStartDate() {
         return startDate;
     }
@@ -93,6 +110,8 @@ public class Job {
     public void setJobStatus(JobStatus jobStatus) {
         this.jobStatus = jobStatus;
     }
+
+
 
     @Override
     public String toString() {

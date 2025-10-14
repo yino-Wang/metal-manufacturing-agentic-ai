@@ -6,22 +6,27 @@ public class AddJobToMachineResource {
     private int jobNumber;
     private String machineName;
     private int jobTimeNeededDays;
+    private int priority;
     private LocalDate submitDate;
     private String materialNeeded;
     private int materialAmount;
 
     public AddJobToMachineResource(){ }
 
-    public AddJobToMachineResource(int jobNumber, String machineId, String materialName, int materialAmount) {
+    public AddJobToMachineResource(int jobNumber, int jobTimeNeededDays, int priority, String machineId, String materialName, int materialAmount) {
         this.jobNumber = jobNumber;
+        this.jobTimeNeededDays = jobTimeNeededDays;
+        this.priority = priority;
         this.machineName = machineId;
         this.submitDate = LocalDate.now();
         this.materialNeeded = materialName;
         this.materialAmount = materialAmount;
     }
 
-    public AddJobToMachineResource(int jobNumber, String machineId, LocalDate submitDate, String materialName, int materialAmount) {
+    public AddJobToMachineResource(int jobNumber, int jobTimeNeededDays, int priority, String machineId, LocalDate submitDate, String materialName, int materialAmount) {
         this.jobNumber = jobNumber;
+        this.jobTimeNeededDays = jobTimeNeededDays;
+        this.priority = priority;
         this.machineName = machineId;
         this.submitDate = submitDate;
         this.materialNeeded = materialName;
@@ -66,15 +71,32 @@ public class AddJobToMachineResource {
         this.jobNumber = jobNumber;
     }
 
+    public int getJobTimeNeededDays() {
+        return jobTimeNeededDays;
+    }
+
+    public void setJobTimeNeededDays(int jobTimeNeededDays) {
+        this.jobTimeNeededDays = jobTimeNeededDays;
+    }
+
+    public int getPriority() {
+        return priority;
+    }
+
+    public void setPriority(int priority) {
+        this.priority = priority;
+    }
+
     @Override
     public String toString() {
         return "AddJobToMachineResource{" +
-                "machineName='" + machineName + '\'' +
-                ", jobNumber=" + jobNumber +
+                "jobNumber=" + jobNumber +
+                ", machineName='" + machineName + '\'' +
+                ", jobTimeNeededDays=" + jobTimeNeededDays +
+                ", priority=" + priority +
                 ", submitDate=" + submitDate +
                 ", materialNeeded='" + materialNeeded + '\'' +
                 ", materialAmount=" + materialAmount +
                 '}';
     }
-
 }

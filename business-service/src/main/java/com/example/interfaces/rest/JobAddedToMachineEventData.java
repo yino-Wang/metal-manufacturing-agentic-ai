@@ -5,6 +5,8 @@ import java.time.LocalDate;
 public class JobAddedToMachineEventData {
     private String schedulingId;
     private int jobNumber;
+    private int jobTimeNeededDays;
+    private int priority;
     private String machineName;
     private LocalDate submitDate;
     private String materialNeeded;
@@ -16,9 +18,11 @@ public class JobAddedToMachineEventData {
         this.schedulingId = schedulingId;
     }
 
-    public JobAddedToMachineEventData(String schedulingId, int jobNumber, String machineName, LocalDate submitDate, String materialNeeded, int materialAmount) {
+    public JobAddedToMachineEventData(String schedulingId, int jobNumber, int jobTimeNeededDays, int priority, String machineName, LocalDate submitDate, String materialNeeded, int materialAmount) {
         this.schedulingId = schedulingId;
         this.jobNumber = jobNumber;
+        this.jobTimeNeededDays = jobTimeNeededDays;
+        this.priority = priority;
         this.machineName = machineName;
         this.submitDate = submitDate;
         this.materialNeeded = materialNeeded;
@@ -71,16 +75,35 @@ public class JobAddedToMachineEventData {
         this.materialAmount = materialAmount;
     }
 
+    public int getJobTimeNeededDays() {
+        return jobTimeNeededDays;
+    }
+
+    public void setJobTimeNeededDays(int jobTimeNeededDays) {
+        this.jobTimeNeededDays = jobTimeNeededDays;
+    }
+
+    public int getPriority() {
+        return priority;
+    }
+
+    public void setPriority(int priority) {
+        this.priority = priority;
+    }
+
     @Override
     public String toString() {
         return "JobAddedToMachineEventData{" +
                 "schedulingId='" + schedulingId + '\'' +
+                ", jobNumber=" + jobNumber +
+                ", jobTimeNeededDays=" + jobTimeNeededDays +
+                ", priority=" + priority +
+                ", machineName='" + machineName + '\'' +
                 ", submitDate=" + submitDate +
                 ", materialNeeded='" + materialNeeded + '\'' +
                 ", materialAmount=" + materialAmount +
                 '}';
     }
-
 }
 
 
