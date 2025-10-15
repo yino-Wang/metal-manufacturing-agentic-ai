@@ -146,7 +146,7 @@ You should see three topics. You can read data in the `cargobookings` topic:
 ```
 (Windows)
 ```shell
-c:\kafka\bin\windows\kafka-console-consumer.bat --bootstrap-server localhost:9092 --topic cargobookings --from-beginning
+c:\kafka\bin\windows\kafka-console-consumer.bat --bootstrap-server localhost:9092 --topic jobAddedToMachines --from-beginning
 ```
 
 
