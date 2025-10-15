@@ -42,6 +42,7 @@ public class InteractiveQuery {
      * @return A list of {@link MaterialAmountByScheduleId} objects, each containing a city and the total booking amount for that city in the last window.
      */
     public List<MaterialAmountByScheduleId> getWindowedMaterialAmountByScheduleId() {
+        System.out.println("Start get windowned material amount by schedule ");
         List<MaterialAmountByScheduleId> windowedScheduledMaterialAmounts = new ArrayList<>();
         long now = Instant.now().toEpochMilli();
         // Calculate the time range for the most recently *completed* window.
@@ -53,9 +54,9 @@ public class InteractiveQuery {
         Instant timeTo = timeFrom.plus(Duration.ofMillis(WINDOW_SIZE_MS));
 
         // Query the state store for the calculated time window.
-        try (KeyValueIterator<Windowed<String>, Integer> all = getWindowedSchedulesKSStore().fetchAll(timeFrom, timeTo)) {
+        try (KeyValueIterator<Windowed<String>, Long> all = getWindowedSchedulesKSStore().fetchAll(timeFrom, timeTo)) {
             while (all.hasNext()) {
-                KeyValue<Windowed<String>, Integer> ks = all.next();
+                KeyValue<Windowed<String>, Long> ks = all.next();
                 MaterialAmountByScheduleId amountPerSchedule = new MaterialAmountByScheduleId();
                 // The city name is decorated with the window start and end times for clarity.
                 amountPerSchedule.setScheduleId(ks.key.key() + " (window: " + ks.key.window().startTime() + " - " + ks.key.window().endTime() + ")");
@@ -63,6 +64,7 @@ public class InteractiveQuery {
                 windowedScheduledMaterialAmounts.add(amountPerSchedule);
             }
         }
+        System.out.println(" about to return getWindowedMaterialAmountByScheduleId" );
         return windowedScheduledMaterialAmounts;
     }
 
@@ -72,7 +74,8 @@ public class InteractiveQuery {
      *
      * @return A {@link ReadOnlyWindowStore} that can be queried for aggregated booking data.
      */
-    private ReadOnlyWindowStore<String, Integer> getWindowedSchedulesKSStore() {
+    private ReadOnlyWindowStore<String, Long> getWindowedSchedulesKSStore() {
+        System.out.println(" start getWindowedScheduleKSStore");
         return this.interactiveQueryService.getQueryableStore(WINDOWSTORE_NAME,
                 QueryableStoreTypes.windowStore());
     }

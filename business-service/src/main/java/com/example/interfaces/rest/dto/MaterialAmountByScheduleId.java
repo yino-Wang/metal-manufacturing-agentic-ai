@@ -3,11 +3,11 @@ package com.example.interfaces.rest.dto;
 public class MaterialAmountByScheduleId {
 
     private String scheduleId;
-    private int materialAmount;
+    private Long materialAmount;
 
     public MaterialAmountByScheduleId() {}
 
-    public MaterialAmountByScheduleId(String scheduleId, int materialAmount) {
+    public MaterialAmountByScheduleId(String scheduleId, Long materialAmount) {
         this.scheduleId = scheduleId;
         this.materialAmount = materialAmount;
     }
@@ -20,11 +20,13 @@ public class MaterialAmountByScheduleId {
         this.scheduleId = scheduleId;
     }
 
-    public int getMaterialAmount() {
+    public Long getMaterialAmount() {
+        System.out.println("get material amount ");
         return materialAmount;
     }
 
-    public void setMaterialAmount(int materialAmount) {
+    public void setMaterialAmount(Long materialAmount) {
+        System.out.println("set material amount ");
         this.materialAmount = materialAmount;
     }
 }

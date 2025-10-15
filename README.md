@@ -45,7 +45,7 @@ will continuously assign random jobs to random machines.
 
 The following REST API is provided to query the results:
 ```shell
-curl -X GET -H "Content-Type:application/json" http://localhost:8787/streamquery/windowedSchedulesByAmount
+curl -X GET -H "Content-Type:application/json" http://localhost:8787/queries/windowedSchedulesByAmount
 ```
 
 ### Adding Jobs and Machine scheduling
