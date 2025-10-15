@@ -3,14 +3,14 @@ package com.example.interfaces.rest.dto;
 
 // attributes required to schedule a machine from a user
 public class ScheduleMachineResource {
-    private String machineName;
+    private String machineId;
     private String employeeName;
 
     public ScheduleMachineResource() {}
 
-    public ScheduleMachineResource(String machineName, String employeeName) {
+    public ScheduleMachineResource(String machineId, String employeeName) {
         //this.schedulingId = schedulingId;
-        this.machineName = machineName;
+        this.machineId = machineId;
         this.employeeName = employeeName;
     }
 
@@ -27,10 +27,10 @@ public class ScheduleMachineResource {
         this.employeeName = employeeName;
     }
 
-    public String getMachineName() {
-        return machineName;
+    public String getMachineId() {
+        return machineId;
     }
-    public void setMacineName(String machineName) {
-        this.machineName = machineName;
+    public void setMachineId(String machineId) {
+        this.machineId = machineId;
     }
 }

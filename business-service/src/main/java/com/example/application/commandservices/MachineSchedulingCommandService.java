@@ -1,7 +1,7 @@
 package com.example.application.commandservices;
 
 import com.example.domain.model.aggreates.Machine;
-import com.example.domain.model.aggreates.SchedulingId;
+import com.example.domain.model.aggreates.MachineId;
 import com.example.domain.model.commands.ScheduleMachineCommand;
 import com.example.domain.model.commands.AddJobToMachineCommand;
 import com.example.domain.model.valueobjects.Job;
@@ -31,15 +31,15 @@ public class MachineSchedulingCommandService {
      * @return scheudlingId of the machine
      */
 
-    public SchedulingId scheduleMachine(ScheduleMachineCommand scheduleMachineCommand) {
+    public MachineId scheduleMachine(ScheduleMachineCommand scheduleMachineCommand) {
 
-        String random = UUID.randomUUID().toString().toUpperCase();
-        String scheduleIdStr = random.substring(0, random.indexOf("-"));
-        System.out.println("Random is :" + scheduleIdStr);
-        scheduleMachineCommand.setSchedulingId(scheduleIdStr);
+        //String random = UUID.randomUUID().toString().toUpperCase();
+        //String scheduleIdStr = random.substring(0, random.indexOf("-"));
+        //System.out.println("Random is :" + scheduleIdStr);
+        //scheduleMachineCommand.setSchedulingId(scheduleIdStr);
         Machine machine = new Machine(scheduleMachineCommand);
         machineRepository.save(machine);
-        return new SchedulingId(scheduleIdStr);
+        return new MachineId(scheduleMachineCommand.getMachineName());
     }
 
     /**
@@ -50,8 +50,8 @@ public class MachineSchedulingCommandService {
     public Job addJobToMachine(AddJobToMachineCommand addJobToMachineCommand) {
         System.out.println("Adding job: " + addJobToMachineCommand);
         System.out.println("****Adding Job to Machine ****" + addJobToMachineCommand.getJobNumber());
-        Machine machine = machineRepository.findByMachineName(
-                new MachineName(addJobToMachineCommand.getMachineName()));
+        Machine machine = machineRepository.findByMachineId(
+                new MachineId(addJobToMachineCommand.getMachineId()));
 
         machine.addJob(new
                 Job(addJobToMachineCommand.getJobNumber(), addJobToMachineCommand.getJobTimeNeededDays(), addJobToMachineCommand.getPriority(),

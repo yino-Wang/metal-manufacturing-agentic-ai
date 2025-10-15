@@ -2,19 +2,19 @@ package com.example.interfaces.rest.dto;
 
 public class UpdateMachineScheduleResource {
 
-    private String schedulingId;
+    private String machineId;
 
     public UpdateMachineScheduleResource() {}
 
-    public UpdateMachineScheduleResource(String schedulingId) {
-        this.schedulingId = schedulingId;
+    public UpdateMachineScheduleResource(String machineId) {
+        this.machineId = machineId;
     }
 
-    public String getSchedulingId() {
-        return this.schedulingId;
+    public String getMachineId() {
+        return this.machineId;
     }
 
-    public void setSchedulingId(String schedulingId) {
-        this.schedulingId = schedulingId;
+    public void setMachineId(String machineId) {
+        this.machineId = machineId;
     }
 }
