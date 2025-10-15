@@ -53,7 +53,7 @@ curl -X GET -H "Content-Type:application/json" http://localhost:8787/queries/win
 
 Schedule a machine:
 ```shell
-curl -X POST -H "Content-Type:application/json" -d "{\"machineId\":\"Machine5\",\"employeeName\":\"John Smith\"}" http://localhost:8787/machinescheduling
+curl -X POST -H "Content-Type:application/json" -d "{\"machineId\":\"machine5\",\"employeeName\":\"John Smith\"}" http://localhost:8787/machinescheduling
 ```
 Get all scheduledIds of all machines:
 ```shell
