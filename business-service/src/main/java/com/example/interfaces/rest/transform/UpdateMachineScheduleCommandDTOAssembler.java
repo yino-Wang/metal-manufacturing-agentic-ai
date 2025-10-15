@@ -12,7 +12,7 @@ public class UpdateMachineScheduleCommandDTOAssembler {
      */
     public static UpdateMachineScheduleCommand toCommandFromDTO(UpdateMachineScheduleResource updateMachineScheduleResource) {
         return new UpdateMachineScheduleCommand(
-                updateMachineScheduleResource.getSchedulingId()
+                updateMachineScheduleResource.getMachineId()
         );
     }
 }

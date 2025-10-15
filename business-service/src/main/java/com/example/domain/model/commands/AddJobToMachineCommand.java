@@ -4,8 +4,7 @@ import java.time.LocalDate;
 
 public class AddJobToMachineCommand {
 
-    private String schedulingId;
-    private String machineName;
+    private String machineId;
     private int jobTimeNeededDays;
     private int priority;
     private int jobNumber;
@@ -17,21 +16,22 @@ public class AddJobToMachineCommand {
 
     public AddJobToMachineCommand(){ }
 
-    public AddJobToMachineCommand(String machineName, int jobTimeNeededDays, int priority, int jobNumber, LocalDate submitDate, String materialNeeded, int materialAmount){
-        //this.schedulingId = schedulingId;
+    public AddJobToMachineCommand(String machineId, int jobTimeNeededDays, int priority, int jobNumber, LocalDate submitDate, String materialNeeded, int materialAmount){
+        this.machineId = machineId;
         this.jobTimeNeededDays = jobTimeNeededDays;
         this.priority = priority;
-        this.machineName = machineName;
         this.jobNumber = jobNumber;
         this.submitDate = submitDate;
         this.materialNeeded = materialNeeded;
         this.materialAmount = materialAmount;
     }
 
-    public String getSchedulingId() {return schedulingId;}
+    public String getMachineId() {
+        return machineId;
+    }
 
-    public void setSchedulingId(String schedulingId) {
-        this.schedulingId = schedulingId;
+    public void setMachineId(String machineId) {
+        this.machineId = machineId;
     }
 
     public int getJobTimeNeededDays() {
@@ -48,13 +48,6 @@ public class AddJobToMachineCommand {
 
     public void setPriority(int priority) {
         this.priority = priority;
-    }
-
-    public String getMachineName() {
-        return machineName;
-    }
-    public void setMachineName(String machineName) {
-        this.machineName = machineName;
     }
 
     public LocalDate getSubmitDate() {
