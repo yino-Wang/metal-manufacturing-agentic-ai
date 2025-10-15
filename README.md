@@ -45,7 +45,7 @@ will continuously assign random jobs to random machines.
 
 The following REST API is provided to query the results:
 ```shell
-curl -X GET -H "Content-Type:application/json" http://localhost:8787/queries/windowedSchedulesByAmount
+curl -X GET -H "Content-Type:application/json" http://localhost:8787/queries/windowedMachinesByAmount
 ```
 
 ### Adding Jobs and Machine scheduling
@@ -53,36 +53,36 @@ curl -X GET -H "Content-Type:application/json" http://localhost:8787/queries/win
 
 Schedule a machine:
 ```shell
-curl -X POST -H "Content-Type:application/json" -d "{\"schedulingId\":\"Machine1\",\"employeeName\":\"John Smith\"}" http://localhost:8787/machinescheduling
+curl -X POST -H "Content-Type:application/json" -d "{\"machineId\":\"Machine5\",\"employeeName\":\"John Smith\"}" http://localhost:8787/machinescheduling
 ```
 Get all scheduledIds of all machines:
 ```shell
-curl -X GET -H "Content-Type:application/json" http://localhost:8787/machinescheduling/findAllSchedulingIds
+curl -X GET -H "Content-Type:application/json" http://localhost:8787/machinescheduling/findAllMachineIds
 ```
-Find a machine from a schedulingId - also shows all allocated jobs (replace `<<schedulingId>>` with the returned book key):
+Find a machine from a machineId - also shows all allocated jobs (replace `<<machineId>>` with the returned book key):
 ```shell
-set schedulingId=<<schedulingId>>
+set machineId=<<machineId>>
 ```
 ```shell
-curl "http://localhost:8787/machinescheduling/findMachine?schedulingId=%schedulingId%"
+curl "http://localhost:8787/machinescheduling/findMachine?machineId=%machineId%"
 ```
 Add a new job to a machine:
 ```shell
-curl -X POST -H "Content-Type:application/json" -d "{\"machineName\":\"machine1\",\"jobNumber\":1000,\"materialNeeded\":\"wood\",\"materialAmount\":23}" http://localhost:8787/addJobToMachine
+curl -X POST -H "Content-Type:application/json" -d "{\"jobNumber\":1000,\"jobTimeNeededDays\":5,\"priority\":1,\"machineId\":\"machine1\",\"materialNeeded\":\"wood\",\"materialAmount\":23}" http://localhost:8787/addJobToMachine
 ```
-Find all the jobs of a specific machine via schedulingId
+Find all the jobs of a specific machine via machineId
 ```shell
-set schedulingId=<<schedulingId>>
-```
-```shell
-curl "http://localhost:8787/addJobToMachine/findJobsBySchedulingId?schedulingId=%schedulingId%"
-```
-Find the first scheduled job of a specific machine via schedulingId
-```shell
-set schedulingId=<<schedulingId>>
+set machineId=<<machineId>>
 ```
 ```shell
-curl "http://localhost:8787/addJobToMachine/findCurrentJobBySchedulingId?schedulingId=%schedulingId%"
+curl "http://localhost:8787/addJobToMachine/findJobsByMachineId?machineId=%machineId%"
+```
+Find the first scheduled job of a specific machine via machineId
+```shell
+set machineId=<<machineId>>
+```
+```shell
+curl "http://localhost:8787/addJobToMachine/findCurrentJobByMachineId?machineId=%machineId%"
 ```
 Loaded onto carrier:
 ```shell

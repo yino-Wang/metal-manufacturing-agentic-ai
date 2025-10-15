@@ -4,7 +4,7 @@ import java.time.LocalDate;
 
 public class AddJobToMachineResource {
     private int jobNumber;
-    private String machineName;
+    private String machineId;
     private int jobTimeNeededDays;
     private int priority;
     private LocalDate submitDate;
@@ -17,7 +17,7 @@ public class AddJobToMachineResource {
         this.jobNumber = jobNumber;
         this.jobTimeNeededDays = jobTimeNeededDays;
         this.priority = priority;
-        this.machineName = machineId;
+        this.machineId = machineId;
         this.submitDate = LocalDate.now();
         this.materialNeeded = materialName;
         this.materialAmount = materialAmount;
@@ -27,18 +27,18 @@ public class AddJobToMachineResource {
         this.jobNumber = jobNumber;
         this.jobTimeNeededDays = jobTimeNeededDays;
         this.priority = priority;
-        this.machineName = machineId;
+        this.machineId = machineId;
         this.submitDate = submitDate;
         this.materialNeeded = materialName;
         this.materialAmount = materialAmount;
     }
 
-    public String getMachineName() {
-        return machineName;
+    public String getMachineId() {
+        return machineId;
     }
 
-    public void setMachineName(String machineName) {
-        this.machineName = machineName;
+    public void setMachineId(String machineId) {
+        this.machineId = machineId;
     }
 
     public LocalDate getSubmitDate() {
@@ -91,7 +91,7 @@ public class AddJobToMachineResource {
     public String toString() {
         return "AddJobToMachineResource{" +
                 "jobNumber=" + jobNumber +
-                ", machineName='" + machineName + '\'' +
+                ", machineName='" + machineId + '\'' +
                 ", jobTimeNeededDays=" + jobTimeNeededDays +
                 ", priority=" + priority +
                 ", submitDate=" + submitDate +

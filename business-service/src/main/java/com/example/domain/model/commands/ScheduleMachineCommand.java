@@ -3,7 +3,6 @@ package com.example.domain.model.commands;
 // scheduling machine command class
 public class ScheduleMachineCommand {
 
-    private String schedulingId;
     private String machineName;
     private String employeeName;
 
@@ -16,12 +15,6 @@ public class ScheduleMachineCommand {
     }
 
 
-    public String getSchedulingId() {
-        return schedulingId;
-    }
-    public void setSchedulingId(String schedulingId) {
-        this.schedulingId = schedulingId;
-    }
     public String getEmployeeName() {
         return employeeName;
     }

@@ -3,38 +3,36 @@ package com.example.interfaces.rest;
 import java.time.LocalDate;
 
 public class JobAddedToMachineEventData {
-    private String schedulingId;
+    private String machineId;
     private int jobNumber;
     private int jobTimeNeededDays;
     private int priority;
-    private String machineName;
     private LocalDate submitDate;
     private String materialNeeded;
     private int materialAmount;
 
     public JobAddedToMachineEventData(){}
 
-    public JobAddedToMachineEventData(String schedulingId) {
-        this.schedulingId = schedulingId;
+    public JobAddedToMachineEventData(String machineId) {
+        this.machineId = machineId;
     }
 
-    public JobAddedToMachineEventData(String schedulingId, int jobNumber, int jobTimeNeededDays, int priority, String machineName, LocalDate submitDate, String materialNeeded, int materialAmount) {
-        this.schedulingId = schedulingId;
+    public JobAddedToMachineEventData(String machineId, int jobNumber, int jobTimeNeededDays, int priority, LocalDate submitDate, String materialNeeded, int materialAmount) {
+        this.machineId = machineId;
         this.jobNumber = jobNumber;
         this.jobTimeNeededDays = jobTimeNeededDays;
         this.priority = priority;
-        this.machineName = machineName;
         this.submitDate = submitDate;
         this.materialNeeded = materialNeeded;
         this.materialAmount = materialAmount;
     }
 
-    public String getSchedulingId() {
-        return schedulingId;
+    public String getMachineId() {
+        return machineId;
     }
 
-    public void setSchedulingId(String schedulingId) {
-        this.schedulingId = schedulingId;
+    public void setMachineId(String machineId) {
+        this.machineId = machineId;
     }
 
     public int getJobNumber() {
@@ -42,13 +40,6 @@ public class JobAddedToMachineEventData {
     }
     public void setJobNumber(int jobNumber) {
         this.jobNumber = jobNumber;
-    }
-
-    public String getMachineName() {
-        return machineName;
-    }
-    public void setMachineName(String machineName) {
-        this.machineName = machineName;
     }
 
     public LocalDate getSubmitDate() {
@@ -94,11 +85,10 @@ public class JobAddedToMachineEventData {
     @Override
     public String toString() {
         return "JobAddedToMachineEventData{" +
-                "schedulingId='" + schedulingId + '\'' +
+                "schedulingId='" + machineId + '\'' +
                 ", jobNumber=" + jobNumber +
                 ", jobTimeNeededDays=" + jobTimeNeededDays +
                 ", priority=" + priority +
-                ", machineName='" + machineName + '\'' +
                 ", submitDate=" + submitDate +
                 ", materialNeeded='" + materialNeeded + '\'' +
                 ", materialAmount=" + materialAmount +

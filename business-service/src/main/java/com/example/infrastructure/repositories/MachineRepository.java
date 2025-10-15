@@ -1,7 +1,7 @@
 package com.example.infrastructure.repositories;
 
 import com.example.domain.model.aggreates.Machine;
-import com.example.domain.model.aggreates.SchedulingId;
+import com.example.domain.model.aggreates.MachineId;
 import com.example.domain.model.valueobjects.Job;
 import com.example.domain.model.valueobjects.MachineName;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -11,15 +11,14 @@ import java.util.List;
 // Repository interface for Machine aggregate
 public interface MachineRepository extends JpaRepository<Machine, Long> {
 
-    Machine findBySchedulingId(SchedulingId schedulingId);
+    Machine findByMachineId(MachineId machineId);
 
-    List<SchedulingId> findAllSchedulingId();
+    List<MachineId> findAllMachineId();
 
     List<Machine> findAll();
 
-    Job findCurrentJobBySchedulingId(SchedulingId schedulingId);
+    Job findCurrentJobByMachineId(MachineId machineId);
 
-    Machine findAllJobsBySchedulingId(SchedulingId schedulingId);
+    Machine findAllJobsByMachineId(MachineId machineId);
 
-    Machine findByMachineName(MachineName machineName);
 }

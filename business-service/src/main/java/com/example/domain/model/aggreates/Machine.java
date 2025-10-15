@@ -3,7 +3,6 @@ package com.example.domain.model.aggreates;
 import com.example.domain.model.commands.ScheduleMachineCommand;
 import com.example.domain.model.entities.Employee;
 import com.example.domain.model.valueobjects.*;
-import com.example.interfaces.rest.*;
 import jakarta.persistence.*;
 import org.springframework.data.domain.AbstractAggregateRoot;
 
@@ -16,20 +15,16 @@ import com.example.interfaces.rest.MachineScheduledEvent;
 @NamedQueries({
         @NamedQuery(name = "Machine.findAll",
                 query = "Select m from Machine m"),
-        @NamedQuery(name = "Machine.findBySchedulingId",
-                query = "Select m from Machine m where m.schedulingId = ?1"),
-        @NamedQuery(name = "Machine.findAllSchedulingId",
-                query = "Select m.schedulingId from Machine m"),
-        @NamedQuery(name = "Machine.findByMachineName",
-                query = "Select m from Machine m where m.machineName = ?1")})
+        @NamedQuery(name = "Machine.findAllMachineId",
+                query = "Select m.machineId from Machine m"),
+        @NamedQuery(name = "Machine.findByMachineId",
+                query = "Select m from Machine m where m.machineId = ?1")})
 public class Machine extends AbstractAggregateRoot<Machine> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Embedded
-    private MachineName machineName; // Name of the Machine
-    @Embedded
-    private SchedulingId schedulingId; // Aggregate Identifier
+    private MachineId machineId; // Aggregate Identifier - machine Name
     @Embedded
     private Employee employee; //Employee assigned to the Machine
     @Embedded
@@ -50,8 +45,7 @@ public class Machine extends AbstractAggregateRoot<Machine> {
      *
      */
     public Machine(ScheduleMachineCommand scheduleMachineCommand) {
-        this.schedulingId = new SchedulingId(scheduleMachineCommand.getSchedulingId());
-        this.machineName = new MachineName(scheduleMachineCommand.getMachineName());
+        this.machineId = new MachineId(scheduleMachineCommand.getMachineName());
         this.employee = new Employee(scheduleMachineCommand.getEmployeeName());
         this.jobList = JobList.EMPTY_LIST; //Empty Job List since the Machine has no jobs assigned yet
         this.schedule = new Schedule(); //Empty Schedule since the Machine has no jobs scheduled yet
@@ -59,13 +53,13 @@ public class Machine extends AbstractAggregateRoot<Machine> {
         // Registering the Machine Scheduled Event
         addDomainEvent(new
                 MachineScheduledEvent(
-                new MachineScheduledEventData(machineName.getMachineName(),
+                new MachineScheduledEventData(machineId.getMachineId(),
                         scheduleMachineCommand.getEmployeeName())
         ));
     }
 
-    public SchedulingId getSchedulingId() {
-        return schedulingId;
+    public MachineId getMachineId() {
+        return machineId;
     }
 
     public Employee getEmployee() {
@@ -96,11 +90,10 @@ public class Machine extends AbstractAggregateRoot<Machine> {
         addDomainEvent(new
                 JobAddedToMachineEvent(
                 new JobAddedToMachineEventData(
-                        this.schedulingId.getSchedulingId(),
+                        this.machineId.getMachineId(),
                         job.getJobNumber(),
                         job.getJobTimeNeededDays(),
                         job.getPriority(),
-                        this.machineName.getMachineName(),
                         job.getSubmitDate(),
                         job.getMaterialNeeded(),
                         job.getMaterialAmount())));
@@ -128,8 +121,7 @@ public class Machine extends AbstractAggregateRoot<Machine> {
     public String toString() {
         return "Machine{" +
                 "id=" + id +
-                ", machineName=" + machineName +
-                ", schedulingId=" + schedulingId +
+                ", machineId=" + machineId +
                 ", employee=" + employee +
                 ", jobList=" + jobList +
                 ", schedule=" + schedule +
