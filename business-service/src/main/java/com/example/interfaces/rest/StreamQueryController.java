@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import java.util.List;
 
 @Controller
-@RequestMapping("/streamquery")
+@RequestMapping("/queries")
 public class StreamQueryController {
 
     private final InteractiveQuery interactiveQuery;
@@ -21,7 +21,7 @@ public class StreamQueryController {
 
     @GetMapping("/windowedSchedulesByAmount")
     @ResponseBody
-    public List<MaterialAmountByScheduleId> getWindowedMaterialAmountByScheduleId() {
+    public List<MaterialAmountByScheduleId> findWindowedMaterialAmountByScheduleId() {
         return interactiveQuery.getWindowedMaterialAmountByScheduleId();
     }
 

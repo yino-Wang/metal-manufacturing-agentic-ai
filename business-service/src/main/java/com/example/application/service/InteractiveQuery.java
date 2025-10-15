@@ -53,9 +53,9 @@ public class InteractiveQuery {
         Instant timeTo = timeFrom.plus(Duration.ofMillis(WINDOW_SIZE_MS));
 
         // Query the state store for the calculated time window.
-        try (KeyValueIterator<Windowed<String>, Integer> all = getWindowedSchedulesKSStore().fetchAll(timeFrom, timeTo)) {
+        try (KeyValueIterator<Windowed<String>, Long> all = getWindowedSchedulesKSStore().fetchAll(timeFrom, timeTo)) {
             while (all.hasNext()) {
-                KeyValue<Windowed<String>, Integer> ks = all.next();
+                KeyValue<Windowed<String>, Long> ks = all.next();
                 MaterialAmountByScheduleId amountPerSchedule = new MaterialAmountByScheduleId();
                 // The city name is decorated with the window start and end times for clarity.
                 amountPerSchedule.setScheduleId(ks.key.key() + " (window: " + ks.key.window().startTime() + " - " + ks.key.window().endTime() + ")");
@@ -72,7 +72,7 @@ public class InteractiveQuery {
      *
      * @return A {@link ReadOnlyWindowStore} that can be queried for aggregated booking data.
      */
-    private ReadOnlyWindowStore<String, Integer> getWindowedSchedulesKSStore() {
+    private ReadOnlyWindowStore<String, Long> getWindowedSchedulesKSStore() {
         return this.interactiveQueryService.getQueryableStore(WINDOWSTORE_NAME,
                 QueryableStoreTypes.windowStore());
     }
