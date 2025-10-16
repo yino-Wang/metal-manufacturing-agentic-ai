@@ -4,23 +4,23 @@ package com.example.domain.model.commands;
 public class ScheduleMachineCommand {
 
     private String machineName;
-    private String employeeName;
+    //private String employeeName;
 
     public ScheduleMachineCommand() {}
 
-    public ScheduleMachineCommand(String machineName, String employeeName) {
+    public ScheduleMachineCommand(String machineName) {
         //this.schedulingId = schedulingId;
         this.machineName = machineName;
-        this.employeeName = employeeName;
+        //this.employeeName = employeeName;
     }
 
 
-    public String getEmployeeName() {
-        return employeeName;
-    }
-    public void setEmployeeName(String employeeName) {
-        this.employeeName = employeeName;
-    }
+//    public String getEmployeeName() {
+//        return employeeName;
+//    }
+//    public void setEmployeeName(String employeeName) {
+//        this.employeeName = employeeName;
+//    }
     public String getMachineName() {
         return machineName;
     }

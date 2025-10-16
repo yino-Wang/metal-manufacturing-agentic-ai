@@ -1,7 +1,7 @@
 package com.example.domain.model.aggreates;
 
 import com.example.domain.model.commands.ScheduleMachineCommand;
-import com.example.domain.model.entities.Employee;
+//import com.example.domain.model.entities.Employee;
 import com.example.domain.model.valueobjects.*;
 import jakarta.persistence.*;
 import org.springframework.data.domain.AbstractAggregateRoot;
@@ -32,8 +32,8 @@ public class Machine extends AbstractAggregateRoot<Machine> {
     private Long id;
     @Embedded
     private MachineId machineId; // Aggregate Identifier - machine Name
-    @Embedded
-    private Employee employee; //Employee assigned to the Machine
+    //@Embedded
+    //private Employee employee; //Employee assigned to the Machine
     @Embedded
     private JobList jobList; //List of Jobs assigned to the Machine
     @Embedded
@@ -53,15 +53,14 @@ public class Machine extends AbstractAggregateRoot<Machine> {
      */
     public Machine(ScheduleMachineCommand scheduleMachineCommand) {
         this.machineId = new MachineId(scheduleMachineCommand.getMachineName());
-        this.employee = new Employee(scheduleMachineCommand.getEmployeeName());
+        //this.employee = new Employee(scheduleMachineCommand.getEmployeeName());
         this.jobList = JobList.EMPTY_LIST; //Empty Job List since the Machine has no jobs assigned yet
         this.schedule = new Schedule(); //Empty Schedule since the Machine has no jobs scheduled yet
 
         // Registering the Machine Scheduled Event
         addDomainEvent(new
                 MachineScheduledEvent(
-                new MachineScheduledEventData(machineId.getMachineId(),
-                        scheduleMachineCommand.getEmployeeName())
+                new MachineScheduledEventData(machineId.getMachineId())
         ));
     }
 
@@ -69,13 +68,13 @@ public class Machine extends AbstractAggregateRoot<Machine> {
         return machineId;
     }
 
-    public Employee getEmployee() {
-        return employee;
-    }
-
-    public void setEmployee(Employee employee) {
-        this.employee = employee;
-    }
+//    public Employee getEmployee() {
+//        return employee;
+//    }
+//
+//    public void setEmployee(Employee employee) {
+//        this.employee = employee;
+//    }
 
     public JobList getJobList() {
         return jobList;
@@ -103,7 +102,8 @@ public class Machine extends AbstractAggregateRoot<Machine> {
                         job.getPriority(),
                         job.getSubmitDate(),
                         job.getMaterialNeeded(),
-                        job.getMaterialAmount())));
+                        job.getMaterialAmount(),
+                        job.getCustomerName())));
     }
 
 //    /**
@@ -126,13 +126,9 @@ public class Machine extends AbstractAggregateRoot<Machine> {
 
     @Override
     public String toString() {
-        return "Machine{" +
-                "id=" + id +
-                ", machineId=" + machineId +
-                ", employee=" + employee +
-                ", jobList=" + jobList +
-                ", schedule=" + schedule +
-                ", currentJob=" + currentJob +
-                '}';
+        return "Machine " + machineId + ": " +
+                "\ncurrentJob=" + currentJob +
+                "\njobList=" + jobList +
+                "\nschedule=" + schedule;
     }
 }
