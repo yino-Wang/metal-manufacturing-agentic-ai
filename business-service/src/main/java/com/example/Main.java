@@ -1,9 +1,12 @@
 package com.example;
 
+//import com.example.infrastructure.agentic.ModelLogger;
 import com.example.interfaces.rest.dto.AddJobToMachineResource;
+import com.example.interfaces.rest.dto.MachineIdDto;
 import com.example.interfaces.rest.dto.ScheduleMachineResource;
-import com.example.interfaces.rest.dto.SchedulingIdDto;
+//import dev.langchain4j.model.chat.listener.ChatModelListener;
 import org.springframework.boot.autoconfigure.SpringBootApplication;  //ADD THIS
+import org.springframework.context.annotation.Bean;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDate;
@@ -20,16 +23,16 @@ public class Main {
         //schedule some machines
         RestTemplate restTemplate = new RestTemplate();
         ScheduleMachineResource machine1 = new ScheduleMachineResource("machine1", "John Smith");
-        SchedulingIdDto schedulingId1 = restTemplate.postForObject(url, machine1, SchedulingIdDto.class);
+        MachineIdDto schedulingId1 = restTemplate.postForObject(url, machine1, MachineIdDto.class);
         System.out.println("Scheduled machine: " + schedulingId1);
         ScheduleMachineResource machine2 = new ScheduleMachineResource("machine2", "Percy Waterman");
-        SchedulingIdDto schedulingId2 = restTemplate.postForObject(url, machine2, SchedulingIdDto.class);
+        MachineIdDto schedulingId2 = restTemplate.postForObject(url, machine2, MachineIdDto.class);
         System.out.println("Scheduled machine: " + schedulingId2);
         ScheduleMachineResource machine3 = new ScheduleMachineResource("machine3", "Rebecca Castle");
-        SchedulingIdDto schedulingId3 = restTemplate.postForObject(url, machine3, SchedulingIdDto.class);
+        MachineIdDto schedulingId3 = restTemplate.postForObject(url, machine3, MachineIdDto.class);
         System.out.println("Scheduled machine: " + schedulingId3);
         ScheduleMachineResource machine4 = new ScheduleMachineResource("machine4", "Taz Lou");
-        SchedulingIdDto schedulingId4 = restTemplate.postForObject(url, machine4, SchedulingIdDto.class);
+        MachineIdDto schedulingId4 = restTemplate.postForObject(url, machine4, MachineIdDto.class);
         System.out.println("Scheduled machine: " + schedulingId4);
 
         //while true keep adding jobs to the machines
@@ -59,10 +62,13 @@ public class Main {
             System.out.println("Adding job " + jobNumber + " to " + machineId + " for " + materialAmount + " of " + materialName + " on " + submitDate);
             AddJobToMachineResource job = new AddJobToMachineResource(jobNumber, jobTimeNeededDays, priority, machineId, submitDate, materialName, materialAmount);
             System.out.println("Posting job: " + job.toString());
-            SchedulingIdDto schedulingId = restTemplate.postForObject(urlAddJob, job, SchedulingIdDto.class);
+            MachineIdDto schedulingId = restTemplate.postForObject(urlAddJob, job, MachineIdDto.class);
             System.out.println("******" + schedulingId + job + "*****");
             System.out.println(job);
-            Thread.sleep(1000);
+            Thread.sleep(5000);
         }
     }
+
+//    @Bean
+//    ChatModelListener chatModelLogger() {return new ModelLogger();}
 }

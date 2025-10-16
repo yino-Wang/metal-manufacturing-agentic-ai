@@ -7,7 +7,7 @@ import com.example.domain.model.entities.ShiftSchedule;
 import com.example.domain.model.commands.GenerateShiftPlanCommand;
 import com.example.infrastructure.repository.EmployeeRepository;
 import com.example.infrastructure.repository.ShiftPlanRepository;
-import com.example.infrastructure.client.OpenAIClient;
+import com.example.infrastructure.client.GeminiClient;
 import com.example.infrastructure.messaging.ShiftPublishedEventPublisher;
 import com.example.service.DTO.AutoScheduleResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +24,7 @@ import java.util.*;
 public class GenerateShiftPlanService {
     private final EmployeeRepository employeeRepository;
     private final ShiftPlanRepository shiftPlanRepository;
-    private final OpenAIClient openAIClient;
+    private final GeminiClient geminiClient;
     private final ShiftPublishedEventPublisher shiftPublishedEventPublisher;
     private final EmployeeNotificationService employeeNotificationService;
 
@@ -32,17 +32,17 @@ public class GenerateShiftPlanService {
     public GenerateShiftPlanService(
             EmployeeRepository employeeRepository,
             ShiftPlanRepository shiftPlanRepository,
-            OpenAIClient openAIClient,
+            GeminiClient geminiClient,
             ShiftPublishedEventPublisher shiftPublishedEventPublisher,
             EmployeeNotificationService employeeNotificationService) {
         this.employeeRepository = employeeRepository;
         this.shiftPlanRepository = shiftPlanRepository;
-        this.openAIClient = openAIClient;
+        this.geminiClient = geminiClient;
         this.shiftPublishedEventPublisher = shiftPublishedEventPublisher;
         this.employeeNotificationService = employeeNotificationService;
     }
 
-    // Method to generate shift plan using OpenAI
+    // Method to generate shift plan using Google Gemini
     // Generate shift plan for given date range, job, required employees, and shift type
     public List<ShiftSchedule> generateShiftPlan(Date startDate,
                                            Date endDate,
@@ -73,7 +73,7 @@ public class GenerateShiftPlanService {
         input.setConstraints(constraints);
 
         // 3. call OpenAI to generate shift plan
-        List<ShiftSchedule> schedule = openAIClient.generateShiftPlan(input);
+        List<ShiftSchedule> schedule = geminiClient.generateShiftPlan(input);
 
         // 4. set additional fields
         for (ShiftSchedule s : schedule) {
@@ -112,7 +112,7 @@ public class GenerateShiftPlanService {
         input.setEndTime(command.getEndDate());
         input.setEmployeeRequirements(staffingRequirements);
         input.setConstraints(constraints);
-        List<ShiftSchedule> schedule = openAIClient.generateShiftPlan(input);
+        List<ShiftSchedule> schedule = geminiClient.generateShiftPlan(input);
         for (ShiftSchedule s : schedule) {
             s.setJobId(command.getJobId());
             s.setShiftType(command.getShiftType());

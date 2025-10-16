@@ -3,14 +3,12 @@ package com.example.interfaces.rest;
 import com.example.application.commandservices.MachineSchedulingCommandService;
 import com.example.application.queryservices.MachineSchedulingQueryService;
 import com.example.domain.model.aggreates.Machine;
-import com.example.domain.model.aggreates.SchedulingId;
+import com.example.domain.model.aggreates.MachineId;
 import com.example.domain.model.valueobjects.Job;
 import com.example.interfaces.rest.dto.AddJobToMachineResource;
 import com.example.interfaces.rest.transform.AddJobToMachineCommandDTOAssembler;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @Controller
 @RequestMapping("/addJobToMachine")
@@ -35,35 +33,35 @@ public class JobAddedToMachineController {
     @PostMapping
     @ResponseBody
     public Job addJobToMachine(@RequestBody AddJobToMachineResource addJobToMachineResource) {
-        System.out.println("****Job Added to Machine ****" + addJobToMachineResource.getMachineName());
+        System.out.println("****Job Added to Machine ****" + addJobToMachineResource.getMachineId());
         Job job = machineSchedulingCommandService.addJobToMachine(
                 AddJobToMachineCommandDTOAssembler.toCommandFromDTO(addJobToMachineResource));
         return job;
     }
 
     /**
-     * GET method to retrieve all jobs for a scheduling ID
-     * @param schedulingId
+     * GET method to retrieve all jobs for a Machine ID
+     * @param machineId
      * @return Machine
      */
-    @GetMapping("/findJobsBySchedulingId")
+    @GetMapping("/findJobsByMachineId")
     @ResponseBody
-    public String findAllJobsBySchedulingId(@RequestParam("schedulingId") String schedulingId) {
-        System.out.println("****Finding Jobs for Machine SchedulingID ****" + schedulingId);
-        Machine machine = machineSchedulingQueryService.findAllJobsBySchedulingId(new SchedulingId(schedulingId));
+    public String findAllJobsByMachineId(@RequestParam("machineId") String machineId) {
+        System.out.println("****Finding Jobs for Machine via machineId ****" + machineId);
+        Machine machine = machineSchedulingQueryService.findAllJobsByMachineId(new MachineId(machineId));
         return machine.toString();
     }
 
     /**
-     * GET method to retrieve the current job for a scheduling ID
-     * @param schedulingId
+     * GET method to retrieve the current job for a Machine ID
+     * @param machineId
      * @return Job
      */
-    @GetMapping("/findCurrentJobBySchedulingId")
+    @GetMapping("/findCurrentJobByMachineId")
     @ResponseBody
-    public Job findCurrentJobBySchedulingId(@RequestParam("schedulingId") String schedulingId) {
-        System.out.println("****Finding Current Job for Machine SchedulingID ****" + schedulingId);
-        return machineSchedulingQueryService.findCurrentJobBySchedulingId(new SchedulingId(schedulingId));
+    public Job findCurrentJobByMachineId(@RequestParam("machineId") String machineId) {
+        System.out.println("****Finding Current Job for Machine Machine id ****" + machineId);
+        return machineSchedulingQueryService.findCurrentJobByMachineId(new MachineId(machineId));
     }
 
 

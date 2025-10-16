@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 # Metal Manufacturing Agentic AI System
 
 // ...existing code...
@@ -427,4 +427,4 @@ For this purpose, in Linux/MacOS, delete the folders `/tmp/zookeeper`, `/tmp/kaf
 and `/tmp/kafka-streams` (if any). In Windows, delete the folders `C:\tmp\zookeeper`,
 `C:\tmp\kafka-logs` and `C:\kafka\kafka-streams` (if any).
 
->>>>>>> main
+
