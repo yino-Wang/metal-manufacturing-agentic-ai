@@ -13,10 +13,11 @@ public class AddJobToMachineCommand {
     //private String endDate;   //decided by scheduling algorithm
     private String materialNeeded;
     private int materialAmount;
+    private String customerName;
 
     public AddJobToMachineCommand(){ }
 
-    public AddJobToMachineCommand(String machineId, int jobTimeNeededDays, int priority, int jobNumber, LocalDate submitDate, String materialNeeded, int materialAmount){
+    public AddJobToMachineCommand(String machineId, int jobTimeNeededDays, int priority, int jobNumber, LocalDate submitDate, String materialNeeded, int materialAmount, String customerName){
         this.machineId = machineId;
         this.jobTimeNeededDays = jobTimeNeededDays;
         this.priority = priority;
@@ -24,6 +25,7 @@ public class AddJobToMachineCommand {
         this.submitDate = submitDate;
         this.materialNeeded = materialNeeded;
         this.materialAmount = materialAmount;
+        this.customerName = customerName;
     }
 
     public String getMachineId() {
@@ -81,4 +83,11 @@ public class AddJobToMachineCommand {
     }
 
 
+    public String getCustomerName() {
+        return customerName;
+    }
+
+    public void setCustomerName(String customerName) {
+        this.customerName = customerName;
+    }
 }

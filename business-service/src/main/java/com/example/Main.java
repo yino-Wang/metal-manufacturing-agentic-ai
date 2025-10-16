@@ -44,6 +44,8 @@ public class Main {
         int numMachines = machines.length;
         String[] materialNeeded = {"steel", "wood", "nails", "iron"};
         int materialOptions = materialNeeded.length;
+        String[] customers = {"Michelle", "Randy", "Rob", "Deb"};
+        int numCustomers = customers.length;
         int[] priorityOptions = {1, 2, 3, 4, 5};
         int priorityNum = priorityOptions.length;
         LocalDate day = LocalDate.now();
@@ -56,11 +58,13 @@ public class Main {
             String machineId = machines[r1];
             int material = rand.nextInt(materialOptions);
             String materialName = materialNeeded[material];
+            int customer = rand.nextInt(numCustomers);
+            String customerName = customers[customer];
             int priorityChosen = rand.nextInt(priorityNum);
             int priority = priorityOptions[priorityChosen];
             LocalDate submitDate = day.plusDays(rand.nextInt(10)); //submit date within the next 10 days
             System.out.println("Adding job " + jobNumber + " to " + machineId + " for " + materialAmount + " of " + materialName + " on " + submitDate);
-            AddJobToMachineResource job = new AddJobToMachineResource(jobNumber, jobTimeNeededDays, priority, machineId, submitDate, materialName, materialAmount);
+            AddJobToMachineResource job = new AddJobToMachineResource(jobNumber, jobTimeNeededDays, priority, machineId, submitDate, materialName, materialAmount, customerName);
             System.out.println("Posting job: " + job.toString());
             MachineIdDto schedulingId = restTemplate.postForObject(urlAddJob, job, MachineIdDto.class);
             System.out.println("******" + schedulingId + job + "*****");

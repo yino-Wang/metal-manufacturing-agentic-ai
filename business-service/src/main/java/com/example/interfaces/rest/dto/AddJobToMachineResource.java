@@ -10,10 +10,11 @@ public class AddJobToMachineResource {
     private LocalDate submitDate;
     private String materialNeeded;
     private int materialAmount;
+    private String customerName;
 
     public AddJobToMachineResource(){ }
 
-    public AddJobToMachineResource(int jobNumber, int jobTimeNeededDays, int priority, String machineId, String materialName, int materialAmount) {
+    public AddJobToMachineResource(int jobNumber, int jobTimeNeededDays, int priority, String machineId, String materialName, int materialAmount, String customerName) {
         this.jobNumber = jobNumber;
         this.jobTimeNeededDays = jobTimeNeededDays;
         this.priority = priority;
@@ -21,9 +22,10 @@ public class AddJobToMachineResource {
         this.submitDate = LocalDate.now();
         this.materialNeeded = materialName;
         this.materialAmount = materialAmount;
+        this.customerName = customerName;
     }
 
-    public AddJobToMachineResource(int jobNumber, int jobTimeNeededDays, int priority, String machineId, LocalDate submitDate, String materialName, int materialAmount) {
+    public AddJobToMachineResource(int jobNumber, int jobTimeNeededDays, int priority, String machineId, LocalDate submitDate, String materialName, int materialAmount, String customerName) {
         this.jobNumber = jobNumber;
         this.jobTimeNeededDays = jobTimeNeededDays;
         this.priority = priority;
@@ -31,6 +33,7 @@ public class AddJobToMachineResource {
         this.submitDate = submitDate;
         this.materialNeeded = materialName;
         this.materialAmount = materialAmount;
+        this.customerName = customerName;
     }
 
     public String getMachineId() {
@@ -87,16 +90,25 @@ public class AddJobToMachineResource {
         this.priority = priority;
     }
 
+    public String getCustomerName() {
+        return customerName;
+    }
+
+    public void setCustomerName(String customerName) {
+        this.customerName = customerName;
+    }
+
     @Override
     public String toString() {
         return "AddJobToMachineResource{" +
                 "jobNumber=" + jobNumber +
-                ", machineName='" + machineId + '\'' +
+                ", machineId='" + machineId + '\'' +
                 ", jobTimeNeededDays=" + jobTimeNeededDays +
                 ", priority=" + priority +
                 ", submitDate=" + submitDate +
                 ", materialNeeded='" + materialNeeded + '\'' +
                 ", materialAmount=" + materialAmount +
+                ", customerName='" + customerName + '\'' +
                 '}';
     }
 }
