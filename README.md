@@ -57,7 +57,7 @@ curl -X GET -H "Content-Type:application/json" http://localhost:8787/queries/win
 
 Schedule a machine:
 ```shell
-curl -X POST -H "Content-Type:application/json" -d "{\"machineId\":\"machine5\",\"employeeName\":\"John Smith\"}" http://localhost:8787/machinescheduling
+curl -X POST -H "Content-Type:application/json" -d "{\"machineId\":\"machine5\"}" http://localhost:8787/machinescheduling
 ```
 Get all scheduledIds of all machines:
 ```shell
@@ -72,7 +72,7 @@ curl "http://localhost:8787/machinescheduling/findMachine?machineId=%machineId%"
 ```
 Add a new job to a machine:
 ```shell
-curl -X POST -H "Content-Type:application/json" -d "{\"jobNumber\":1000,\"jobTimeNeededDays\":5,\"priority\":1,\"machineId\":\"machine1\",\"materialNeeded\":\"wood\",\"materialAmount\":23}" http://localhost:8787/addJobToMachine
+curl -X POST -H "Content-Type:application/json" -d "{\"jobNumber\":1000,\"jobTimeNeededDays\":5,\"priority\":1,\"machineId\":\"machine1\",\"materialNeeded\":\"wood\",\"materialAmount\":23,\"customerName\":\"JohnSmith\"}" http://localhost:8787/addJobToMachine
 ```
 Find all the jobs of a specific machine via machineId
 ```shell

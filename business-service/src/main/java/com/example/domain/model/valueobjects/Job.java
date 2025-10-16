@@ -125,17 +125,8 @@ public class Job {
 
     @Override
     public String toString() {
-        return "Job{" +
-                "submitDate=" + submitDate +
-                ", startDate=" + startDate +
-                ", jobNumber=" + jobNumber +
-                ", endDate=" + endDate +
-                ", materialNeeded='" + materialNeeded + '\'' +
-                ", materialAmount=" + materialAmount +
-                ", jobStatus=" + jobStatus +
-                ", jobTimeNeededDays=" + jobTimeNeededDays +
-                ", priority=" + priority +
-                ", customerName='" + customerName + '\'' +
-                '}';
+        return "Job " + jobNumber + ": STATUS: " + jobStatus + ", PRIORITY: " + priority
+                + "\n    submitDate: " + submitDate + ", startDate: " + startDate + ", endDate: " + endDate + ", requiredDuration: " + jobTimeNeededDays
+                + "\n    customerName: " + customerName + ", materialNeeded: " + materialNeeded + ", materialAmount: " + materialAmount;
     }
 }

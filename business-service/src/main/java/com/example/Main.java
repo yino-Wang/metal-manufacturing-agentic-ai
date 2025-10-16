@@ -29,16 +29,16 @@ public class Main {
         final String url = "http://localhost:8787/machinescheduling";
         //schedule some machines
         RestTemplate restTemplate = new RestTemplate();
-        ScheduleMachineResource machine1 = new ScheduleMachineResource("machine1", "John Smith");
+        ScheduleMachineResource machine1 = new ScheduleMachineResource("machine1");
         MachineIdDto schedulingId1 = restTemplate.postForObject(url, machine1, MachineIdDto.class);
         System.out.println("Scheduled machine: " + schedulingId1);
-        ScheduleMachineResource machine2 = new ScheduleMachineResource("machine2", "Percy Waterman");
+        ScheduleMachineResource machine2 = new ScheduleMachineResource("machine2");
         MachineIdDto schedulingId2 = restTemplate.postForObject(url, machine2, MachineIdDto.class);
         System.out.println("Scheduled machine: " + schedulingId2);
-        ScheduleMachineResource machine3 = new ScheduleMachineResource("machine3", "Rebecca Castle");
+        ScheduleMachineResource machine3 = new ScheduleMachineResource("machine3");
         MachineIdDto schedulingId3 = restTemplate.postForObject(url, machine3, MachineIdDto.class);
         System.out.println("Scheduled machine: " + schedulingId3);
-        ScheduleMachineResource machine4 = new ScheduleMachineResource("machine4", "Taz Lou");
+        ScheduleMachineResource machine4 = new ScheduleMachineResource("machine4");
         MachineIdDto schedulingId4 = restTemplate.postForObject(url, machine4, MachineIdDto.class);
         System.out.println("Scheduled machine: " + schedulingId4);
 
@@ -72,10 +72,10 @@ public class Main {
             LocalDate submitDate = day.plusDays(rand.nextInt(10)); //submit date within the next 10 days
             System.out.println("Adding job " + jobNumber + " to " + machineId + " for " + materialAmount + " of " + materialName + " on " + submitDate);
             AddJobToMachineResource job = new AddJobToMachineResource(jobNumber, jobTimeNeededDays, priority, machineId, submitDate, materialName, materialAmount, customerName);
-            System.out.println("Posting job: " + job.toString());
+            //System.out.println("Posting job: " + job.toString());
             MachineIdDto schedulingId = restTemplate.postForObject(urlAddJob, job, MachineIdDto.class);
-            System.out.println("******" + schedulingId + job + "*****");
-            System.out.println(job);
+            //System.out.println("******" + schedulingId + job + "*****");
+            //System.out.println(job);
 
 
             ///create fake schedule

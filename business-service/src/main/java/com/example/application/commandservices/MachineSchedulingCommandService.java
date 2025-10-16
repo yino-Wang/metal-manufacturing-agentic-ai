@@ -48,8 +48,8 @@ public class MachineSchedulingCommandService {
      */
 
     public Job addJobToMachine(AddJobToMachineCommand addJobToMachineCommand) {
-        System.out.println("Adding job: " + addJobToMachineCommand);
-        System.out.println("****Adding Job to Machine ****" + addJobToMachineCommand.getJobNumber());
+        //System.out.println("Adding job: " + addJobToMachineCommand);
+        //System.out.println("****Adding Job to Machine ****" + addJobToMachineCommand.getJobNumber());
         Machine machine = machineRepository.findByMachineId(
                 new MachineId(addJobToMachineCommand.getMachineId()));
 

@@ -19,8 +19,6 @@ public class MachineId implements Serializable {
 
     @Override
     public String toString() {
-        return "MachineId{" +
-                "schedulingId='" + machineId + '\'' +
-                '}';
+        return "MachineId: " + machineId;
     }
 }

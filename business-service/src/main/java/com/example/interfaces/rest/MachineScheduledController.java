@@ -34,7 +34,7 @@ public class MachineScheduledController {
     @PostMapping
     @ResponseBody
     public MachineId scheduleMachine(@RequestBody ScheduleMachineResource scheduleMachineResource) {
-        System.out.printf("****Machine MachineId ****%s%n", scheduleMachineResource.getMachineId());
+        //System.out.printf("****Machine MachineId ****%s%n", scheduleMachineResource.getMachineId());
         MachineId machineId = machineSchedulingCommandService.scheduleMachine(
                 ScheduleMachineCommandDTOAssembler.toCommandFromDTO(scheduleMachineResource));
         return machineId;
@@ -48,7 +48,7 @@ public class MachineScheduledController {
     @GetMapping("/findMachine")
     @ResponseBody
     public Machine findByMachineId(@RequestParam("machineId") String machineId){
-        System.out.println("****Machine SchedulingID ****"+machineId);
+        //System.out.println("****Machine SchedulingID ****"+machineId);
         return machineSchedulingQueryService.find(new MachineId(machineId));
     }
 
@@ -61,7 +61,7 @@ public class MachineScheduledController {
     @ResponseBody
     public List<MachineId> findAllMachineIds(){
         final List<MachineId> machineIdList = machineSchedulingQueryService.findAllMachineId();
-        System.out.println("****Machine SchedulingID ****");
+        //System.out.println("****Machine SchedulingID ****");
         machineIdList.forEach(x->System.out.println(x.getMachineId()));
         return machineIdList;
     }

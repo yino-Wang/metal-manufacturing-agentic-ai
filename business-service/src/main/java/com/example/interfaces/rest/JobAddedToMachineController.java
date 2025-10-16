@@ -37,7 +37,7 @@ public class JobAddedToMachineController {
     @PostMapping
     @ResponseBody
     public Job addJobToMachine(@RequestBody AddJobToMachineResource addJobToMachineResource) {
-        System.out.println("****Job Added to Machine ****" + addJobToMachineResource.getMachineId());
+        //System.out.println("****Job Added to Machine ****" + addJobToMachineResource.getMachineId());
         Job job = machineSchedulingCommandService.addJobToMachine(
                 AddJobToMachineCommandDTOAssembler.toCommandFromDTO(addJobToMachineResource));
         return job;
@@ -51,7 +51,7 @@ public class JobAddedToMachineController {
     @GetMapping("/findJobsByMachineId")
     @ResponseBody
     public String findAllJobsByMachineId(@RequestParam("machineId") String machineId) {
-        System.out.println("****Finding Jobs for Machine via machineId ****" + machineId);
+        //System.out.println("****Finding Jobs for Machine via machineId ****" + machineId);
         Machine machine = machineSchedulingQueryService.findAllJobsByMachineId(new MachineId(machineId));
         return machine.toString();
     }
@@ -64,7 +64,7 @@ public class JobAddedToMachineController {
     @GetMapping("/findCurrentJobByMachineId")
     @ResponseBody
     public Job findCurrentJobByMachineId(@RequestParam("machineId") String machineId) {
-        System.out.println("****Finding Current Job for Machine Machine id ****" + machineId);
+        //System.out.println("****Finding Current Job for Machine Machine id ****" + machineId);
         return machineSchedulingQueryService.findCurrentJobByMachineId(new MachineId(machineId));
     }
 
@@ -76,7 +76,7 @@ public class JobAddedToMachineController {
     @GetMapping("/findJobByJobNumber")
     @ResponseBody
     public Optional<Job> findJobByJobNumber(@RequestParam("jobNumber") Integer jobNumber) {
-        System.out.println("****Finding Job for given job name ****" + jobNumber);
+        //System.out.println("****Finding Job for given job name ****" + jobNumber);
         return machineSchedulingQueryService.findJobByJobNumber(jobNumber);
     }
 
@@ -88,7 +88,7 @@ public class JobAddedToMachineController {
     @GetMapping("/findJobInfoByJobNumber")
     @ResponseBody
     public String findJobInfoByJobNumber(@RequestParam("jobNumber") Integer jobNumber) {
-        System.out.println("****Finding Job info for given job name ****" + jobNumber);
+        //System.out.println("****Finding Job info for given job name ****" + jobNumber);
         Optional<Job> job = machineSchedulingQueryService.findJobInfoByJobNumber(jobNumber);
         if (job.isPresent()) {
             Job foundJob = job.get();
@@ -107,7 +107,7 @@ public class JobAddedToMachineController {
     @GetMapping("/findAllCustomerJobsByCustomerName")
     @ResponseBody
     public String findAllCustomerJobsByCustomerName(@RequestParam("customerName") String customerName) {
-        System.out.println("****Finding all Jobs for given customer name ****" + customerName);
+        //System.out.println("****Finding all Jobs for given customer name ****" + customerName);
         List<Job> jobs = machineSchedulingQueryService.findAllCustomerJobsByCustomerName(customerName);
         if (jobs.isEmpty()) {
             return "No jobs under customer name " + customerName + " exist in the system";
