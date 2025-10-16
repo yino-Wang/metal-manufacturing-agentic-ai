@@ -27,4 +27,5 @@ public interface MachineRepository extends JpaRepository<Machine, Long> {
     Optional<Job> findJobInfoByJobNumber(Integer jobNumber);
 
     List<Job> findAllCustomerJobsByCustomerName(String customerName);
+
 }

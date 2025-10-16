@@ -94,7 +94,7 @@ curl "http://localhost:8787/addJobToMachine/findCurrentJobByMachineId?machineId=
 
 
 ## FR2: Customer side: can see progress/scheduling of a job
-Find a job by job number and machineId:
+Find a job by job number:
 ```shell
 set jobNumber=<<jobNumber>>
 ```

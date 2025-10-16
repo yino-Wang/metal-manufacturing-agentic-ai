@@ -34,27 +34,33 @@ public class StreamProcessor {
      */
     @Bean
     public Consumer<KStream<String, JobAddedToMachineEvent>> process() {
+
+        final MachineMaterialKeySerde keySerde = new MachineMaterialKeySerde();
+
         return inputStream -> {
 
             // Transform the input stream: extract schedulingId and material amount.
-            KTable<Windowed<String>, Long> totalMaterials = inputStream.map((key, value) -> {
-                        String schedulingId = value.getJobAddedToMachineEventData().getMachineId();
+            KTable<Windowed<MachineMaterialKey>, Long> totalMaterials = inputStream.map((key, value) -> {
+                        String machineId = value.getJobAddedToMachineEventData().getMachineId();
+                        String materialName = value.getJobAddedToMachineEventData().getMaterialNeeded();
                         Long materialAmount = (long)value.getJobAddedToMachineEventData().getMaterialAmount();
-                        return KeyValue.pair(schedulingId, materialAmount);
+
+                        MachineMaterialKey compositeKey = new MachineMaterialKey(machineId, materialName);
+                        return KeyValue.pair(compositeKey, materialAmount);
                     }).
                     // Group events by the schedulingId.
-                    groupByKey(Grouped.with(Serdes.String(), Serdes.Long())).
+                    groupByKey(Grouped.with(keySerde, Serdes.Long())).
                     // Create 30-second tumbling windows for aggregation.
                     windowedBy(TimeWindows.ofSizeWithNoGrace(Duration.ofSeconds(30))).
                     // Sum the material amounts for each schedule within the window.
                     reduce(Long::sum,
                         // Materialize the result into a state store.
-                        Materialized.<String, Long, WindowStore<Bytes, byte[]>>as(WINDOWSTORE_NAME).
-                                withKeySerde(Serdes.String()).withValueSerde(Serdes.Long()));
+                        Materialized.<MachineMaterialKey, Long, WindowStore<Bytes, byte[]>>as(WINDOWSTORE_NAME).
+                                withKeySerde(keySerde).withValueSerde(Serdes.Long()));
 
             // For debugging/monitoring: Print the aggregated results to the console.
             totalMaterials.toStream().
-                    print(Printed.<Windowed<String>, Long>toSysOut().withLabel("Windowed material totals per schedule"));
+                    print(Printed.<Windowed<MachineMaterialKey>, Long>toSysOut().withLabel("Windowed material totals per schedule"));
         };
     }
 }

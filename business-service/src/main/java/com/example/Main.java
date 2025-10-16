@@ -1,23 +1,30 @@
 package com.example;
 
 //import com.example.infrastructure.agentic.ModelLogger;
+import com.example.application.service.SchedulingService;
+import com.example.domain.model.aggreates.Machine;
+import com.example.infrastructure.repositories.MachineRepository;
 import com.example.interfaces.rest.dto.AddJobToMachineResource;
 import com.example.interfaces.rest.dto.MachineIdDto;
 import com.example.interfaces.rest.dto.ScheduleMachineResource;
 //import dev.langchain4j.model.chat.listener.ChatModelListener;
+import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;  //ADD THIS
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDate;
 import java.util.Date;
+import java.util.List;
 import java.util.Random;
 
 @SpringBootApplication //ADD THIS
 public class Main {
     public static void main(String[] args) throws InterruptedException {
-        org.springframework.boot.SpringApplication.run(Main.class, args); //ADD THIS BUT CHANGE *MAIN* TO WHATEVER YOUR FILE IS CALLED
+        ApplicationContext context = SpringApplication.run(Main.class, args); //ADD THIS BUT CHANGE *MAIN* TO WHATEVER YOUR FILE IS CALLED
 
+        SchedulingService service = context.getBean(SchedulingService.class);
 
         final String url = "http://localhost:8787/machinescheduling";
         //schedule some machines
@@ -69,6 +76,10 @@ public class Main {
             MachineIdDto schedulingId = restTemplate.postForObject(urlAddJob, job, MachineIdDto.class);
             System.out.println("******" + schedulingId + job + "*****");
             System.out.println(job);
+
+
+            ///create fake schedule
+            service.processAllMachines();
             Thread.sleep(5000);
         }
     }
