@@ -7,6 +7,7 @@ import com.example.domain.model.valueobjects.MachineName;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 // Repository interface for Machine aggregate
 public interface MachineRepository extends JpaRepository<Machine, Long> {
@@ -17,8 +18,11 @@ public interface MachineRepository extends JpaRepository<Machine, Long> {
 
     List<Machine> findAll();
 
+    Optional<Job> findJobByJobNumber(Integer jobNumber);
+
     Job findCurrentJobByMachineId(MachineId machineId);
 
     Machine findAllJobsByMachineId(MachineId machineId);
 
+    Optional<Job> findJobInfoByJobNumber(Integer jobNumber);
 }

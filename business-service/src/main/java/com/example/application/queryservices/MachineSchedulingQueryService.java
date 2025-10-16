@@ -7,6 +7,7 @@ import com.example.infrastructure.repositories.MachineRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Application Service which caters to all queries related to the business service Context
@@ -63,6 +64,15 @@ public class MachineSchedulingQueryService {
     public Machine findAllJobsByMachineId(MachineId machineId) {
         return machineRepository.findAllJobsByMachineId(machineId);
     }
+
+    public Optional<Job> findJobByJobNumber(Integer jobNumber) {
+        return machineRepository.findJobByJobNumber(jobNumber);
+    }
+
+    public Optional<Job> findJobInfoByJobNumber(Integer jobNumber) {
+        return machineRepository.findJobInfoByJobNumber(jobNumber);
+    }
+
 
     /**
      * Returns a valid job schedule, making sure times are in order and JobStatus is correctly assigned for each job

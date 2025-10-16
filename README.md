@@ -6,7 +6,9 @@
 - **Maintenance MS** 
 - **Workforce MS** 
 
-### Business MS
+# Business MS
+
+## Set-up for Business MS 
 ## Apache Kafka Setup
 This Spring Boot project uses Apache Kafka as a messaging platform.
 To run this project, you need to set up Kafka first.
@@ -24,6 +26,7 @@ In the Terminal, `cd` to the unzip folder, and start Kafka with the following co
 ./bin/kafka-server-start.sh ./config/server.properties
 ```
 
+## FR6: Handling newly submitted jobs (real-time) part 1
 #### Windows
 Make sure you download kafka version 3.9.- or below, as v4 does not have zookeeper.
 Download a **binary package** of Apache Kafka (e.g., `kafka_2.13-3.7.0.tgz`) from
@@ -48,6 +51,7 @@ The following REST API is provided to query the results:
 curl -X GET -H "Content-Type:application/json" http://localhost:8787/queries/windowedMachinesByAmount
 ```
 
+## FR5: Manager side: can add and view machines and jobs
 ### Adding Jobs and Machine scheduling
 #### Windows CMD
 
@@ -84,49 +88,26 @@ set machineId=<<machineId>>
 ```shell
 curl "http://localhost:8787/addJobToMachine/findCurrentJobByMachineId?machineId=%machineId%"
 ```
-Loaded onto carrier:
-```shell
-curl -X POST -H "Content-Type:application/json" -d "{\"bookingId\":\"%bookingId%\",\"unLocode\":\"CNHKG\",\"handlingType\":\"LOAD\",\"completionTime\":\"2019-08-25\",\"voyageNumber\":\"0100S\"}" http://localhost:8786/cargohandling
-```
-Unloaded:
-```shell
-curl -X POST -H "Content-Type:application/json" -d "{\"bookingId\":\"%bookingId%\",\"unLocode\":\"CNHGH\",\"handlingType\":\"UNLOAD\",\"completionTime\":\"2019-08-28\",\"voyageNumber\":\"0100S\"}" http://localhost:8786/cargohandling
-```
-Loaded onto next carrier:
-```shell
-curl -X POST -H "Content-Type:application/json" -d "{\"bookingId\":\"%bookingId%\",\"unLocode\":\"CNHGH\",\"handlingType\":\"LOAD\",\"completionTime\":\"2019-09-01\",\"voyageNumber\":\"0101S\"}" http://localhost:8786/cargohandling
-```
-Unloaded:
-```shell
-curl -X POST -H "Content-Type:application/json" -d "{\"bookingId\":\"%bookingId%\",\"unLocode\":\"JNTKO\",\"handlingType\":\"UNLOAD\",\"completionTime\":\"2019-09-10\",\"voyageNumber\":\"0101S\"}" http://localhost:8786/cargohandling
-```
-Loaded onto next carrier:
-```shell
-curl -X POST -H "Content-Type:application/json" -d "{\"bookingId\":\"%bookingId%\",\"unLocode\":\"JNTKO\",\"handlingType\":\"LOAD\",\"completionTime\":\"2019-09-15\",\"voyageNumber\":\"0102S\"}" http://localhost:8786/cargohandling
-```
-Unloaded:
-```shell
-curl -X POST -H "Content-Type:application/json" -d "{\"bookingId\":\"%bookingId%\",\"unLocode\":\"USNYC\",\"handlingType\":\"UNLOAD\",\"completionTime\":\"2019-09-25\",\"voyageNumber\":\"0102S\"}" http://localhost:8786/cargohandling
-```
-Customs:
-```shell
-curl -X POST -H "Content-Type:application/json" -d "{\"bookingId\":\"%bookingId%\",\"unLocode\":\"USNYC\",\"handlingType\":\"CUSTOMS\",\"completionTime\":\"2019-09-26\",\"voyageNumber\":\"\"}" http://localhost:8786/cargohandling
-```
-Claimed:
-```shell
-curl -X POST -H "Content-Type:application/json" -d "{\"bookingId\":\"%bookingId%\",\"unLocode\":\"USNYC\",\"handlingType\":\"CLAIM\",\"completionTime\":\"2019-09-28\",\"voyageNumber\":\"\"}" http://localhost:8786/cargohandling
-```
-<!--
-(windows)
-```shell
-curl -X POST -H "Content-Type:application/json" -d "{\"bookingAmount\":20,\"originLocation\":\"HK\",\"destLocation\":\"NY\",\"destArrivalDeadline\":\"2010-08-01\"}" http://localhost:8787/cargobooking
-```
-```shell
-curl -X GET -H "Content-Type:application/json" http://localhost:8787/cargobooking/findAllBookingIds
-```
--->
 
 
+## FR1: Manage Machines Work Schedule (agentic)
+
+
+## FR2: Customer side: can see progress/scheduling of a job
+Find a job by job number and machineId:
+```shell
+set jobNumber=<<jobNumber>>
+```
+```shell
+curl "http://localhost:8787/addJobToMachine/findJobByJobNumber?jobNumber=%jobNumber%"
+```
+```shell
+curl "http://localhost:8787/addJobToMachine/findJobInfoByJobNumber?jobNumber=%jobNumber%"
+```
+
+
+
+## FR6: Handling newly submitted jobs (real-time) part 2
 ### View Booking Event Stream
 After running the `business-service`'s main class, check the Kafka topics with the following command:
 

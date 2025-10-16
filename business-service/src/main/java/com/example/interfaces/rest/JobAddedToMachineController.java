@@ -10,6 +10,8 @@ import com.example.interfaces.rest.transform.AddJobToMachineCommandDTOAssembler;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 @Controller
 @RequestMapping("/addJobToMachine")
 public class JobAddedToMachineController {
@@ -62,6 +64,39 @@ public class JobAddedToMachineController {
     public Job findCurrentJobByMachineId(@RequestParam("machineId") String machineId) {
         System.out.println("****Finding Current Job for Machine Machine id ****" + machineId);
         return machineSchedulingQueryService.findCurrentJobByMachineId(new MachineId(machineId));
+    }
+
+    /**
+     * GET method to retrieve a job from a job number
+     * @param jobNumber
+     * @return Job
+     */
+    @GetMapping("/findJobByJobNumber")
+    @ResponseBody
+    public Optional<Job> findJobByJobNumber(@RequestParam("jobNumber") Integer jobNumber) {
+        System.out.println("****Finding Job for given job name ****" + jobNumber);
+        return machineSchedulingQueryService.findJobByJobNumber(jobNumber);
+    }
+
+    /**
+     * GET method to retrieve a job's finish date and status from a job number
+     * @param jobNumber
+     * @return Job
+     */
+    @GetMapping("/findJobInfoByJobNumber")
+    @ResponseBody
+    public String findJobInfoByJobNumber(@RequestParam("jobNumber") Integer jobNumber) {
+        System.out.println("****Finding Job info for given job name ****" + jobNumber);
+        Optional<Job> job = machineSchedulingQueryService.findJobInfoByJobNumber(jobNumber);
+        if (job.isPresent()) {
+            Job foundJob = job.get();
+            return "Job Number " + foundJob.getJobNumber() + " info: \n    Job Status: " + foundJob.getJobStatus()
+                    + "\nProjected start date: " + foundJob.getStartDate() + "\nProjected end date: " + foundJob.getEndDate();
+        }
+        else {
+            return "Job not in system";
+        }
+
     }
 
 
