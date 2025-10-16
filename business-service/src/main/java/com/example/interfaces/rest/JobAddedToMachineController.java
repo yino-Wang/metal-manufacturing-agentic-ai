@@ -10,7 +10,9 @@ import com.example.interfaces.rest.transform.AddJobToMachineCommandDTOAssembler;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Comparator;
 import java.util.Optional;
+import java.util.List;
 
 @Controller
 @RequestMapping("/addJobToMachine")
@@ -91,13 +93,33 @@ public class JobAddedToMachineController {
         if (job.isPresent()) {
             Job foundJob = job.get();
             return "Job Number " + foundJob.getJobNumber() + " info: \n    Job Status: " + foundJob.getJobStatus()
-                    + "\nProjected start date: " + foundJob.getStartDate() + "\nProjected end date: " + foundJob.getEndDate();
-        }
-        else {
+                    + "\n    Projected start date: " + foundJob.getStartDate() + "\n    Projected end date: " + foundJob.getEndDate();
+        } else {
             return "Job not in system";
         }
-
     }
 
+    /**
+     * GET method to retrieve a job's finish date and status from a job number
+     * @param customerName
+     * @return Job
+     */
+    @GetMapping("/findAllCustomerJobsByCustomerName")
+    @ResponseBody
+    public String findAllCustomerJobsByCustomerName(@RequestParam("customerName") String customerName) {
+        System.out.println("****Finding all Jobs for given customer name ****" + customerName);
+        List<Job> jobs = machineSchedulingQueryService.findAllCustomerJobsByCustomerName(customerName);
+        if (jobs.isEmpty()) {
+            return "No jobs under customer name " + customerName + " exist in the system";
+        } else {
+            jobs.sort(Comparator.comparing(Job::getStartDate, Comparator.nullsLast(Comparator.naturalOrder())));
+            //jobs.sort(Comparator.nullsLast(Comparator.comparing(Job::getStartDate)));
+            StringBuilder outputString = new StringBuilder("All jobs under the customer name " + customerName);
+            for (Job j : jobs) {
+                outputString.append("\n").append(j);
+            }
+            return outputString.toString();
+        }
+    }
 
 }

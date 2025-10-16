@@ -25,7 +25,8 @@ public class AddJobToMachineCommandDTOAssembler {
                 addJobToMachineResource.getJobNumber(),
                 currentDate,
                 addJobToMachineResource.getMaterialNeeded(),
-                addJobToMachineResource.getMaterialAmount()
+                addJobToMachineResource.getMaterialAmount(),
+                addJobToMachineResource.getCustomerName()
         );
     }
 }

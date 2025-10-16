@@ -104,6 +104,13 @@ curl "http://localhost:8787/addJobToMachine/findJobByJobNumber?jobNumber=%jobNum
 ```shell
 curl "http://localhost:8787/addJobToMachine/findJobInfoByJobNumber?jobNumber=%jobNumber%"
 ```
+Find all jobs from a customer name:
+```shell
+set customerName=<<customerName>>
+```
+```shell
+curl "http://localhost:8787/addJobToMachine/findAllCustomerJobsByCustomerName?customerName=%customerName%"
+```
 
 
 

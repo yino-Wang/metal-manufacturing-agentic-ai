@@ -28,11 +28,13 @@ public class Job {
     private Integer jobTimeNeededDays;
     @Column(name="priority")
     private Integer priority;
+    @Column(name="customerName")
+    private String customerName;
 
     public Job() {
     }
 
-    public Job(int jobNumber, int jobTimeNeededDays, int priority, LocalDate submitDate, String materialNeeded, Integer materialAmount, JobStatus jobStatus) {
+    public Job(int jobNumber, int jobTimeNeededDays, int priority, LocalDate submitDate, String materialNeeded, Integer materialAmount, JobStatus jobStatus, String customerName) {
         this.jobNumber = jobNumber;
         this.jobTimeNeededDays = jobTimeNeededDays;
         this.priority = priority;
@@ -40,15 +42,17 @@ public class Job {
         this.materialNeeded = materialNeeded;
         this.materialAmount = materialAmount;
         this.jobStatus = jobStatus;
+        this.customerName = customerName;
     }
 
-    public Job(LocalDate submitDate, LocalDate startDate, LocalDate endDate, String materialNeeded, Integer materialAmount, JobStatus jobStatus) {
+    public Job(LocalDate submitDate, LocalDate startDate, LocalDate endDate, String materialNeeded, Integer materialAmount, JobStatus jobStatus, String customerName) {
         this.submitDate = submitDate;
         this.startDate = startDate;
         this.endDate = endDate;
         this.materialNeeded = materialNeeded;
         this.materialAmount = materialAmount;
         this.jobStatus = jobStatus;
+        this.customerName = customerName;
     }
 
     public Integer getJobNumber() {
@@ -62,6 +66,14 @@ public class Job {
     }
     public void setSubmitDate(LocalDate submitDate) {
         this.submitDate = submitDate;
+    }
+
+    public String getCustomerName() {
+        return customerName;
+    }
+
+    public void setCustomerName(String customerName) {
+        this.customerName = customerName;
     }
 
     public Integer getJobTimeNeededDays() {
@@ -111,8 +123,6 @@ public class Job {
         this.jobStatus = jobStatus;
     }
 
-
-
     @Override
     public String toString() {
         return "Job{" +
@@ -125,6 +135,7 @@ public class Job {
                 ", jobStatus=" + jobStatus +
                 ", jobTimeNeededDays=" + jobTimeNeededDays +
                 ", priority=" + priority +
+                ", customerName='" + customerName + '\'' +
                 '}';
     }
 }

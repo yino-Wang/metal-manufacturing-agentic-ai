@@ -22,7 +22,9 @@ import com.example.interfaces.rest.MachineScheduledEvent;
         @NamedQuery(name = "Machine.findJobByJobNumber",
                 query = "SELECT j FROM Machine m JOIN m.jobList.jobs j WHERE j.jobNumber = :jobNumber"),
         @NamedQuery(name = "Machine.findJobInfoByJobNumber",
-                query = "SELECT j FROM Machine m JOIN m.jobList.jobs j WHERE j.jobNumber = :jobNumber")})
+                query = "SELECT j FROM Machine m JOIN m.jobList.jobs j WHERE j.jobNumber = :jobNumber"),
+        @NamedQuery(name = "Machine.findAllCustomerJobsByCustomerName",
+                query = "SELECT j FROM Machine m JOIN m.jobList.jobs j WHERE j.customerName = :customerName")})
 
 public class Machine extends AbstractAggregateRoot<Machine> {
     @Id
