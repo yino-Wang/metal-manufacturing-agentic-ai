@@ -3,7 +3,7 @@ package com.example.service.usecase;
 import com.example.domain.model.aggregates.Employee;
 import com.example.domain.model.entities.AgentInput;
 import com.example.domain.model.entities.ShiftSchedule;
-import com.example.infrastructure.client.OpenAIClient;
+import com.example.infrastructure.client.GeminiClient;
 import com.example.infrastructure.repository.EmployeeRepository;
 import com.example.service.DTO.AutoScheduleResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,15 +16,15 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.*;
 
 /**
- * OpenAI API configuration and AI scheduling functionality validation tests
+ * Google Gemini API configuration and AI scheduling functionality validation tests
  */
 @SpringBootTest
 @ActiveProfiles("test")
 @Transactional
-class OpenAIValidationTest {
+class GeminiValidationTest {
 
     @Autowired
-    private OpenAIClient openAIClient;
+    private GeminiClient geminiClient;
 
     @Autowired
     private GenerateShiftPlanService generateShiftPlanService;
@@ -60,8 +60,8 @@ class OpenAIValidationTest {
     }
 
     @Test
-    void testOpenAIClientDirectly() {
-        System.out.println("\n=== Direct OpenAI Client Test ===");
+    void testGeminiClientDirectly() {
+        System.out.println("\n=== Direct Gemini Client Test ===");
 
         try {
             // Prepare test input
@@ -72,11 +72,11 @@ class OpenAIValidationTest {
             System.out.println("- Time range: " + input.getStartTime() + " to " + input.getEndTime());
             System.out.println("- Staffing requirements: " + input.getStaffingRequirements());
 
-            // Direct call to OpenAI client
-            System.out.println("\n🤖 Calling OpenAI API...");
+            // Direct call to Gemini client
+            System.out.println("\n🤖 Calling Gemini API...");
             long startTime = System.currentTimeMillis();
 
-            List<ShiftSchedule> schedules = openAIClient.generateShiftPlan(input);
+            List<ShiftSchedule> schedules = geminiClient.generateShiftPlan(input);
 
             long endTime = System.currentTimeMillis();
             long duration = endTime - startTime;
@@ -85,7 +85,7 @@ class OpenAIValidationTest {
 
             // Verify results
             if (schedules != null && !schedules.isEmpty()) {
-                System.out.println("✅ OpenAI API call successful!");
+                System.out.println("✅ Gemini API call successful!");
                 System.out.println("📋 Generated shift plans:");
 
                 for (int i = 0; i < schedules.size(); i++) {
@@ -99,7 +99,7 @@ class OpenAIValidationTest {
                 validateScheduleQuality(schedules, input);
 
             } else {
-                System.out.println("❌ OpenAI API returned empty results");
+                System.out.println("❌ Gemini API returned empty results");
                 System.out.println("Possible causes:");
                 System.out.println("1. Invalid API key");
                 System.out.println("2. Network connection issues");
@@ -108,11 +108,11 @@ class OpenAIValidationTest {
             }
 
         } catch (Exception e) {
-            System.err.println("❌ OpenAI API test failed: " + e.getMessage());
+            System.err.println("❌ Gemini API test failed: " + e.getMessage());
             e.printStackTrace();
 
             // Analyze specific error types
-            analyzeOpenAIError(e);
+            analyzeGeminiError(e);
         }
     }
 
@@ -171,8 +171,8 @@ class OpenAIValidationTest {
     }
 
     @Test
-    void testOpenAIConnectivity() {
-        System.out.println("\n=== OpenAI Connectivity Test ===");
+    void testGeminiConnectivity() {
+        System.out.println("\n=== Gemini Connectivity Test ===");
 
         try {
             // Create simplest test input
@@ -196,10 +196,10 @@ class OpenAIValidationTest {
             System.out.println("🔍 Testing basic connection...");
 
             // Try simple call
-            List<ShiftSchedule> result = openAIClient.generateShiftPlan(simpleInput);
+            List<ShiftSchedule> result = geminiClient.generateShiftPlan(simpleInput);
 
             if (result != null) {
-                System.out.println("✅ OpenAI API connection normal");
+                System.out.println("✅ Gemini API connection normal");
                 System.out.println("📡 API can respond to requests normally");
 
                 if (!result.isEmpty()) {
@@ -208,7 +208,7 @@ class OpenAIValidationTest {
                     System.out.println("⚠️ AI returned empty results, but connection is normal");
                 }
             } else {
-                System.out.println("❌ OpenAI API returned null");
+                System.out.println("❌ Gemini API returned null");
             }
 
         } catch (Exception e) {
@@ -320,7 +320,7 @@ class OpenAIValidationTest {
         }
     }
 
-    private void analyzeOpenAIError(Exception e) {
+    private void analyzeGeminiError(Exception e) {
         System.out.println("\n🔍 Error Analysis:");
 
         String errorMessage = e.getMessage();
@@ -329,10 +329,10 @@ class OpenAIValidationTest {
         if (errorMessage != null) {
             if (errorMessage.contains("401") || errorMessage.contains("Unauthorized")) {
                 System.out.println("❌ Invalid or expired API key");
-                System.out.println("💡 Solution: Check openai.api.key configuration in application.properties");
+                System.out.println("💡 Solution: Check google.api.key configuration in application.properties");
             } else if (errorMessage.contains("403") || errorMessage.contains("Forbidden")) {
                 System.out.println("❌ API access denied - possibly insufficient quota");
-                System.out.println("💡 Solution: Check OpenAI account balance and quota");
+                System.out.println("💡 Solution: Check Google Cloud account balance and quota");
             } else if (errorMessage.contains("429")) {
                 System.out.println("❌ API call rate too high");
                 System.out.println("💡 Solution: Reduce call frequency or upgrade account");
@@ -356,11 +356,11 @@ class OpenAIValidationTest {
         System.out.println("\n🛠️ Connection Troubleshooting:");
         System.out.println("1. Check application.properties configuration");
         System.out.println("2. Verify API key format and validity");
-        System.out.println("3. Confirm network can access api.openai.com");
+        System.out.println("3. Confirm network can access api.google.com");
         System.out.println("4. Check if proxy settings are needed");
-        System.out.println("5. Verify OpenAI service status");
+        System.out.println("5. Verify Google Cloud service status");
 
         // Analyze specific errors
-        analyzeOpenAIError(e);
+        analyzeGeminiError(e);
     }
 }

@@ -3,51 +3,40 @@ package com.example.infrastructure.client;
 import com.example.domain.model.entities.AgentInput;
 import com.example.domain.model.entities.ShiftSchedule;
 import com.example.domain.model.aggregates.Employee;
-import org.springframework.beans.factory.annotation.Value;
+import dev.langchain4j.model.chat.ChatModel;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
-import com.theokanning.openai.completion.chat.ChatCompletionRequest;
-import com.theokanning.openai.completion.chat.ChatMessage;
-import com.theokanning.openai.service.OpenAiService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.JsonNode;
 
-import java.util.Arrays;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Map;
 import java.util.ArrayList;
-import java.time.Duration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Service
-public class OpenAIClient implements LLMClient {
-    private static final Logger logger = LoggerFactory.getLogger(OpenAIClient.class);
-    private final OpenAiService openAiService;
+public class GeminiClient implements LLMClient {
+    private static final Logger logger = LoggerFactory.getLogger(GeminiClient.class);
+    private final ChatModel chatModel;
     private final ObjectMapper objectMapper;
     private final SimpleDateFormat dateFormat;
-    private final String apiKey;
 
-    public OpenAIClient(@Value("${openai.api.key}") String apiKey) {
-        this.apiKey = apiKey;
-        logger.info("Initializing OpenAI client with API key: {}***",
-                   apiKey != null && apiKey.length() > 8 ? apiKey.substring(0, 8) : "null");
+    @Autowired
+    public GeminiClient(ChatModel chatModel, ObjectMapper objectMapper, SimpleDateFormat dateFormat) {
 
-        // Create OpenAI service with timeout configuration
-        this.openAiService = new OpenAiService(apiKey, Duration.ofSeconds(60));
-        this.objectMapper = new ObjectMapper();
-        this.dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        this.chatModel = chatModel;
+        this.objectMapper = objectMapper;
+        this.dateFormat = dateFormat;
     }
+
 
     @Override
     public List<ShiftSchedule> generateShiftPlan(AgentInput input) {
-        // Validate API key
-        if (apiKey == null || apiKey.trim().isEmpty()) {
-            throw new RuntimeException("OpenAI API key is not configured. Please set openai.api.key in application.properties");
-        }
-
-        if (!apiKey.startsWith("sk-")) {
-            throw new RuntimeException("Invalid OpenAI API key format. API key should start with 'sk-'");
+        if (chatModel == null) {
+            throw new RuntimeException("Google Gemini chat model is not configured. Please check langchain4j.google-ai-gemini configuration in application.properties");
         }
 
         int maxRetries = 3;
@@ -55,11 +44,11 @@ public class OpenAIClient implements LLMClient {
 
         for (int attempt = 1; attempt <= maxRetries; attempt++) {
             try {
-                logger.info("Attempting to call OpenAI API (attempt {}/{})", attempt, maxRetries);
-                return callOpenAIAPI(input);
+                logger.info("Attempting to call Google Gemini API (attempt {}/{})", attempt, maxRetries);
+                return callGeminiAPI(input);
             } catch (Exception e) {
                 lastException = e;
-                logger.warn("OpenAI API call attempt {} failed: {}", attempt, e.getMessage());
+                logger.warn("Google Gemini API call attempt {} failed: {}", attempt, e.getMessage());
 
                 if (attempt < maxRetries) {
                     try {
@@ -73,45 +62,35 @@ public class OpenAIClient implements LLMClient {
             }
         }
 
-        logger.error("All {} attempts to call OpenAI API failed", maxRetries);
+        logger.error("All {} attempts to call Google Gemini API failed", maxRetries);
         throw new RuntimeException("Failed to generate shift plan after " + maxRetries + " attempts", lastException);
     }
 
-    private List<ShiftSchedule> callOpenAIAPI(AgentInput input) {
+    private List<ShiftSchedule> callGeminiAPI(AgentInput input) {
         try {
             String prompt = buildPrompt(input);
-            logger.info("Sending prompt to OpenAI (length: {} characters)", prompt.length());
+            logger.info("Sending prompt to Google Gemini (length: {} characters)", prompt.length());
             logger.debug("Full prompt: {}", prompt);
 
-            var completion = openAiService.createChatCompletion(
-                    ChatCompletionRequest.builder()
-                            .model("gpt-3.5-turbo")
-                            .messages(Arrays.asList(
-                                    new ChatMessage("system", "You are an AI scheduling assistant specialized in creating optimal shift plans. " +
-                                            "Return ONLY a valid JSON array with the following structure: " +
-                                            "[{\"employeeId\": number, \"shiftDate\": \"YYYY-MM-DD\", \"shiftType\": \"string\"}]. " +
-                                            "Do not include any other text or explanation."),
-                                    new ChatMessage("user", prompt)
-                            ))
-                            .temperature(0.3)  // Lower temperature for more consistent output
-                            .maxTokens(1000)   // Limit response size
-                            .build()
-            );
-
-            String response = completion.getChoices().get(0).getMessage().getContent();
-            logger.info("Received response from OpenAI (length: {} characters)", response.length());
+            String response = chatModel.chat(prompt).toString();
+            logger.info("Received response from Google Gemini (length: {} characters)", response.length());
             logger.debug("Full response: {}", response);
 
             return parseResponse(response, input);
 
         } catch (Exception e) {
-            logger.error("Error in OpenAI API call: ", e);
-            throw new RuntimeException("OpenAI API call failed: " + e.getMessage(), e);
+            logger.error("Error in Google Gemini API call: ", e);
+            throw new RuntimeException("Google Gemini API call failed: " + e.getMessage(), e);
         }
     }
 
     private String buildPrompt(AgentInput input) {
         StringBuilder prompt = new StringBuilder();
+        prompt.append("You are an AI scheduling assistant specialized in creating optimal shift plans. ");
+        prompt.append("Return ONLY a valid JSON array with the following structure: ");
+        prompt.append("[{\"employeeId\": number, \"shiftDate\": \"YYYY-MM-DD\", \"shiftType\": \"string\"}]. ");
+        prompt.append("Do not include any other text or explanation.\n\n");
+
         prompt.append("Generate an optimal shift schedule with the following requirements:\n\n");
 
         // Time period
@@ -177,16 +156,16 @@ public class OpenAIClient implements LLMClient {
                     schedules.add(schedule);
                 }
             } else {
-                logger.error("Unexpected JSON format from OpenAI response");
-                throw new RuntimeException("Unexpected JSON format from OpenAI response");
+                logger.error("Unexpected JSON format from Google Gemini response");
+                throw new RuntimeException("Unexpected JSON format from Google Gemini response");
             }
 
-            logger.info("Successfully parsed {} schedule(s) from OpenAI response", schedules.size());
+            logger.info("Successfully parsed {} schedule(s) from Google Gemini response", schedules.size());
             return schedules;
 
         } catch (Exception e) {
-            logger.error("Error parsing OpenAI response: {}", response, e);
-            throw new RuntimeException("Failed to parse shift schedule from OpenAI response: " + e.getMessage(), e);
+            logger.error("Error parsing Google Gemini response: {}", response, e);
+            throw new RuntimeException("Failed to parse shift schedule from Google Gemini response: " + e.getMessage(), e);
         }
     }
 

@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 # Metal Manufacturing Agentic AI System
 
 // ...existing code...
@@ -324,36 +324,36 @@ curl -X GET -H "Content-Type:application/json" http://localhost:8787/streamquery
 
 Schedule a machine:
 ```shell
-curl -X POST -H "Content-Type:application/json" -d "{\"machineId\":\"Machine1\",\"employeeName\":\"John Smith\"}" http://localhost:8787/machinescheduling
+curl -X POST -H "Content-Type:application/json" -d "{\"schedulingId\":\"Machine1\",\"employeeName\":\"John Smith\"}" http://localhost:8787/machinescheduling
 ```
 Get all scheduledIds of all machines:
 ```shell
 curl -X GET -H "Content-Type:application/json" http://localhost:8787/machinescheduling/findAllSchedulingIds
 ```
-Find a machine from a machineId - also shows all allocated jobs (replace `<<machineId>>` with the returned book key):
+Find a machine from a schedulingId - also shows all allocated jobs (replace `<<schedulingId>>` with the returned book key):
 ```shell
-set machineId=<<machineId>>
+set schedulingId=<<schedulingId>>
 ```
 ```shell
-curl "http://localhost:8787/machinescheduling/findMachine?machineId=%machineId%"
+curl "http://localhost:8787/machinescheduling/findMachine?schedulingId=%schedulingId%"
 ```
 Add a new job to a machine:
 ```shell
 curl -X POST -H "Content-Type:application/json" -d "{\"machineName\":\"machine1\",\"jobNumber\":1000,\"materialNeeded\":\"wood\",\"materialAmount\":23}" http://localhost:8787/addJobToMachine
 ```
-Find all the jobs of a specific machine via machineId
+Find all the jobs of a specific machine via schedulingId
 ```shell
-set machineId=<<machineId>>
+set schedulingId=<<schedulingId>>
 ```
 ```shell
-curl "http://localhost:8787/addJobToMachine/findJobsBySchedulingId?machineId=%machineId%"
+curl "http://localhost:8787/addJobToMachine/findJobsBySchedulingId?schedulingId=%schedulingId%"
 ```
-Find the first scheduled job of a specific machine via machineId
+Find the first scheduled job of a specific machine via schedulingId
 ```shell
-set machineId=<<machineId>>
+set schedulingId=<<schedulingId>>
 ```
 ```shell
-curl "http://localhost:8787/addJobToMachine/findCurrentJobBySchedulingId?machineId=%machineId%"
+curl "http://localhost:8787/addJobToMachine/findCurrentJobBySchedulingId?schedulingId=%schedulingId%"
 ```
 Loaded onto carrier:
 ```shell
@@ -427,4 +427,4 @@ For this purpose, in Linux/MacOS, delete the folders `/tmp/zookeeper`, `/tmp/kaf
 and `/tmp/kafka-streams` (if any). In Windows, delete the folders `C:\tmp\zookeeper`,
 `C:\tmp\kafka-logs` and `C:\kafka\kafka-streams` (if any).
 
->>>>>>> main
+
