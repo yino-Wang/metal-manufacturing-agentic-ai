@@ -1,4 +1,4 @@
-package com.example.presentation;
+package com.example;
 
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -13,12 +13,12 @@ import java.util.List;
 public class ExternalNewSchedule {
 
     //NewSchedule is the class you create - see comments below
-    public NewSchedule fetchNewSchedule() {
+    public YourClass fetchNewSchedule(String machineId) {
 
         RestTemplate restTemplate = new RestTemplate();
         String url = "http://localhost:8787/addJobToMachine/findScheduleByMachineId";
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url)
-                .queryParam("machineId");  //this will not work yet, will maybe do this so that it returns all current jobs
+                .queryParam(machineId);  //this will not work yet, will maybe do this so that it returns all current jobs
         //and you don't need to pass in any parameters, or just gets all the top ones
         //you should be able to make the rest of this logic work - it just won't run because of my end
         //will try and do this tomorrow
@@ -37,7 +37,7 @@ public class ExternalNewSchedule {
         //i.e. MaterialsNeeded class only stores the dictionary you can then access in your microservice
         //as long as an instance of MaterialsNeeded is stored in your main aggregate, it will be saved in the
         //main aggreate's repository
-        return new MaterialsNeeded(Dictionary);
+        return new YourClass(jobs);
     }
 }
 
