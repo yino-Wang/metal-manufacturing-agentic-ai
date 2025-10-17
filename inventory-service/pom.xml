@@ -4,18 +4,17 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.example</groupId>
-    <artifactId>inventory-ai-service</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
-    <name>Inventory AI Service</name>
-    <description>Inventory microservice with AI recommendations (assignment-compliant stack)</description>
-
+    <!-- Parent project reference -->
     <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.3.4</version>
-        <relativePath/> <!-- lookup parent from repository -->
+        <groupId>com.example</groupId>
+        <artifactId>metal-manufacturing-ai</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
     </parent>
+
+    <!-- Unique artifactId for this microservice -->
+    <artifactId>inventory-service</artifactId>
+    <name>Inventory AI Service</name>
+    <packaging>jar</packaging>
 
     <properties>
         <java.version>21</java.version>
@@ -38,14 +37,14 @@
             <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
 
-        <!-- In-memory database for dev/testing -->
+        <!-- In-memory database for local development -->
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
             <scope>runtime</scope>
         </dependency>
 
-        <!-- ===== Messaging / Streaming ===== -->
+        <!-- ===== Messaging / Event Streaming ===== -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-stream</artifactId>
@@ -55,7 +54,7 @@
             <artifactId>spring-cloud-stream-binder-kafka</artifactId>
         </dependency>
 
-        <!-- ===== AI / LLM integration ===== -->
+        <!-- ===== AI / LLM Integration ===== -->
         <dependency>
             <groupId>dev.langchain4j</groupId>
             <artifactId>langchain4j</artifactId>
@@ -68,11 +67,12 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+
     </dependencies>
 
     <dependencyManagement>
         <dependencies>
-            <!-- Align Spring Cloud Stream with Boot version -->
+            <!-- Align Spring Cloud Stream dependencies -->
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-dependencies</artifactId>
@@ -89,9 +89,10 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <layers enabled="true"/>
+                    <layers enabled="true" />
                 </configuration>
             </plugin>
         </plugins>
     </build>
+
 </project>
