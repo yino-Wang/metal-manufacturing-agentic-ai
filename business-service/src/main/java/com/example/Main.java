@@ -3,9 +3,11 @@ package com.example;
 //import com.example.infrastructure.agentic.ModelLogger;
 import com.example.application.service.SchedulingService;
 import com.example.domain.model.aggreates.Machine;
+import com.example.domain.model.valueobjects.Schedule;
 import com.example.infrastructure.repositories.MachineRepository;
 import com.example.interfaces.rest.dto.AddJobToMachineResource;
 import com.example.interfaces.rest.dto.MachineIdDto;
+import com.example.interfaces.rest.dto.ScheduleDto;
 import com.example.interfaces.rest.dto.ScheduleMachineResource;
 //import dev.langchain4j.model.chat.listener.ChatModelListener;
 import org.springframework.boot.SpringApplication;
@@ -77,9 +79,11 @@ public class Main {
             //System.out.println("******" + schedulingId + job + "*****");
             //System.out.println(job);
 
-
             ///create fake schedule
-            service.processAllMachines();
+            Schedule schedule = service.processMachine(machineId);
+
+            ScheduleDto scheduleDto = restTemplate.postForObject(urlAddJob, schedule, ScheduleDto.class);
+
             Thread.sleep(5000);
         }
     }

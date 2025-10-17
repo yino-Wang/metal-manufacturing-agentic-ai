@@ -122,4 +122,19 @@ public class JobAddedToMachineController {
         }
     }
 
+    /**
+     * GET method to retrieve a job's finish date and status from a job number
+     * @param machineId
+     * @return Job
+     */
+    @GetMapping("/findScheduleByMachineId")
+    @ResponseBody
+    public Machine findScheduleByMachineId(@RequestParam("machineId") String machineId) {
+        //System.out.println("****Finding all Jobs for given customer name ****" + customerName);
+        Machine machine = machineSchedulingQueryService.findScheduleByMachineId(machineId);
+        return machine;
+    }
+
+
+
 }
