@@ -5,14 +5,10 @@ import jakarta.persistence.*;
 @Embeddable
 public class CurrentJob {
     @Enumerated(EnumType.STRING)
-    @Column(name = "currentJobStatus")
-    private JobStatus currentJobStatus;
     @Embedded
     private LastJobHandledEvent lastEvent;
     //Predictions for the Cargo activity. Helps the operator in determining if anything needs to be changed for the future
     public static final LastJobHandledEvent NO_ACTIVITY = new LastJobHandledEvent();
-    @Embedded
-    private JobHandlingActivity nextExpectedActivity;
 
     /**
      * Method to calculate the schedule status of the machine
@@ -48,9 +44,7 @@ public class CurrentJob {
     @Override
     public String toString() {
         return "CurrentJob{" +
-                "currentJobStatus=" + currentJobStatus +
                 ", lastEvent=" + lastEvent +
-                ", nextExpectedActivity=" + nextExpectedActivity +
                 '}';
     }
 }

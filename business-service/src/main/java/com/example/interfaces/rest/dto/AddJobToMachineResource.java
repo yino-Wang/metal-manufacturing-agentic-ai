@@ -7,7 +7,7 @@ public class AddJobToMachineResource {
     private String machineId;
     private int jobTimeNeededDays;
     private int priority;
-    private LocalDate submitDate;
+    private LocalDate dueDate;
     private String materialNeeded;
     private int materialAmount;
     private String customerName;
@@ -19,18 +19,18 @@ public class AddJobToMachineResource {
         this.jobTimeNeededDays = jobTimeNeededDays;
         this.priority = priority;
         this.machineId = machineId;
-        this.submitDate = LocalDate.now();
+        this.dueDate = LocalDate.now();
         this.materialNeeded = materialName;
         this.materialAmount = materialAmount;
         this.customerName = customerName;
     }
 
-    public AddJobToMachineResource(int jobNumber, int jobTimeNeededDays, int priority, String machineId, LocalDate submitDate, String materialName, int materialAmount, String customerName) {
+    public AddJobToMachineResource(int jobNumber, int jobTimeNeededDays, int priority, String machineId, LocalDate dueDate, String materialName, int materialAmount, String customerName) {
         this.jobNumber = jobNumber;
         this.jobTimeNeededDays = jobTimeNeededDays;
         this.priority = priority;
         this.machineId = machineId;
-        this.submitDate = submitDate;
+        this.dueDate = dueDate;
         this.materialNeeded = materialName;
         this.materialAmount = materialAmount;
         this.customerName = customerName;
@@ -44,12 +44,12 @@ public class AddJobToMachineResource {
         this.machineId = machineId;
     }
 
-    public LocalDate getSubmitDate() {
-        return submitDate;
+    public LocalDate getDueDate() {
+        return dueDate;
     }
 
-    public void setSubmitDate(LocalDate submitDate) {
-        this.submitDate = submitDate;
+    public void setDueDate(LocalDate dueDate) {
+        this.dueDate = dueDate;
     }
 
     public String getMaterialNeeded() {
@@ -105,7 +105,7 @@ public class AddJobToMachineResource {
                 ", machineId='" + machineId + '\'' +
                 ", jobTimeNeededDays=" + jobTimeNeededDays +
                 ", priority=" + priority +
-                ", submitDate=" + submitDate +
+                ", dueDate=" + dueDate +
                 ", materialNeeded='" + materialNeeded + '\'' +
                 ", materialAmount=" + materialAmount +
                 ", customerName='" + customerName + '\'' +
