@@ -36,7 +36,7 @@ public class Material {
     public void setQuantity(int quantity) { this.quantity = quantity; }
 
     public boolean isLowStock() {
-        return quantity < 500;
+        return quantity < 100;
     }
 
     @Override
