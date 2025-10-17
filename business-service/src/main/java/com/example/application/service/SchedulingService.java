@@ -46,8 +46,8 @@ public class SchedulingService {
         for (Job job : jobs) {
             LocalDate newStartTime;
 
-            if (lastJobEndTime == null || lastJobEndTime.isBefore(job.getSubmitDate())) {
-                newStartTime = job.getSubmitDate();
+            if (lastJobEndTime == null || lastJobEndTime.isBefore(job.getDueDate())) {
+                newStartTime = job.getDueDate();
             } else {
                 newStartTime = lastJobEndTime;
             }

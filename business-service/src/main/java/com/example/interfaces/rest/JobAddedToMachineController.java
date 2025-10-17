@@ -92,8 +92,8 @@ public class JobAddedToMachineController {
         Optional<Job> job = machineSchedulingQueryService.findJobInfoByJobNumber(jobNumber);
         if (job.isPresent()) {
             Job foundJob = job.get();
-            return "Job Number " + foundJob.getJobNumber() + " info: \n    Job Status: " + foundJob.getJobStatus()
-                    + "\n    Projected start date: " + foundJob.getStartDate() + "\n    Projected end date: " + foundJob.getEndDate();
+            return "Job Number " + foundJob.getJobNumber()
+                    + " info: \n    Projected start date: " + foundJob.getStartDate() + "\n    Projected end date: " + foundJob.getEndDate();
         } else {
             return "Job not in system";
         }

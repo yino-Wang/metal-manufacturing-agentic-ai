@@ -33,7 +33,7 @@ public class Job {
 
     @Column(name = "submit_date")
     @Temporal(TemporalType.DATE)
-    private Date submitDate;
+    private Date dueDate;
 
     @Column(name = "title")
     private String title;
@@ -85,11 +85,11 @@ public class Job {
     public void setStatus(String status) {
         this.status = status; }
 
-    public Date getSubmitDate() {
-        return submitDate; }
+    public Date getDueDate() {
+        return dueDate; }
 
-    public void setSubmitDate(Date submitDate) {
-        this.submitDate = submitDate; }
+    public void setDueDate(Date dueDate) {
+        this.dueDate = dueDate; }
 
     public String getTitle() {
         return title; }
