@@ -1,6 +1,5 @@
-package com.example.domain.model.entities;
+package com.example.domain.model.valueobjects;
 
-import com.example.domain.model.valueobjects.JobStatus;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;

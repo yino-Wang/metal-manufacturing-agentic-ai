@@ -17,8 +17,8 @@ public class ScheduleController {
         this.scheduleService = scheduleService;
     }
 
-    @GetMapping("/chat-generateSchedule")
-    public String getSchedule(@RequestParam String sessionId, @RequestParam String userMessage) {
-        return this.scheduleService.generateSchedule(sessionId, userMessage);
+    @GetMapping("/chat-generateSchedule/{machineName}")
+    public String getSchedule(@RequestParam String sessionId) {
+        return this.scheduleService.generateSchedule(sessionId, null);
     }
 }

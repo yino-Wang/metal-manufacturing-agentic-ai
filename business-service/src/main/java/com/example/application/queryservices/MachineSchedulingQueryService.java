@@ -2,7 +2,7 @@ package com.example.application.queryservices;
 
 import com.example.domain.model.aggreates.Machine;
 import com.example.domain.model.aggreates.SchedulingId;
-import com.example.domain.model.entities.Job;
+import com.example.domain.model.valueobjects.Job;
 import com.example.infrastructure.repositories.MachineRepository;
 import org.springframework.stereotype.Service;
 
@@ -63,6 +63,7 @@ public class MachineSchedulingQueryService {
     public Machine findAllJobsBySchedulingId(SchedulingId schedulingId) {
         return machineRepository.findAllJobsBySchedulingId(schedulingId);
     }
+
 
     /**
      * Returns a valid job schedule, making sure times are in order and JobStatus is correctly assigned for each job

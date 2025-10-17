@@ -1,6 +1,5 @@
 package com.example.domain.model.valueobjects;
 
-import com.example.domain.model.entities.Job;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;

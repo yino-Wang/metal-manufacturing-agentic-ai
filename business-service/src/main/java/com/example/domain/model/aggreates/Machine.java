@@ -2,7 +2,7 @@ package com.example.domain.model.aggreates;
 
 import com.example.domain.model.commands.ScheduleMachineCommand;
 import com.example.domain.model.entities.Employee;
-import com.example.domain.model.entities.Job;
+import com.example.domain.model.valueobjects.Job;
 import com.example.domain.model.valueobjects.*;
 import jakarta.persistence.*;
 import org.springframework.data.domain.AbstractAggregateRoot;
