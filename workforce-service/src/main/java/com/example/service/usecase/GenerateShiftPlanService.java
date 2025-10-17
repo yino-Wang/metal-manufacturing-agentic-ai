@@ -72,7 +72,7 @@ public class GenerateShiftPlanService {
         input.setEmployeeRequirements(staffingRequirements);
         input.setConstraints(constraints);
 
-        // 3. call OpenAI to generate shift plan
+        // 3. call gemini to generate shift plan
         List<ShiftSchedule> schedule = geminiClient.generateShiftPlan(input);
 
         // 4. set additional fields

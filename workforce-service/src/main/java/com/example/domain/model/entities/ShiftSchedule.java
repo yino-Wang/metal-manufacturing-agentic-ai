@@ -23,7 +23,7 @@ public class ShiftSchedule {
     private Date shiftDate;
 
     @Column(name = "shift_type")
-    private String shiftType;
+    private String shiftType; //delete
 
     @Column(name = "required_employees")
     private int requiredEmployees;
@@ -43,9 +43,9 @@ public class ShiftSchedule {
     private String status;
 
     @Column(name = "version")
-    private Integer version;
+    private Integer version; //delete
 
-    // 构造方法、getter、setter
+    // getter、setter
     public ShiftSchedule() {}
 
     public ShiftSchedule(Long employeeId, Date shiftDate, String shiftType, int requiredEmployees, Employee employee, Job job, Long jobId, String status, Integer version) {

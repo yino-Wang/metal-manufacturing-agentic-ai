@@ -106,7 +106,7 @@ public class WorkforceController {
         return response;
     }
 
-    // Clock In/Out and Timesheet Recording APIs
+    // Clock In/Out and Timesheet Recording APIs  --todo
     @PostMapping("/portal/employee/{employeeId}/clock-in-out")
     public ResponseEntity<?> recordTimesheet(
             @PathVariable Long employeeId,
@@ -153,7 +153,7 @@ public class WorkforceController {
             );
             return ResponseEntity.ok(response);
         } catch (Exception e) {
-            // 返回替代建议
+            //
             AutoScheduleResponse response = new AutoScheduleResponse();
             response.setAlternatives(generateShiftPlanService.recommendAlternativeEmployees(
                     request.getStartDate(), request.getShiftType(), 100f));
@@ -161,7 +161,7 @@ public class WorkforceController {
         }
     }
     // 1. Update shift plan (manager adjustment)
-    @PutMapping("/manager/portal/shift-plan/{id}")
+    @PutMapping("/manager/portal/shift-plan/{id}") //todo update path
     public ResponseEntity<?> updateShiftPlan(@PathVariable Long id, @RequestBody ShiftSchedule updatedData) {
         try {
             ShiftSchedule updated = generateShiftPlanService.updateShiftPlan(id, updatedData);
