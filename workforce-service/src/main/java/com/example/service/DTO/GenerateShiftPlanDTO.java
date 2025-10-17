@@ -11,43 +11,54 @@ public class GenerateShiftPlanDTO {
     private Date startDate;
     private Date endDate;
     private int requiredEmployees;
-    private String shiftType;
+    private Integer priority; // Remove shiftType, add priority
 
     // getters and setters
     public Long getJobId() {
-        return jobId; }
+        return jobId;
+    }
 
     public void setJobId(Long jobId) {
-        this.jobId = jobId; }
+        this.jobId = jobId;
+    }
 
     public Long getEmployeeId() {
-        return employeeId; }
+        return employeeId;
+    }
 
     public void setEmployeeId(Long employeeId) {
-        this.employeeId = employeeId; }
+        this.employeeId = employeeId;
+    }
 
     public Date getStartDate() {
-        return startDate; }
+        return startDate;
+    }
 
     public void setStartDate(Date startDate) {
-        this.startDate = startDate; }
+        this.startDate = startDate;
+    }
 
     public Date getEndDate() {
-        return endDate; }
+        return endDate;
+    }
 
     public void setEndDate(Date endDate) {
-        this.endDate = endDate; }
+        this.endDate = endDate;
+    }
 
     public int getRequiredEmployees() {
-        return requiredEmployees; }
+        return requiredEmployees;
+    }
 
     public void setRequiredEmployees(int requiredEmployees) {
-        this.requiredEmployees = requiredEmployees; }
+        this.requiredEmployees = requiredEmployees;
+    }
 
-    public String getShiftType() {
-        return shiftType; }
+    public Integer getPriority() {
+        return priority;
+    }
 
-    public void setShiftType(String shiftType) {
-        this.shiftType = shiftType; }
+    public void setPriority(Integer priority) {
+        this.priority = priority;
+    }
 }
-

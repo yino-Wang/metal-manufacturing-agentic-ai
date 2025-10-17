@@ -1,8 +1,9 @@
 package com.example.controller;
 
 import com.example.domain.model.aggregates.Employee;
+import com.example.domain.model.aggregates.Job;
 import com.example.domain.model.entities.Payslip;
-import com.example.domain.model.entities.ShiftSchedule;
+import com.example.domain.model.entities.ShiftPlan;
 import com.example.domain.model.entities.Timesheet;
 import com.example.infrastructure.repository.*;
 import com.example.service.DTO.AutoScheduleRequest;
@@ -85,7 +86,7 @@ public class WorkforceController {
             @PathVariable Long employeeId,
             @RequestParam(required = false) String startDate,
             @RequestParam(required = false) String endDate) {
-        List<ShiftSchedule> schedules = shiftPlanQueryService.findByEmployeeId(employeeId.longValue());
+        List<ShiftPlan> schedules = shiftPlanQueryService.findByEmployeeId(employeeId.longValue());
 
         Map<String, Object> response = new HashMap<>();
         response.put("upcomingShifts", getUpcomingShifts(schedules));
@@ -147,24 +148,29 @@ public class WorkforceController {
     @PostMapping("/manager/portal/auto-schedule")
     public ResponseEntity<AutoScheduleResponse> autoSchedule(@RequestBody AutoScheduleRequest request) {
         try {
+            // Create Job object with priority from request
+            Job job = new Job();
+            job.setJobId(request.getJobId());
+            job.setPriority(request.getPriority() != null ? request.getPriority() : 3); // Default priority 3 (MEDIUM)
+            List<Job> jobsToSchedule = Arrays.asList(job);
+
             AutoScheduleResponse response = generateShiftPlanService.autoGenerateShiftPlan(
-                    request.getStartDate(), request.getEndDate(), request.getJobId(),
-                    request.getRequiredEmployees(), request.getShiftType()
+                    request.getStartDate(), request.getEndDate(), jobsToSchedule,
+                    request.getRequiredEmployees()
             );
             return ResponseEntity.ok(response);
         } catch (Exception e) {
-            //
             AutoScheduleResponse response = new AutoScheduleResponse();
             response.setAlternatives(generateShiftPlanService.recommendAlternativeEmployees(
-                    request.getStartDate(), request.getShiftType(), 100f));
+                    request.getStartDate(), "general", 100f));
             return ResponseEntity.ok(response);
         }
     }
     // 1. Update shift plan (manager adjustment)
     @PutMapping("/manager/portal/shift-plan/{id}") //todo update path
-    public ResponseEntity<?> updateShiftPlan(@PathVariable Long id, @RequestBody ShiftSchedule updatedData) {
+    public ResponseEntity<?> updateShiftPlan(@PathVariable Long id, @RequestBody ShiftPlan updatedData) {
         try {
-            ShiftSchedule updated = generateShiftPlanService.updateShiftPlan(id, updatedData);
+            ShiftPlan updated = generateShiftPlanService.updateShiftPlan(id, updatedData);
             return ResponseEntity.ok(updated);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -175,7 +181,7 @@ public class WorkforceController {
     @PutMapping("/manager/portal/shift-plan/{id}/approve")
     public ResponseEntity<?> approveShiftPlan(@PathVariable Long id) {
         try {
-            ShiftSchedule approved = generateShiftPlanService.approveShiftPlan(id);
+            ShiftPlan approved = generateShiftPlanService.approveShiftPlan(id);
             return ResponseEntity.ok(approved);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -186,7 +192,7 @@ public class WorkforceController {
     @GetMapping("/manager/portal/shift-plan/{id}/validate")
     public ResponseEntity<?> validateShiftPlan(@PathVariable Long id) {
         try {
-            ShiftSchedule schedule = shiftPlanRepository.findById(id).orElseThrow();
+            ShiftPlan schedule = shiftPlanRepository.findById(id).orElseThrow();
             boolean isValid = generateShiftPlanService.validateCompliance(schedule.getEmployeeId(), schedule.getShiftDate());
             return ResponseEntity.ok(Map.of("compliance", isValid));
         } catch (Exception e) {
@@ -198,8 +204,8 @@ public class WorkforceController {
     @GetMapping("/manager/portal/shift-plan/{id}/versions")
     public ResponseEntity<?> getShiftPlanVersions(@PathVariable Long id) {
         try {
-            ShiftSchedule schedule = shiftPlanRepository.findById(id).orElseThrow();
-            List<ShiftSchedule> versions = shiftPlanRepository.findByEmployeeId(schedule.getEmployeeId());
+            ShiftPlan schedule = shiftPlanRepository.findById(id).orElseThrow();
+            List<ShiftPlan> versions = shiftPlanRepository.findByEmployeeId(schedule.getEmployeeId());
             return ResponseEntity.ok(versions);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -210,7 +216,7 @@ public class WorkforceController {
     @PostMapping("/manager/portal/shift-plan/{id}/notify")
     public ResponseEntity<?> notifyEmployee(@PathVariable Long id) {
         try {
-            ShiftSchedule schedule = shiftPlanRepository.findById(id).orElseThrow();
+            ShiftPlan schedule = shiftPlanRepository.findById(id).orElseThrow();
             generateShiftPlanService.notifyEmployee(schedule);
             return ResponseEntity.ok("Notification sent");
         } catch (Exception e) {
@@ -222,7 +228,7 @@ public class WorkforceController {
     @GetMapping("/manager/portal/shift-plan/{id}/alternatives")
     public ResponseEntity<?> getAlternatives(@PathVariable Long id, @RequestParam String skill, @RequestParam Float maxCost) {
         try {
-            ShiftSchedule schedule = shiftPlanRepository.findById(id).orElseThrow();
+            ShiftPlan schedule = shiftPlanRepository.findById(id).orElseThrow();
             List<Employee> alternatives = generateShiftPlanService.recommendAlternativeEmployees(schedule.getShiftDate(), skill, maxCost);
             return ResponseEntity.ok(alternatives);
         } catch (Exception e) {
@@ -245,16 +251,16 @@ public class WorkforceController {
                 .sum();
     }
 
-    private List<ShiftSchedule> getUpcomingShifts(List<ShiftSchedule> schedules) {
+    private List<ShiftPlan> getUpcomingShifts(List<ShiftPlan> schedules) {
         Date now = new Date();
         return schedules.stream()
                 .filter(s -> s.getShiftDate().after(now))
-                .sorted(Comparator.comparing(ShiftSchedule::getShiftDate))
+                .sorted(Comparator.comparing(ShiftPlan::getShiftDate))
                 .limit(5)
                 .collect(Collectors.toList());
     }
 
-    private double calculateTotalScheduledHours(List<ShiftSchedule> schedules) {
+    private double calculateTotalScheduledHours(List<ShiftPlan> schedules) {
         return schedules.stream()
                 .mapToDouble(s -> calculateShiftDuration(s))
                 .sum();
@@ -282,7 +288,7 @@ public class WorkforceController {
         return cal.get(Calendar.YEAR);
     }
 
-    private double calculateShiftDuration(ShiftSchedule schedule) {
+    private double calculateShiftDuration(ShiftPlan schedule) {
         // Implement shift duration calculation based on your business logic
         return 8.0; // Default to 8 hours per shift
     }

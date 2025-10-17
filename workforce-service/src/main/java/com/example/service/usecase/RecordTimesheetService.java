@@ -7,11 +7,10 @@ import com.example.infrastructure.repository.EmployeeRepository;
 import com.example.infrastructure.repository.TimesheetRepository;
 import com.example.infrastructure.repository.ShiftPlanRepository;
 import com.example.infrastructure.repository.TimesheetEventRepository;
-import com.example.domain.model.entities.ShiftSchedule;
+import com.example.domain.model.entities.ShiftPlan;
 import com.example.domain.model.commands.RecordTimesheetCommand;
 import com.example.infrastructure.messaging.TimesheetEventPublisher;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
 import java.util.Date;
@@ -52,10 +51,10 @@ public class RecordTimesheetService {
         timesheet.setSalaryPaid(salaryPaid);
 
         // determine status based on shift plan
-        ShiftSchedule shiftSchedule = shiftPlanRepository.findAll().stream()
+        ShiftPlan shiftPlan = shiftPlanRepository.findAll().stream()
             .filter(sp -> sp.getEmployeeId().equals(employeeId) && sp.getShiftDate().equals(date))
             .findFirst().orElse(null);
-        if (shiftSchedule == null) {
+        if (shiftPlan == null) {
             timesheet.setStatus("EXCEPTION"); // no shift plan found
         } else {
             // normal case
@@ -85,10 +84,10 @@ public class RecordTimesheetService {
         Float payRate = employee.getPay();
         Float salaryPaid = payRate != null ? payRate * command.getHoursWorked() : 0f;
         timesheet.setSalaryPaid(salaryPaid);
-        ShiftSchedule shiftSchedule = shiftPlanRepository.findAll().stream()
+        ShiftPlan shiftPlan = shiftPlanRepository.findAll().stream()
             .filter(sp -> sp.getEmployeeId().equals(command.getEmployeeId()) && sp.getShiftDate().equals(command.getWorkDate()))
             .findFirst().orElse(null);
-        if (shiftSchedule == null) {
+        if (shiftPlan == null) {
             timesheet.setStatus("EXCEPTION");
         } else {
             timesheet.setStatus("NORMAL");

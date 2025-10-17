@@ -48,32 +48,38 @@ public class KafkaScheduleConsumer {
                 return;
             }
 
-            logger.info("Processing machine schedule - ID: {}, Machine: {}, Production Line: {}, " +
-                       "Shift Type: {}, Required Employees: {}, Skills: {}",
-                       event.getScheduleId(), event.getMachineId(), event.getProductionLine(),
-                       event.getShiftType(), event.getRequiredEmployees(), event.getSkillRequirements());
+            logger.info("Processing machine schedule - ID: {}, Machine: {}, Job ID: {}, Priority: {}, " +
+                       "Start: {}, End: {}, Required Employees: {}, Skills: {}",
+                       event.getScheduleId(), event.getMachineId(), event.getJobId(), event.getPriority(),
+                       event.getStartTime(), event.getEndTime(), event.getRequiredEmployees(), event.getSkillRequirements());
 
-            // Delegate to service layer for workforce coordination
+            // Process the machine schedule event
             workforceCoordinationService.processMachineScheduleEvent(event);
 
-            logger.info("Successfully coordinated workforce for machine schedule event: {}", event.getScheduleId());
+            logger.info("Successfully processed machine schedule event: {}", event.getScheduleId());
 
         } catch (Exception e) {
-            logger.error("Error processing machine schedule event: {}", event, e);
+            logger.error("Error processing machine schedule event: {}", event.getScheduleId(), e);
             handleProcessingError(event, e);
         }
     }
 
     /**
-     * Handle errors in message processing
+     * Handle processing errors
      */
     private void handleProcessingError(MachineScheduleCreated event, Exception error) {
-        logger.error("Failed to process machine schedule event: {}", event, error);
+        try {
+            logger.error("Processing failed for machine schedule: {}", event.getScheduleId());
+            logger.error("Error details: Machine: {}, Job ID: {}, Priority: {}, Error: {}",
+                       event.getMachineId(), event.getJobId(), event.getPriority(), error.getMessage());
 
-        // TODO: 实现错误处理策略
-        // 1. 记录失败事件到数据库
-        // 2. 发送告警通知
-        // 3. 重试机制
-        // 4. 死信队列处理
+            // TODO: Implement error recovery strategies
+            // - Store failed event for retry
+            // - Send alert to operations team
+            // - Try alternative workforce assignment strategies
+
+        } catch (Exception e) {
+            logger.error("Failed to handle processing error: {}", e.getMessage());
+        }
     }
 }

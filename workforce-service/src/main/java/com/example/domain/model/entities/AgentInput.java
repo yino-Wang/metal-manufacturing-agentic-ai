@@ -1,6 +1,7 @@
 package com.example.domain.model.entities;
 
 import com.example.domain.model.aggregates.Employee;
+import com.example.domain.model.aggregates.Job;
 
 import java.util.Date;
 import java.util.List;
@@ -11,6 +12,7 @@ public class AgentInput {
     private List<Employee> availableEmployees;
     private Date startTime;
     private Date endTime;
+    private List<Job> jobsToSchedule;  // Add jobs with priorities
     private Map<String, Integer> staffingRequirements;
     private Map<String, Object> constraints;
 
@@ -37,6 +39,14 @@ public class AgentInput {
 
     public void setEndTime(Date endTime) {
         this.endTime = endTime;
+    }
+
+    public List<Job> getJobsToSchedule() {
+        return jobsToSchedule;
+    }
+
+    public void setJobsToSchedule(List<Job> jobsToSchedule) {
+        this.jobsToSchedule = jobsToSchedule;
     }
 
     public Map<String, Integer> getStaffingRequirements() {

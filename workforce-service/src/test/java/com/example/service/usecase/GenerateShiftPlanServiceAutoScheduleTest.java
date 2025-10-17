@@ -1,7 +1,7 @@
 package com.example.service.usecase;
 
 import com.example.domain.model.aggregates.Employee;
-import com.example.domain.model.entities.ShiftSchedule;
+import com.example.domain.model.entities.ShiftPlan;
 import com.example.service.DTO.AutoScheduleResponse;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -59,7 +58,7 @@ class GenerateShiftPlanServiceAutoScheduleTest {
                 System.out.println("✅ Auto scheduling successful!");
                 System.out.printf("Generated %d shift plans:%n", response.getShiftSchedules().size());
 
-                for (ShiftSchedule schedule : response.getShiftSchedules()) {
+                for (ShiftPlan schedule : response.getShiftSchedules()) {
                     System.out.printf("- Employee ID: %d, Shift: %s, Date: %s, Status: %s%n",
                         schedule.getEmployeeId(),
                         schedule.getShiftType(),
@@ -68,7 +67,7 @@ class GenerateShiftPlanServiceAutoScheduleTest {
                 }
 
                 // Verify schedule data integrity
-                for (ShiftSchedule schedule : response.getShiftSchedules()) {
+                for (ShiftPlan schedule : response.getShiftSchedules()) {
                     assertNotNull(schedule.getEmployeeId(), "Employee ID should not be null");
                     assertEquals(shiftType, schedule.getShiftType(), "Shift type should match");
                     assertEquals(jobId, schedule.getJobId(), "Job ID should match");
