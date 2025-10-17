@@ -77,6 +77,12 @@ public class MachineSchedulingQueryService {
         return machineRepository.findAllCustomerJobsByCustomerName((customerName));
     }
 
+    public Machine findScheduleByMachineId(String machineId) {
+        return machineRepository.findByMachineId(new MachineId(machineId));
+    }
+
+
+
 
     /**
      * Returns a valid job schedule, making sure times are in order and JobStatus is correctly assigned for each job

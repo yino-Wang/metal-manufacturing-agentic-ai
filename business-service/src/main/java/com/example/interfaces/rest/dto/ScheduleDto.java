@@ -1,21 +1,16 @@
-package com.example.domain.model.valueobjects;
+package com.example.interfaces.rest.dto;
 
-import jakarta.persistence.*;
+import com.example.domain.model.valueobjects.Job;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
-@Embeddable
-public class Schedule {
-
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name="schedule_id")
+public class ScheduleDto {
     private List<Job> jobs = new ArrayList<>();
 
-    public Schedule() {}
+    public ScheduleDto() {}
 
-    public Schedule(List<Job> jobs) {
+    public ScheduleDto(List<Job> jobs) {
         this.jobs = jobs;
     }
 

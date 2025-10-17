@@ -6,7 +6,7 @@ public class MachineIdDto {
 
     public MachineIdDto() {}
 
-    public MachineIdDto(String schedulingId) {
+    public MachineIdDto(String machineId) {
         this.machineId = machineId;
     }
 

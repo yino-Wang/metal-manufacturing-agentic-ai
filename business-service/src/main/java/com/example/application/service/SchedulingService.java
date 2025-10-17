@@ -1,7 +1,9 @@
 package com.example.application.service;
 
 import com.example.domain.model.aggreates.Machine;
+import com.example.domain.model.aggreates.MachineId;
 import com.example.domain.model.valueobjects.Job;
+import com.example.domain.model.valueobjects.Schedule;
 import com.example.infrastructure.repositories.MachineRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,18 +22,18 @@ public class SchedulingService {
     }
 
     @Transactional
-    public void processAllMachines() {
+    public Schedule processMachine(String machineId) {
         // Fetch all machines from the database
-        List<Machine> machines = machineRepository.findAll();
+        Machine machine = machineRepository.findByMachineId(new MachineId(machineId));
 
-        for (Machine machine : machines) {
-            System.out.println("Processing jobs for machine: " + machine.getMachineId());
-            processJobsForMachine(machine);
-        }
+        System.out.println("Processing jobs for machine: " + machine.getMachineId());
+        processJobsForMachine(machine);
+
+        return machine.getSchedule();
     }
 
     private void processJobsForMachine(Machine machine) {
-        // Jobs are already ordered by submitDate due to the @OrderBy annotation on the Machine entity
+
         List<Job> jobs = machine.getJobList().getJobs();
 
         if (jobs.isEmpty()) {
@@ -57,6 +59,8 @@ public class SchedulingService {
             // The changes are automatically tracked by the persistence context
             // and will be saved when the @Transactional method completes.
             System.out.println("  - Updated job " + job.getJobNumber() + ": start=" + job.getStartDate() + ", end=" + job.getEndDate());
+
+            machine.getSchedule().setJobs(jobs);
         }
     }
 }
