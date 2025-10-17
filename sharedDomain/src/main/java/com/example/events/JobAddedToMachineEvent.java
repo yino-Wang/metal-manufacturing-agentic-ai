@@ -1,4 +1,4 @@
-package com.example.interfaces.rest;
+package com.example.events;
 
 public class JobAddedToMachineEvent {
 
