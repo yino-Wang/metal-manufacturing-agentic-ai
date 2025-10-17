@@ -65,4 +65,18 @@ public class MachineScheduledController {
         machineIdList.forEach(x->System.out.println(x.getMachineId()));
         return machineIdList;
     }
+
+    /**
+     * GET method to retrieve a list of SchedulingIds
+     * @param
+     * @return List<MachineId>
+     */
+    @GetMapping("/findAllMachines")
+    @ResponseBody
+    public List<Machine> findAllMachines(){
+        final List<Machine> machinesList = machineSchedulingQueryService.findAllMachines();
+        //System.out.println("****Machine SchedulingID ****");
+        machinesList.forEach(x->System.out.println(x.toString()));
+        return machinesList;
+    }
 }
