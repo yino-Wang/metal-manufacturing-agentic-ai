@@ -5,12 +5,8 @@ import com.example.domain.model.aggreates.MachineId;
 import com.example.domain.model.commands.ScheduleMachineCommand;
 import com.example.domain.model.commands.AddJobToMachineCommand;
 import com.example.domain.model.valueobjects.Job;
-import com.example.domain.model.valueobjects.JobStatus;
-import com.example.domain.model.valueobjects.MachineName;
 import com.example.infrastructure.repositories.MachineRepository;
 import org.springframework.stereotype.Service;
-
-import java.util.UUID;
 
 @Service
 public class MachineSchedulingCommandService {
@@ -55,11 +51,11 @@ public class MachineSchedulingCommandService {
 
         machine.addJob(new
                 Job(addJobToMachineCommand.getJobNumber(), addJobToMachineCommand.getJobTimeNeededDays(), addJobToMachineCommand.getPriority(),
-                addJobToMachineCommand.getSubmitDate(), addJobToMachineCommand.getMaterialNeeded(),
-                addJobToMachineCommand.getMaterialAmount(), JobStatus.PENDING, addJobToMachineCommand.getCustomerName()));
+                addJobToMachineCommand.getDueDate(), addJobToMachineCommand.getMaterialNeeded(),
+                addJobToMachineCommand.getMaterialAmount(), addJobToMachineCommand.getCustomerName()));
         machineRepository.save(machine);
         return new Job(addJobToMachineCommand.getJobNumber(), addJobToMachineCommand.getJobTimeNeededDays(), addJobToMachineCommand.getPriority(),
-                addJobToMachineCommand.getSubmitDate(), addJobToMachineCommand.getMaterialNeeded(),
-                addJobToMachineCommand.getMaterialAmount(), JobStatus.PENDING, addJobToMachineCommand.getCustomerName());
+                addJobToMachineCommand.getDueDate(), addJobToMachineCommand.getMaterialNeeded(),
+                addJobToMachineCommand.getMaterialAmount(), addJobToMachineCommand.getCustomerName());
     }
 }

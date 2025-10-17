@@ -3,13 +3,13 @@ package com.example.domain.model.aggreates;
 import com.example.domain.model.commands.ScheduleMachineCommand;
 //import com.example.domain.model.entities.Employee;
 import com.example.domain.model.valueobjects.*;
+import com.example.events.JobAddedToMachineEvent;
+import com.example.events.JobAddedToMachineEventData;
+import com.example.events.MachineScheduledEvent;
+import com.example.events.MachineScheduledEventData;
 import jakarta.persistence.*;
 import org.springframework.data.domain.AbstractAggregateRoot;
 
-import com.example.interfaces.rest.JobAddedToMachineEventData;
-import com.example.interfaces.rest.JobAddedToMachineEvent;
-import com.example.interfaces.rest.MachineScheduledEventData;
-import com.example.interfaces.rest.MachineScheduledEvent;
 
 @Entity
 @NamedQueries({
@@ -24,7 +24,7 @@ import com.example.interfaces.rest.MachineScheduledEvent;
         @NamedQuery(name = "Machine.findJobInfoByJobNumber",
                 query = "SELECT j FROM Machine m JOIN m.jobList.jobs j WHERE j.jobNumber = :jobNumber"),
         @NamedQuery(name = "Machine.findAllCustomerJobsByCustomerName",
-                query = "SELECT j FROM Machine m JOIN m.jobList.jobs j WHERE j.customerName = :customerName")})
+                query = "SELECT j FROM Machine m JOIN m.jobList.jobs j WHERE j.customerName = :customerName"),})
 
 public class Machine extends AbstractAggregateRoot<Machine> {
     @Id
@@ -100,7 +100,7 @@ public class Machine extends AbstractAggregateRoot<Machine> {
                         job.getJobNumber(),
                         job.getJobTimeNeededDays(),
                         job.getPriority(),
-                        job.getSubmitDate(),
+                        job.getDueDate(),
                         job.getMaterialNeeded(),
                         job.getMaterialAmount(),
                         job.getCustomerName())));

@@ -48,7 +48,7 @@ public class Main {
         final String urlAddJob = "http://localhost:8787/addJobToMachine";
         Random rand = new Random();
         int maxMaterials = 50;
-        int maxDays = 15;
+        int maxDays = 30;
         String[] machines = {"machine1", "machine2", "machine3", "machine4"};
         int numMachines = machines.length;
         String[] materialNeeded = {"steel", "wood", "nails", "iron"};
@@ -71,9 +71,9 @@ public class Main {
             String customerName = customers[customer];
             int priorityChosen = rand.nextInt(priorityNum);
             int priority = priorityOptions[priorityChosen];
-            LocalDate submitDate = day.plusDays(rand.nextInt(10)); //submit date within the next 10 days
-            System.out.println("Adding job " + jobNumber + " to " + machineId + " for " + materialAmount + " of " + materialName + " on " + submitDate);
-            AddJobToMachineResource job = new AddJobToMachineResource(jobNumber, jobTimeNeededDays, priority, machineId, submitDate, materialName, materialAmount, customerName);
+            LocalDate dueDate = day.plusDays(rand.nextInt(10)); //submit date within the next 10 days
+            System.out.println("Adding job " + jobNumber + " to " + machineId + " for " + materialAmount + " of " + materialName + " on " + dueDate);
+            AddJobToMachineResource job = new AddJobToMachineResource(jobNumber, jobTimeNeededDays, priority, machineId, dueDate, materialName, materialAmount, customerName);
             //System.out.println("Posting job: " + job.toString());
             MachineIdDto schedulingId = restTemplate.postForObject(urlAddJob, job, MachineIdDto.class);
             //System.out.println("******" + schedulingId + job + "*****");

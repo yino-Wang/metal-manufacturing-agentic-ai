@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
+import java.util.Date;
 
 @Entity
 public class Job {
@@ -29,15 +30,13 @@ public class Job {
     private Integer jobTimeNeededDays;
     @Column(name="priority")
     private Integer priority;
-    @Column(name="customerName")
-    private String customerName;
-    @Column
+    @Column(name="title")
     private String title;
 
     public Job() {
     }
 
-    public Job(Long jobId, int jobTimeNeededDays, int priority, LocalDate submitDate, String materialNeeded, Integer materialAmount, JobStatus jobStatus, String customerName) {
+    public Job(Long jobId, int jobTimeNeededDays, int priority, LocalDate submitDate, String materialNeeded, Integer materialAmount, JobStatus jobStatus) {
         this.jobId = jobId;
         this.jobTimeNeededDays = jobTimeNeededDays;
         this.priority = priority;
@@ -45,17 +44,16 @@ public class Job {
         this.materialNeeded = materialNeeded;
         this.materialAmount = materialAmount;
         this.jobStatus = jobStatus;
-        this.customerName = customerName;
     }
 
-    public Job(LocalDate submitDate, LocalDate startDate, LocalDate endDate, String materialNeeded, Integer materialAmount, JobStatus jobStatus, String customerName) {
+    public Job(LocalDate submitDate, LocalDate startDate, LocalDate endDate, String materialNeeded, Integer materialAmount, JobStatus jobStatus) {
         this.submitDate = submitDate;
         this.startDate = startDate;
         this.endDate = endDate;
         this.materialNeeded = materialNeeded;
         this.materialAmount = materialAmount;
         this.jobStatus = jobStatus;
-        this.customerName = customerName;
+
     }
 
     public Long getJobId() {
@@ -71,13 +69,6 @@ public class Job {
         this.submitDate = submitDate;
     }
 
-    public String getCustomerName() {
-        return customerName;
-    }
-
-    public void setCustomerName(String customerName) {
-        this.customerName = customerName;
-    }
 
     public Integer getJobTimeNeededDays() {
         return jobTimeNeededDays;
@@ -125,23 +116,6 @@ public class Job {
     public void setJobStatus(JobStatus jobStatus) {
         this.jobStatus = jobStatus;
     }
-
-    // Add missing methods for jobNumber compatibility
-    public Integer getJobNumber() {
-        return this.jobId != null ? this.jobId.intValue() : null;
-    }
-
-    public void setJobNumber(Integer jobNumber) {
-        this.jobId = jobNumber != null ? jobNumber.longValue() : null;
-    }
-
-    @Override
-    public String toString() {
-        return "Job " + jobId + ": STATUS: " + jobStatus + ", PRIORITY: " + priority
-                + "\n    submitDate: " + submitDate + ", startDate: " + startDate + ", endDate: " + endDate + ", requiredDuration: " + jobTimeNeededDays
-                + "\n    customerName: " + customerName + ", materialNeeded: " + materialNeeded + ", materialAmount: " + materialAmount;
-    }
-
 
     public void setTitle(String title) {
         this.title = title;

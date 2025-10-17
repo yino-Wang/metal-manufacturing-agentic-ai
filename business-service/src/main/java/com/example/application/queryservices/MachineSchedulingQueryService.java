@@ -81,7 +81,9 @@ public class MachineSchedulingQueryService {
         return machineRepository.findByMachineId(new MachineId(machineId));
     }
 
-
+    public List<Machine> findAllMachines() {
+        return machineRepository.findAll();
+    }
 
 
     /**
