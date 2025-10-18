@@ -3,6 +3,8 @@ package com.example.domain.model.entities;
 import com.example.domain.model.aggregates.Employee;
 import com.example.domain.model.aggregates.Job;
 import jakarta.persistence.*;
+
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -61,11 +63,11 @@ public class ShiftPlan {
     }
 
     // Getter and setter methods
-    public Long getId() {
+    public Long getShiftPlanId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setShiftPlanId(Long id) {
         this.id = id;
     }
 
@@ -170,4 +172,6 @@ public class ShiftPlan {
             default: this.jobPriority = 3; break;
         }
     }
+
+
 }

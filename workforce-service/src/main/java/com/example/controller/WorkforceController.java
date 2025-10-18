@@ -689,7 +689,7 @@ public class WorkforceController {
                 "shiftDate", sp.getShiftDate(),
                 "status", sp.getStatus() != null ? sp.getStatus() : "PENDING",
                 "jobId", sp.getJobId() != null ? sp.getJobId() : 0L,
-                "requiredEmployees", sp.getRequiredEmployees() != null ? sp.getRequiredEmployees() : 1,
+                "requiredEmployees", sp.getRequiredEmployees() != 0 ? sp.getRequiredEmployees() : 1,
                 "version", sp.getVersion() != null ? sp.getVersion() : 1
             )).collect(Collectors.toList()));
             response.put("pagination", Map.of(
