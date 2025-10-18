@@ -2,7 +2,7 @@ package com.example.service.usecase;
 
 import com.example.domain.event.MachineScheduleCreated;
 import com.example.domain.model.aggregates.Job;
-import com.example.domain.model.entities.ShiftSchedule;
+import com.example.domain.model.entities.ShiftPlan;
 import com.example.domain.model.entities.MachineJobMapping;
 import com.example.infrastructure.repository.JobRepository;
 import com.example.infrastructure.repository.MachineJobMappingRepository;
@@ -15,6 +15,8 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.List;
+import java.util.Arrays;
 
 /**
  * WorkforceCoordinationService
@@ -60,36 +62,38 @@ public class WorkforceCoordinationService {
         try {
             logger.info("Received machine schedule event from Business MS: {}", event.getScheduleId());
 
-            // 1. Map machine/production line to job roles
-            Long jobId = mapMachineToJobRole(event.getMachineId(), event.getProductionLine());
-            if (jobId == null) {
-                logger.warn("No job mapping found for machine: {} on production line: {}",
-                           event.getMachineId(), event.getProductionLine());
-                return;
-            }
+            // 1. Create job list with priority from the event
+            Job job = new Job();
+            job.setJobId(event.getJobId().longValue());
+            job.setPriority(event.getPriority());
+            List<Job> jobsToSchedule = Arrays.asList(job);
 
-            // 2. Generate workforce plan based on machine schedule requirements
+            // 2. Generate workforce plan based on machine schedule requirements and job priority
             AutoScheduleResponse response = generateShiftPlanService.autoGenerateShiftPlan(
                 event.getStartTime(),
                 event.getEndTime(),
-                jobId,
-                event.getRequiredEmployees(),
-                event.getShiftType()
+                jobsToSchedule,
+                event.getRequiredEmployees()
             );
 
             // 3. Process the generated workforce schedule
-            if (response != null && !response.getShiftSchedules().isEmpty()) {
-                logger.info("Successfully coordinated {} employees for machine schedule ID: {}",
-                           response.getShiftSchedules().size(), event.getScheduleId());
-
+            if (response != null && !response.getShiftPlans().isEmpty()) {
                 processWorkforceAssignment(response, event);
+                recordShiftPlanningHistory(response, event);
+                calculateWorkforceMetrics(response, event);
+                createMachineWorkforceAssociation(response, event);
+
+                logger.info("Successfully processed machine schedule event: {} with priority: {}",
+                           event.getScheduleId(), event.getPriority());
             } else {
-                logger.warn("No workforce plan generated for machine schedule ID: {}", event.getScheduleId());
+                logger.warn("No workforce schedule generated for machine schedule: {}", event.getScheduleId());
+                handleWorkforceAssignmentError(response, event,
+                    new Exception("No workforce schedule could be generated"));
             }
 
         } catch (Exception e) {
-            logger.error("Error coordinating workforce for machine schedule event: {}", event.getScheduleId(), e);
-            throw new RuntimeException("Failed to coordinate workforce with machine schedule", e);
+            logger.error("Error processing machine schedule event: {}", event.getScheduleId(), e);
+            handleWorkforceAssignmentError(null, event, e);
         }
     }
 
@@ -231,14 +235,14 @@ public class WorkforceCoordinationService {
      * Process generated workforce assignments
      */
     private void processWorkforceAssignment(AutoScheduleResponse response, MachineScheduleCreated event) {
-        logger.info("Processing workforce assignment for {} employees", response.getShiftSchedules().size());
+        logger.info("Processing workforce assignment for {} employees", response.getShiftPlans().size());
 
         try {
             // 1. Send notifications to assigned employees
-            notificationService.notifyMultipleEmployees(response.getShiftSchedules(), event);
+            notificationService.notifyMultipleEmployees(response.getShiftPlans(), event);
 
             // 2. Update employee availability status
-            updateEmployeeAvailabilityStatus(response.getShiftSchedules());
+            updateEmployeeAvailabilityStatus(response.getShiftPlans());
 
             // 3. Record shift planning history
             recordShiftPlanningHistory(response, event);
@@ -262,8 +266,8 @@ public class WorkforceCoordinationService {
     /**
      * Update employee availability status based on shift assignments
      */
-    private void updateEmployeeAvailabilityStatus(java.util.List<ShiftSchedule> schedules) {
-        for (ShiftSchedule schedule : schedules) {
+    private void updateEmployeeAvailabilityStatus(java.util.List<ShiftPlan> schedules) {
+        for (ShiftPlan schedule : schedules) {
             try {
                 logger.debug("Updating availability for employee {} on {}",
                            schedule.getEmployeeId(), schedule.getShiftDate());
@@ -296,9 +300,9 @@ public class WorkforceCoordinationService {
             // - Store original requirements vs actual assignments
             // - Track planning time and efficiency
 
-            for (ShiftSchedule schedule : response.getShiftSchedules()) {
-                logger.debug("Recording history: Employee {} assigned to {} shift on {}",
-                           schedule.getEmployeeId(), schedule.getShiftType(), schedule.getShiftDate());
+            for (ShiftPlan schedule : response.getShiftPlans()) {
+                logger.debug("Recording history: Employee {} assigned to priority {} job on {}",
+                           schedule.getEmployeeId(), schedule.getJobPriority(), schedule.getShiftDate());
             }
 
             logger.info("Shift planning history recorded successfully");
@@ -313,7 +317,7 @@ public class WorkforceCoordinationService {
      */
     private void calculateWorkforceMetrics(AutoScheduleResponse response, MachineScheduleCreated event) {
         try {
-            int assignedEmployees = response.getShiftSchedules().size();
+            int assignedEmployees = response.getShiftPlans().size();
             int requestedEmployees = event.getRequiredEmployees();
 
             double fulfillmentRate = (double) assignedEmployees / requestedEmployees * 100;
@@ -323,7 +327,8 @@ public class WorkforceCoordinationService {
             logger.info("- Assigned employees: {}", assignedEmployees);
             logger.info("- Fulfillment rate: {:.1f}%", fulfillmentRate);
             logger.info("- Machine: {}", event.getMachineId());
-            logger.info("- Production line: {}", event.getProductionLine());
+            logger.info("- Job ID: {}", event.getJobId());
+            logger.info("- Priority: {}", event.getPriority());
 
             // TODO: Store metrics in database for reporting and analysis
             // - Track fulfillment rates over time
@@ -355,7 +360,7 @@ public class WorkforceCoordinationService {
             // - Track assignment source (AI algorithm used)
             // - Enable future queries like "who is working on machine X?"
 
-            for (ShiftSchedule schedule : response.getShiftSchedules()) {
+            for (ShiftPlan schedule : response.getShiftPlans()) {
                 logger.debug("Associating employee {} with machine schedule {}",
                            schedule.getEmployeeId(), event.getScheduleId());
             }
@@ -382,8 +387,8 @@ public class WorkforceCoordinationService {
 
             // For now, just log the error details
             logger.error("Workforce assignment error details:", error);
-            logger.error("Affected machine: {}, Production line: {}, Required employees: {}",
-                       event.getMachineId(), event.getProductionLine(), event.getRequiredEmployees());
+            logger.error("Affected machine: {}, Job ID: {}, Priority: {}, Required employees: {}",
+                       event.getMachineId(), event.getJobId(), event.getPriority(), event.getRequiredEmployees());
 
         } catch (Exception e) {
             logger.error("Failed to handle workforce assignment error: {}", e.getMessage());

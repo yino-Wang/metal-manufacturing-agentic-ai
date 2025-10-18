@@ -1,4 +1,4 @@
-package com.example.interfaces.rest;
+package com.example.events;
 
 import java.time.LocalDate;
 
@@ -7,7 +7,7 @@ public class JobAddedToMachineEventData {
     private int jobNumber;
     private int jobTimeNeededDays;
     private int priority;
-    private LocalDate submitDate;
+    private LocalDate dueDate;
     private String materialNeeded;
     private int materialAmount;
     private String customerName;
@@ -18,12 +18,12 @@ public class JobAddedToMachineEventData {
         this.machineId = machineId;
     }
 
-    public JobAddedToMachineEventData(String machineId, int jobNumber, int jobTimeNeededDays, int priority, LocalDate submitDate, String materialNeeded, int materialAmount, String customerName) {
+    public JobAddedToMachineEventData(String machineId, int jobNumber, int jobTimeNeededDays, int priority, LocalDate dueDate, String materialNeeded, int materialAmount, String customerName) {
         this.machineId = machineId;
         this.jobNumber = jobNumber;
         this.jobTimeNeededDays = jobTimeNeededDays;
         this.priority = priority;
-        this.submitDate = submitDate;
+        this.dueDate = dueDate;
         this.materialNeeded = materialNeeded;
         this.materialAmount = materialAmount;
         this.customerName = customerName;
@@ -44,12 +44,12 @@ public class JobAddedToMachineEventData {
         this.jobNumber = jobNumber;
     }
 
-    public LocalDate getSubmitDate() {
-        return submitDate;
+    public LocalDate getDueDate() {
+        return dueDate;
     }
 
-    public void setSubmitDate(LocalDate submitDate) {
-        this.submitDate = submitDate;
+    public void setDueDate(LocalDate dueDate) {
+        this.dueDate = dueDate;
     }
 
     public String getMaterialNeeded() {
@@ -95,7 +95,7 @@ public class JobAddedToMachineEventData {
     @Override
     public String toString() {
         return "Job " + jobNumber + " added to machine " + machineId + ": PRIORITY: " + priority
-                + "\n    submitDate: " + submitDate + ", requiredDuration: " + jobTimeNeededDays
+                + "\n    dueDate: " + dueDate + ", requiredDuration: " + jobTimeNeededDays
                 + "\n    customerName: " + customerName + ", materialNeeded: " + materialNeeded + ", materialAmount: " + materialAmount;
     }
 

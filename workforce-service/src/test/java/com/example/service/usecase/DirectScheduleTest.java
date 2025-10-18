@@ -1,7 +1,7 @@
 package com.example.service.usecase;
 
 import com.example.domain.model.aggregates.Employee;
-import com.example.domain.model.entities.ShiftSchedule;
+import com.example.domain.model.entities.ShiftPlan;
 import com.example.service.DTO.AutoScheduleResponse;
 import org.junit.jupiter.api.Test;
 
@@ -89,7 +89,7 @@ class DirectScheduleTest {
         System.out.println("\n=== Simulating Auto Scheduling Logic ===");
 
         AutoScheduleResponse response = new AutoScheduleResponse();
-        List<ShiftSchedule> schedules = new ArrayList<>();
+        List<ShiftPlan> schedules = new ArrayList<>();
         List<Employee> alternatives = new ArrayList<>();
 
         // Step 1: Find available employees (those with scheduledJobs == 0)
@@ -114,7 +114,7 @@ class DirectScheduleTest {
             for (int i = 0; i < requiredEmployees && i < availableEmployees.size(); i++) {
                 Employee emp = availableEmployees.get(i);
 
-                ShiftSchedule schedule = new ShiftSchedule();
+                ShiftPlan schedule = new ShiftPlan();
                 schedule.setEmployeeId(emp.getEmployeeId());
                 schedule.setJobId(jobId);
                 schedule.setShiftType(shiftType);
@@ -131,7 +131,7 @@ class DirectScheduleTest {
 
             // Add available employees to schedules first
             for (Employee emp : availableEmployees) {
-                ShiftSchedule schedule = new ShiftSchedule();
+                ShiftPlan schedule = new ShiftPlan();
                 schedule.setEmployeeId(emp.getEmployeeId());
                 schedule.setJobId(jobId);
                 schedule.setShiftType(shiftType);
@@ -176,7 +176,7 @@ class DirectScheduleTest {
         if (response.getShiftSchedules() != null && !response.getShiftSchedules().isEmpty()) {
             System.out.printf("✅ SUCCESS: Created %d shift schedules%n", response.getShiftSchedules().size());
 
-            for (ShiftSchedule schedule : response.getShiftSchedules()) {
+            for (ShiftPlan schedule : response.getShiftSchedules()) {
                 System.out.printf("  Schedule: Employee ID %d → Job %d (%s) on %s%n",
                     schedule.getEmployeeId(),
                     schedule.getJobId(),

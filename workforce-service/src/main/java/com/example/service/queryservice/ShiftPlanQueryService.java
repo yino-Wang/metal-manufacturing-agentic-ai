@@ -1,6 +1,6 @@
 package com.example.service.queryservice;
 
-import com.example.domain.model.entities.ShiftSchedule;
+import com.example.domain.model.entities.ShiftPlan;
 import com.example.infrastructure.repository.ShiftPlanRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,21 +24,21 @@ public class ShiftPlanQueryService {
     /**
      * Find all shift schedules for a given employee.
      */
-    public List<ShiftSchedule> findByEmployeeId(Long employeeId) {
+    public List<ShiftPlan> findByEmployeeId(Long employeeId) {
         return shiftPlanRepository.findByEmployeeId(employeeId);
     }
 
     /**
      * Find all shift schedules for a given date.
      */
-    public List<ShiftSchedule> findByShiftDate(Date shiftDate) {
+    public List<ShiftPlan> findByShiftDate(Date shiftDate) {
         return shiftPlanRepository.findByShiftDate(shiftDate);
     }
 
     /**
      * Find all shift schedules.
      */
-    public List<ShiftSchedule> findAll() {
+    public List<ShiftPlan> findAll() {
         return shiftPlanRepository.findAll();
     }
 }

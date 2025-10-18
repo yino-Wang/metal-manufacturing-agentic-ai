@@ -13,9 +13,9 @@ public class AddJobToMachineCommandDTOAssembler {
      */
     public static AddJobToMachineCommand toCommandFromDTO(AddJobToMachineResource addJobToMachineResource){
         LocalDate currentDate = LocalDate.now();
-        boolean submitDateNull = addJobToMachineResource.getSubmitDate() == null;
-        if (!submitDateNull) {
-            currentDate = addJobToMachineResource.getSubmitDate();
+        boolean dueDateNull = addJobToMachineResource.getDueDate() == null;
+        if (!dueDateNull) {
+            currentDate = addJobToMachineResource.getDueDate();
         }
         return new AddJobToMachineCommand(
                 //addJobToMachineResource.getSchedulingId(),

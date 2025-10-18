@@ -10,10 +10,10 @@ import java.util.Date;
 public class MachineScheduleCreated {
     private Long scheduleId;
     private String machineId;
-    private String productionLine;
+    private Long jobId;  // Add jobId field
+    private Integer priority;  // Add priority field
     private Date startTime;
     private Date endTime;
-    private String shiftType;
     private int requiredEmployees;
     private String skillRequirements;
     private LocalDateTime eventTimestamp;
@@ -23,16 +23,15 @@ public class MachineScheduleCreated {
         this.eventTimestamp = LocalDateTime.now();
     }
 
-    public MachineScheduleCreated(Long scheduleId, String machineId, String productionLine,
-                                 Date startTime, Date endTime, String shiftType,
-                                 int requiredEmployees, String skillRequirements) {
+    public MachineScheduleCreated(Long scheduleId, String machineId, Long jobId, Integer priority,
+                                 Date startTime, Date endTime, int requiredEmployees, String skillRequirements) {
         this();
         this.scheduleId = scheduleId;
         this.machineId = machineId;
-        this.productionLine = productionLine;
+        this.jobId = jobId;
+        this.priority = priority;
         this.startTime = startTime;
         this.endTime = endTime;
-        this.shiftType = shiftType;
         this.requiredEmployees = requiredEmployees;
         this.skillRequirements = skillRequirements;
     }
@@ -54,12 +53,20 @@ public class MachineScheduleCreated {
         this.machineId = machineId;
     }
 
-    public String getProductionLine() {
-        return productionLine;
+    public Long getJobId() {
+        return jobId;
     }
 
-    public void setProductionLine(String productionLine) {
-        this.productionLine = productionLine;
+    public void setJobId(Long jobId) {
+        this.jobId = jobId;
+    }
+
+    public Integer getPriority() {
+        return priority;
+    }
+
+    public void setPriority(Integer priority) {
+        this.priority = priority;
     }
 
     public Date getStartTime() {
@@ -76,14 +83,6 @@ public class MachineScheduleCreated {
 
     public void setEndTime(Date endTime) {
         this.endTime = endTime;
-    }
-
-    public String getShiftType() {
-        return shiftType;
-    }
-
-    public void setShiftType(String shiftType) {
-        this.shiftType = shiftType;
     }
 
     public int getRequiredEmployees() {
@@ -115,10 +114,10 @@ public class MachineScheduleCreated {
         return "MachineScheduleCreated{" +
                 "scheduleId=" + scheduleId +
                 ", machineId='" + machineId + '\'' +
-                ", productionLine='" + productionLine + '\'' +
+                ", jobId=" + jobId +
+                ", priority=" + priority +
                 ", startTime=" + startTime +
                 ", endTime=" + endTime +
-                ", shiftType='" + shiftType + '\'' +
                 ", requiredEmployees=" + requiredEmployees +
                 ", skillRequirements='" + skillRequirements + '\'' +
                 ", eventTimestamp=" + eventTimestamp +
