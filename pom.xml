@@ -36,7 +36,8 @@
 	</scm>
 	<properties>
 		<java.version>21</java.version>
-		<spring-cloud.version>2025.0.0</spring-cloud.version>
+        <spring-boot.version>3.5.6</spring-boot.version>
+		<spring-cloud.version>2023.0.3</spring-cloud.version>
 	</properties>
 
     <!-- Dependency management to provide versions for spring-cloud artifacts -->
@@ -46,6 +47,13 @@
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-dependencies</artifactId>
                 <version>${spring-cloud.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring-boot.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -63,101 +71,82 @@
         </pluginManagement>
     </build>
 
-    <!--	<dependencies>-->
-    <!--		<dependency>-->
-    <!--			<groupId>org.springframework.boot</groupId>-->
-    <!--			<artifactId>spring-boot-starter-data-jpa</artifactId>-->
-    <!--		</dependency>-->
-    <!--		<dependency>-->
-    <!--			<groupId>org.springframework.boot</groupId>-->
-    <!--			<artifactId>spring-boot-starter-web</artifactId>-->
-    <!--		</dependency>-->
-    <!--        <dependency>-->
-    <!--            <groupId>org.apache.kafka</groupId>-->
-    <!--            <artifactId>kafka-streams</artifactId>-->
-    <!--        </dependency>-->
-    <!--		<dependency>-->
-    <!--			<groupId>org.springframework.cloud</groupId>-->
-    <!--			<artifactId>spring-cloud-stream</artifactId>-->
-    <!--		</dependency>-->
-    <!--		<dependency>-->
-    <!--			<groupId>org.springframework.cloud</groupId>-->
-    <!--			<artifactId>spring-cloud-stream-binder-kafka</artifactId>-->
-    <!--		</dependency>-->
-    <!--		<dependency>-->
-    <!--			<groupId>org.springframework.kafka</groupId>-->
-    <!--			<artifactId>spring-kafka</artifactId>-->
-    <!--		</dependency>-->
+    <!-- Active dependencies -->
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.kafka</groupId>
+            <artifactId>kafka-streams</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-stream</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-stream-binder-kafka</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.kafka</groupId>
+            <artifactId>spring-kafka</artifactId>
+        </dependency>
 
-    <!--		<dependency>-->
-    <!--			<groupId>com.h2database</groupId>-->
-    <!--			<artifactId>h2</artifactId>-->
-    <!--			<scope>runtime</scope>-->
-    <!--		</dependency>-->
-    <!--		<dependency>-->
-    <!--			<groupId>org.springframework.boot</groupId>-->
-    <!--			<artifactId>spring-boot-starter-test</artifactId>-->
-    <!--			<scope>test</scope>-->
-    <!--		</dependency>-->
-    <!--        <dependency>-->
-    <!--            <groupId>org.springframework.boot</groupId>-->
-    <!--            <artifactId>spring-boot-starter-webflux</artifactId>-->
-    <!--        </dependency>-->
-    <!--        <dependency>-->
-    <!--            <groupId>org.postgresql</groupId>-->
-    <!--            <artifactId>postgresql</artifactId>-->
-    <!--            <scope>runtime</scope>-->
-    <!--        </dependency>-->
-    <!--		<dependency>-->
-    <!--			<groupId>org.springframework.cloud</groupId>-->
-    <!--			<artifactId>spring-cloud-stream-test-binder</artifactId>-->
-    <!--			<scope>test</scope>-->
-    <!--		</dependency>-->
-    <!--		<dependency>-->
-    <!--			<groupId>org.springframework.kafka</groupId>-->
-    <!--			<artifactId>spring-kafka-test</artifactId>-->
-    <!--			<scope>test</scope>-->
-    <!--		</dependency>-->
-    <!--		<dependency>-->
-    <!--			<groupId>dev.langchain4j</groupId>-->
-    <!--			<artifactId>langchain4j-spring-boot-starter</artifactId>-->
-    <!--			<version>1.4.0-beta10</version>-->
-    <!--		</dependency>-->
-    <!--        <dependency>-->
-    <!--            <groupId>dev.langchain4j</groupId>-->
-    <!--            <artifactId>langchain4j-google-ai-gemini</artifactId>-->
-    <!--            <version>1.4.0</version>-->
-    <!--        </dependency>-->
-    <!--        <dependency>-->
-    <!--            <groupId>dev.langchain4j</groupId>-->
-    <!--            <artifactId>langchain4j-google-ai-gemini-spring-boot-starter</artifactId>-->
-    <!--            <version>1.4.0-beta10</version>-->
-    <!--        </dependency>-->
-    <!--		<dependency>-->
-    <!--			<groupId>dev.langchain4j</groupId>-->
-    <!--			<artifactId>langchain4j-embeddings-all-minilm-l6-v2</artifactId>-->
-    <!--			<version>1.4.0-beta10</version>-->
-    <!--		</dependency>-->
-    <!--	</dependencies>-->
-    <!--	<dependencyManagement>-->
-    <!--		<dependencies>-->
-    <!--			<dependency>-->
-    <!--				<groupId>org.springframework.cloud</groupId>-->
-    <!--				<artifactId>spring-cloud-dependencies</artifactId>-->
-    <!--				<version>${spring-cloud.version}</version>-->
-    <!--				<type>pom</type>-->
-    <!--				<scope>import</scope>-->
-    <!--			</dependency>-->
-    <!--		</dependencies>-->
-    <!--	</dependencyManagement>-->
-
-    <!--	<build>-->
-    <!--		<plugins>-->
-    <!--			<plugin>-->
-    <!--				<groupId>org.springframework.boot</groupId>-->
-    <!--				<artifactId>spring-boot-maven-plugin</artifactId>-->
-    <!--			</plugin>-->
-    <!--		</plugins>-->
-    <!--	</build>-->
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.springframework.boot</groupId>-->
+<!--            <artifactId>spring-boot-starter-webflux</artifactId>-->
+<!--        </dependency>-->
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-stream-test-binder</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.kafka</groupId>
+            <artifactId>spring-kafka-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>dev.langchain4j</groupId>
+            <artifactId>langchain4j-spring-boot-starter</artifactId>
+            <version>1.4.0-beta10</version>
+        </dependency>
+        <dependency>
+            <groupId>dev.langchain4j</groupId>
+            <artifactId>langchain4j-google-ai-gemini</artifactId>
+            <version>1.4.0</version>
+        </dependency>
+        <dependency>
+            <groupId>dev.langchain4j</groupId>
+            <artifactId>langchain4j-google-ai-gemini-spring-boot-starter</artifactId>
+            <version>1.4.0-beta10</version>
+        </dependency>
+        <dependency>
+            <groupId>dev.langchain4j</groupId>
+            <artifactId>langchain4j-embeddings-all-minilm-l6-v2</artifactId>
+            <version>1.4.0-beta10</version>
+        </dependency>
+    </dependencies>
 
 </project>

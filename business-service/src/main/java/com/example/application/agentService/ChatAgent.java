@@ -19,6 +19,6 @@ public interface ChatAgent {
      
      In the schedule field return a Schedule object containing the jobs ordered by priority (higher priority first), then by due date (earliest due date first), and finally by submit date (earliest submit date first).
      """)
-    Result<ChatMessage> chat(@MemoryId String memoryId, @UserMessage JobList jobList);
+    Result<ChatMessage> chat(@UserMessage JobList jobList);
 }
 

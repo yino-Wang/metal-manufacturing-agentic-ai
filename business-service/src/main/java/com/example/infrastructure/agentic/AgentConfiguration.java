@@ -37,25 +37,9 @@ public class AgentConfiguration {
     private static final Logger log = LoggerFactory.getLogger(AgentConfiguration.class);
 
     @Bean
-    ChatMemoryProvider chatMemoryProvider() {
-        return memoryId -> MessageWindowChatMemory.builder()
-                .id(memoryId)
-                .maxMessages(10)
-                .build();
-    }
-
-    @Bean
-    EmbeddingModel embeddingModel() {
-        // Not the best embedding model, but good enough for this demo
-        return new AllMiniLmL6V2EmbeddingModel();
-    }
-
-    @Bean
-    ChatAgent chatAgent(ChatModel chatModel,
-                        ChatMemoryProvider chatMemoryProvider) {
+    ChatAgent chatAgent(ChatModel chatModel) {
         return AiServices.builder(ChatAgent.class)
                 .chatModel(chatModel)
-                .chatMemoryProvider(chatMemoryProvider)
                 .build();
     }
 
