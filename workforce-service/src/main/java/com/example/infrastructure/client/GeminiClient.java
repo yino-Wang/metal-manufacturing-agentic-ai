@@ -110,7 +110,7 @@ public class GeminiClient implements LLMClient {
         // Jobs with priorities (simplified - only priority info needed for scheduling)
         prompt.append("Jobs to schedule (by priority):\n");
         for (Job job : input.getJobsToSchedule()) {
-            prompt.append("- Job ID: ").append(job.getJobNumber())
+            prompt.append("- Job ID: ").append(job.getJobId())
                     .append(", Priority: ").append(job.getPriority())
                     .append(" (").append(getPriorityLevel(job.getPriority())).append(")")
                     .append("\n");

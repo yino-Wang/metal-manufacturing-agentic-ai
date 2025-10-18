@@ -90,7 +90,7 @@ public class GenerateShiftPlanService {
             // Find the job this shift is for and set priority-based fields
             Job associatedJob = findJobByEmployeeAndDate(sortedJobs, s);
             if (associatedJob != null) {
-                s.setJobId((long) associatedJob.getJobNumber());
+                s.setJobId(associatedJob.getJobId());
                 s.setJobPriority(associatedJob.getPriority());
                 s.setRequiredEmployees(requiredEmployees);
                 s.setStatus("PENDING_APPROVAL");

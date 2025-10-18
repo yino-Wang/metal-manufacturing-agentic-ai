@@ -85,8 +85,30 @@ public class RecordTimesheetTest {
         long finalCount = timesheetRepository.count();
         assertEquals(initialCount + 2, finalCount, "Two new timesheet records should be created");
 
-        // Verify the details of the created timesheets
+        // Get all timesheets and display complete information
         List<Timesheet> allTimesheets = timesheetRepository.findAll();
+
+        System.out.println("\n" + "=".repeat(80));
+        System.out.println("📋 COMPLETE TIMESHEET INFORMATION");
+        System.out.println("=".repeat(80));
+
+        // Display all timesheets for both employees
+        allTimesheets.stream()
+                .filter(ts -> ts.getEmployeeId().equals(employeeId1) || ts.getEmployeeId().equals(employeeId2))
+                .forEach(timesheet -> {
+                    System.out.println("\n📊 TIMESHEET DETAILS:");
+                    System.out.println("  • Timesheet ID: " + timesheet.getTimesheetId());
+                    System.out.println("  • Employee ID: " + timesheet.getEmployeeId());
+                    System.out.println("  • Work Date: " + timesheet.getWorkDate());
+                    System.out.println("  • Clock In Time: " + timesheet.getClockInTime());
+                    System.out.println("  • Clock Out Time: " + timesheet.getClockOutTime());
+                    System.out.println("  • Hours Worked: " + timesheet.getHoursWorked() + " hours");
+                    System.out.println("  • Salary Paid: $" + timesheet.getSalaryPaid());
+                    System.out.println("  • Status: " + timesheet.getStatus());
+                    System.out.println("  • Job ID: " + timesheet.getJobId());
+                    System.out.println("  • Payslip ID: " + timesheet.getPayslipId());
+                    System.out.println("  " + "-".repeat(50));
+                });
 
         // Find the newly created timesheets (should be the last two)
         Timesheet newTimesheet1 = allTimesheets.stream()
@@ -115,14 +137,11 @@ public class RecordTimesheetTest {
         assertEquals(180.0f, newTimesheet2.getSalaryPaid(), 0.01f, "Salary should be calculated correctly (6 * $30)");
         assertEquals("EXCEPTION", newTimesheet2.getStatus(), "Status should be EXCEPTION when no shift plan exists");
 
-        System.out.println("✅ All timesheet recording tests passed successfully!");
-
-        System.out.println("📊 Employee 1: 8 hours worked, $200 salary calculated");
-        System.out.println("📊 Employee 2: 6 hours worked, $180 salary calculated");
-        System.out.println("Employee 1 Timesheet Status: " + newTimesheet1.getStatus() +
-                "Employee 1 Timesheet id: " + newTimesheet1.getTimesheetId() + ", " + newTimesheet1.getEmployeeId() + ", " +newTimesheet1.getWorkDate() + ", " + newTimesheet1.getClockInTime() + ", " + newTimesheet1.getClockOutTime() + ", " + newTimesheet1.getHoursWorked() + ", " + newTimesheet1.getSalaryPaid() + ", " + newTimesheet1.getStatus());
-        System.out.println("Employee 2 Timesheet Status: " + newTimesheet2.getStatus()
-                + "Employee 2 Timesheet id: " + newTimesheet2.getTimesheetId() + ", " + newTimesheet2.getEmployeeId() + ", " +newTimesheet2.getWorkDate() + ", " + newTimesheet2.getClockInTime() + ", " + newTimesheet2.getClockOutTime() + ", " + newTimesheet2.getHoursWorked() + ", " + newTimesheet2.getSalaryPaid() + ", " + newTimesheet2.getStatus());
+        System.out.println("\n✅ All timesheet recording tests passed successfully!");
+        System.out.println("📈 Summary:");
+        System.out.println("  • Employee " + employeeId1 + ": 8 hours worked, $200 salary calculated");
+        System.out.println("  • Employee " + employeeId2 + ": 6 hours worked, $180 salary calculated");
+        System.out.println("=".repeat(80));
     }
 
     @Test
