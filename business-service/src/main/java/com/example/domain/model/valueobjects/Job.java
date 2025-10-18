@@ -7,8 +7,8 @@ import java.time.LocalDate;
 @Entity
 public class Job {
 
-    @Column(name = "submitDate")
-    private LocalDate submitDate;
+    @Column(name = "dueDate")
+    private LocalDate dueDate;
     @Column(name = "startDate")
     private LocalDate startDate;
     @Id
@@ -21,33 +21,33 @@ public class Job {
     @Column(name = "materialAmount")
     private Integer materialAmount;
     @Enumerated(EnumType.STRING)
-    @Column(name = "jobStatus")
-    private JobStatus jobStatus;
     @Column(name="jobTimeNeededDays")
     private Integer jobTimeNeededDays;
     @Column(name="priority")
     private Integer priority;
+    @Column(name="customerName")
+    private String customerName;
 
     public Job() {
     }
 
-    public Job(int jobNumber, int jobTimeNeededDays, int priority, LocalDate submitDate, String materialNeeded, Integer materialAmount, JobStatus jobStatus) {
+    public Job(int jobNumber, int jobTimeNeededDays, int priority, LocalDate dueDate, String materialNeeded, Integer materialAmount, String customerName) {
         this.jobNumber = jobNumber;
         this.jobTimeNeededDays = jobTimeNeededDays;
         this.priority = priority;
-        this.submitDate = submitDate;
+        this.dueDate = dueDate;
         this.materialNeeded = materialNeeded;
         this.materialAmount = materialAmount;
-        this.jobStatus = jobStatus;
+        this.customerName = customerName;
     }
 
-    public Job(LocalDate submitDate, LocalDate startDate, LocalDate endDate, String materialNeeded, Integer materialAmount, JobStatus jobStatus) {
-        this.submitDate = submitDate;
+    public Job(LocalDate dueDate, LocalDate startDate, LocalDate endDate, String materialNeeded, Integer materialAmount, String customerName) {
+        this.dueDate = dueDate;
         this.startDate = startDate;
         this.endDate = endDate;
         this.materialNeeded = materialNeeded;
         this.materialAmount = materialAmount;
-        this.jobStatus = jobStatus;
+        this.customerName = customerName;
     }
 
     public Integer getJobNumber() {
@@ -56,11 +56,19 @@ public class Job {
     public void setJobNumber(Integer jobNumber) {
         this.jobNumber = jobNumber;
     }
-    public LocalDate getSubmitDate() {
-        return submitDate;
+    public LocalDate getDueDate() {
+        return dueDate;
     }
-    public void setSubmitDate(LocalDate submitDate) {
-        this.submitDate = submitDate;
+    public void setDueDate(LocalDate dueDate) {
+        this.dueDate = dueDate;
+    }
+
+    public String getCustomerName() {
+        return customerName;
+    }
+
+    public void setCustomerName(String customerName) {
+        this.customerName = customerName;
     }
 
     public Integer getJobTimeNeededDays() {
@@ -103,27 +111,11 @@ public class Job {
     public void setMaterialAmount(Integer materialAmount) {
         this.materialAmount = materialAmount;
     }
-    public JobStatus getJobStatus() {
-        return jobStatus;
-    }
-    public void setJobStatus(JobStatus jobStatus) {
-        this.jobStatus = jobStatus;
-    }
-
-
 
     @Override
     public String toString() {
-        return "Job{" +
-                "submitDate=" + submitDate +
-                ", startDate=" + startDate +
-                ", jobNumber=" + jobNumber +
-                ", endDate=" + endDate +
-                ", materialNeeded='" + materialNeeded + '\'' +
-                ", materialAmount=" + materialAmount +
-                ", jobStatus=" + jobStatus +
-                ", jobTimeNeededDays=" + jobTimeNeededDays +
-                ", priority=" + priority +
-                '}';
+        return "Job " + jobNumber + ": PRIORITY: " + priority
+                + "\n    dueDate: " + dueDate + ", startDate: " + startDate + ", endDate: " + endDate + ", requiredDuration: " + jobTimeNeededDays
+                + "\n    customerName: " + customerName + ", materialNeeded: " + materialNeeded + ", materialAmount: " + materialAmount;
     }
 }

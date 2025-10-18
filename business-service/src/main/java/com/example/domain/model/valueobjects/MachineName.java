@@ -15,8 +15,6 @@ public class MachineName {
 
     @Override
     public String toString() {
-        return "MachineName{" +
-                "machineName='" + machineName + '\'' +
-                '}';
+        return "MachineName: " + machineName;
     }
 }

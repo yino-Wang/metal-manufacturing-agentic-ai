@@ -2,6 +2,7 @@ package com.example.interfaces.rest.transform;
 
 import com.example.domain.model.commands.AddJobToMachineCommand;
 import com.example.interfaces.rest.dto.AddJobToMachineResource;
+import java.time.LocalDate;
 
 public class AddJobToMachineCommandDTOAssembler {
 
@@ -11,15 +12,21 @@ public class AddJobToMachineCommandDTOAssembler {
      * @return AddJobToMachineCommand Model
      */
     public static AddJobToMachineCommand toCommandFromDTO(AddJobToMachineResource addJobToMachineResource){
+        LocalDate currentDate = LocalDate.now();
+        boolean dueDateNull = addJobToMachineResource.getDueDate() == null;
+        if (!dueDateNull) {
+            currentDate = addJobToMachineResource.getDueDate();
+        }
         return new AddJobToMachineCommand(
                 //addJobToMachineResource.getSchedulingId(),
-                addJobToMachineResource.getMachineName(),
+                addJobToMachineResource.getMachineId(),
                 addJobToMachineResource.getJobTimeNeededDays(),
                 addJobToMachineResource.getPriority(),
                 addJobToMachineResource.getJobNumber(),
-                addJobToMachineResource.getSubmitDate(),
+                currentDate,
                 addJobToMachineResource.getMaterialNeeded(),
-                addJobToMachineResource.getMaterialAmount()
+                addJobToMachineResource.getMaterialAmount(),
+                addJobToMachineResource.getCustomerName()
         );
     }
 }

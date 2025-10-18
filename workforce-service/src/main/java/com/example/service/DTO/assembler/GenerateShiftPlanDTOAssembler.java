@@ -8,21 +8,19 @@ import com.example.domain.model.commands.GenerateShiftPlanCommand;
  */
 /**
  * Static method within the Assembler class
- * @param dto GenerateShiftPlanDTO
  * @return GenerateShiftPlanCommand
  */
 public class GenerateShiftPlanDTOAssembler {
     public static GenerateShiftPlanCommand toCommand(GenerateShiftPlanDTO dto) {
         return new GenerateShiftPlanCommand(
             dto.getJobId(),
+            dto.getPriority() != null ? dto.getPriority() : 3, // Add priority parameter
             dto.getEmployeeId(),
             dto.getStartDate(),
             dto.getEndDate(),
-            dto.getRequiredEmployees(),
-            dto.getShiftType()
+            dto.getRequiredEmployees()
+
         );
     }
     // If needed, add method to convert back to DTO
 }
-
-

@@ -11,7 +11,7 @@ public class JobList {
     public static final JobList EMPTY_LIST = new JobList();
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name="joblist_id")
-    @OrderBy("submitDate")
+    @OrderBy("dueDate")
     private List<Job> jobs = new ArrayList<>();
 
     public JobList() {}

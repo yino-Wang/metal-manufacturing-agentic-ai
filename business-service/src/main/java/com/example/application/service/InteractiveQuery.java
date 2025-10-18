@@ -1,6 +1,6 @@
 package com.example.application.service;
 
-import com.example.interfaces.rest.dto.MaterialAmountByScheduleId;
+import com.example.interfaces.rest.dto.MaterialAmountByMachineId;
 import org.apache.kafka.streams.KeyValue;
 import org.apache.kafka.streams.kstream.Windowed;
 import org.apache.kafka.streams.state.KeyValueIterator;
@@ -36,13 +36,13 @@ public class InteractiveQuery {
 
     /**
      * Fetches the total booking amounts for each city from the most recently completed time window.
-     * Note: The DTO {@link MaterialAmountByScheduleId} and its property `bookingQuantity` are slightly misnamed.
+     * Note: The DTO {@link MaterialAmountByMachineId} and its property `bookingQuantity` are slightly misnamed.
      * This method actually retrieves the sum of booking *amounts* (a monetary value), not the count of bookings.
      *
-     * @return A list of {@link MaterialAmountByScheduleId} objects, each containing a city and the total booking amount for that city in the last window.
+     * @return A list of {@link MaterialAmountByMachineId} objects, each containing a city and the total booking amount for that city in the last window.
      */
-    public List<MaterialAmountByScheduleId> getWindowedMaterialAmountByScheduleId() {
-        List<MaterialAmountByScheduleId> windowedScheduledMaterialAmounts = new ArrayList<>();
+    public List<MaterialAmountByMachineId> getWindowedMaterialAmountByMachineId() {
+        List<MaterialAmountByMachineId> windowedMachineMaterialAmounts = new ArrayList<>();
         long now = Instant.now().toEpochMilli();
         // Calculate the time range for the most recently *completed* window.
         // This logic targets the window that has just finished processing, ensuring we query a complete set of data.
@@ -53,17 +53,17 @@ public class InteractiveQuery {
         Instant timeTo = timeFrom.plus(Duration.ofMillis(WINDOW_SIZE_MS));
 
         // Query the state store for the calculated time window.
-        try (KeyValueIterator<Windowed<String>, Integer> all = getWindowedSchedulesKSStore().fetchAll(timeFrom, timeTo)) {
+        try (KeyValueIterator<Windowed<MachineMaterialKey>, Long> all = getWindowedSchedulesKSStore().fetchAll(timeFrom, timeTo)) {
             while (all.hasNext()) {
-                KeyValue<Windowed<String>, Integer> ks = all.next();
-                MaterialAmountByScheduleId amountPerSchedule = new MaterialAmountByScheduleId();
+                KeyValue<Windowed<MachineMaterialKey>, Long> ks = all.next();
+                MaterialAmountByMachineId amountPerSchedule = new MaterialAmountByMachineId();
                 // The city name is decorated with the window start and end times for clarity.
-                amountPerSchedule.setScheduleId(ks.key.key() + " (window: " + ks.key.window().startTime() + " - " + ks.key.window().endTime() + ")");
+                amountPerSchedule.setMachineId(ks.key.key() + " (window: " + ks.key.window().startTime() + " - " + ks.key.window().endTime() + ")");
                 amountPerSchedule.setMaterialAmount(ks.value);
-                windowedScheduledMaterialAmounts.add(amountPerSchedule);
+                windowedMachineMaterialAmounts.add(amountPerSchedule);
             }
         }
-        return windowedScheduledMaterialAmounts;
+        return windowedMachineMaterialAmounts;
     }
 
     /**
@@ -72,8 +72,9 @@ public class InteractiveQuery {
      *
      * @return A {@link ReadOnlyWindowStore} that can be queried for aggregated booking data.
      */
-    private ReadOnlyWindowStore<String, Integer> getWindowedSchedulesKSStore() {
+    private ReadOnlyWindowStore<MachineMaterialKey, Long> getWindowedSchedulesKSStore() {
         return this.interactiveQueryService.getQueryableStore(WINDOWSTORE_NAME,
                 QueryableStoreTypes.windowStore());
     }
+
 }

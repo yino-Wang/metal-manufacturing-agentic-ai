@@ -15,7 +15,7 @@ public class ScheduleMachineCommandDTOAssembler {
 
         return new ScheduleMachineCommand(
                 //scheduleMachineResource.getSchedulingId(),
-                scheduleMachineResource.getMachineName(),
-                scheduleMachineResource.getEmployeeName());
+                scheduleMachineResource.getMachineId());
+                //scheduleMachineResource.getEmployeeName());
     }
 }

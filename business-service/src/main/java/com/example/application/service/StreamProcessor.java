@@ -1,11 +1,12 @@
 package com.example.application.service;
 
+import com.example.events.JobAddedToMachineEvent;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.KeyValue;
 import org.apache.kafka.streams.kstream.*;
 import org.apache.kafka.streams.state.WindowStore;
-import com.example.interfaces.rest.JobAddedToMachineEvent;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -34,27 +35,33 @@ public class StreamProcessor {
      */
     @Bean
     public Consumer<KStream<String, JobAddedToMachineEvent>> process() {
+
+        final MachineMaterialKeySerde keySerde = new MachineMaterialKeySerde();
+
         return inputStream -> {
 
             // Transform the input stream: extract schedulingId and material amount.
-            KTable<Windowed<String>, Integer> totalMaterials = inputStream.map((key, value) -> {
-                        String schedulingId = value.getJobAddedToMachineEventData().getMachineName();
-                        Integer materialAmount = value.getJobAddedToMachineEventData().getMaterialAmount();
-                        return KeyValue.pair(schedulingId, materialAmount);
+            KTable<Windowed<MachineMaterialKey>, Long> totalMaterials = inputStream.map((key, value) -> {
+                        String machineId = value.getJobAddedToMachineEventData().getMachineId();
+                        String materialName = value.getJobAddedToMachineEventData().getMaterialNeeded();
+                        Long materialAmount = (long)value.getJobAddedToMachineEventData().getMaterialAmount();
+
+                        MachineMaterialKey compositeKey = new MachineMaterialKey(machineId, materialName);
+                        return KeyValue.pair(compositeKey, materialAmount);
                     }).
                     // Group events by the schedulingId.
-                            groupByKey(Grouped.with(Serdes.String(), Serdes.Integer())).
+                    groupByKey(Grouped.with(keySerde, Serdes.Long())).
                     // Create 30-second tumbling windows for aggregation.
-                            windowedBy(TimeWindows.ofSizeWithNoGrace(Duration.ofSeconds(30))).
+                    windowedBy(TimeWindows.ofSizeWithNoGrace(Duration.ofSeconds(30))).
                     // Sum the material amounts for each schedule within the window.
-                            reduce(Integer::sum,
-                            // Materialize the result into a state store.
-                            Materialized.<String, Integer, WindowStore<Bytes, byte[]>>as(WINDOWSTORE_NAME).
-                                    withKeySerde(Serdes.String()).withValueSerde(Serdes.Integer()));
+                    reduce(Long::sum,
+                        // Materialize the result into a state store.
+                        Materialized.<MachineMaterialKey, Long, WindowStore<Bytes, byte[]>>as(WINDOWSTORE_NAME).
+                                withKeySerde(keySerde).withValueSerde(Serdes.Long()));
 
             // For debugging/monitoring: Print the aggregated results to the console.
             totalMaterials.toStream().
-                    print(Printed.<Windowed<String>, Integer>toSysOut().withLabel("Windowed material totals per schedule"));
+                    print(Printed.<Windowed<MachineMaterialKey>, Long>toSysOut().withLabel("Windowed material totals per schedule"));
         };
     }
 }

@@ -1,7 +1,7 @@
 package com.example.service.usecase;
 
 import com.example.domain.model.aggregates.Employee;
-import com.example.domain.model.entities.ShiftSchedule;
+import com.example.domain.model.entities.ShiftPlan;
 import com.example.infrastructure.repository.EmployeeRepository;
 import com.example.service.DTO.AutoScheduleResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -35,16 +35,30 @@ class SimpleAutoScheduleTest {
         emp1.setName("John Smith");
         emp1.setSkill("CNC");
         emp1.setPay(25.0f);
+        emp1.setEmployeeId(1L);
+        emp1.setManager(false);
+        emp1.setScheduledJobs(0);
+        emp1.setPhoneNumber("123-456-7890");
+
+
 
         Employee emp2 = new Employee();
         emp2.setName("Jane Doe");
         emp2.setSkill("Assembly");
         emp2.setPay(22.0f);
+        emp2.setEmployeeId(2L);
+        emp2.setManager(false);
+        emp2.setScheduledJobs(0);
+        emp2.setPhoneNumber("123-456-7891");
 
         Employee emp3 = new Employee();
         emp3.setName("Bob Wilson");
         emp3.setSkill("Quality");
         emp3.setPay(28.0f);
+        emp3.setEmployeeId(3L);
+        emp3.setManager(false);
+        emp3.setScheduledJobs(0);
+        emp3.setPhoneNumber("123-456-7893");
 
         try {
             employeeRepository.save(emp1);
@@ -67,7 +81,7 @@ class SimpleAutoScheduleTest {
         Date endDate = cal.getTime();
 
         Long jobId = 1L;
-        int requiredEmployees = 2;
+        int requiredEmployees = 3;
         String shiftType = "DAY_SHIFT";
 
         System.out.printf("Test parameters:%n");
@@ -101,7 +115,7 @@ class SimpleAutoScheduleTest {
                 System.out.printf("✅ Successfully generated %d shift plans:%n", response.getShiftSchedules().size());
 
                 for (int i = 0; i < response.getShiftSchedules().size(); i++) {
-                    ShiftSchedule schedule = response.getShiftSchedules().get(i);
+                    ShiftPlan schedule = response.getShiftSchedules().get(i);
                     System.out.printf("  Schedule %d:%n", i + 1);
                     System.out.printf("    - Employee ID: %d%n", schedule.getEmployeeId());
                     System.out.printf("    - Shift type: %s%n", schedule.getShiftType());

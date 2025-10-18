@@ -1,37 +1,39 @@
 package com.example.domain.model.aggreates;
 
 import com.example.domain.model.commands.ScheduleMachineCommand;
-import com.example.domain.model.entities.Employee;
-import com.example.domain.model.valueobjects.Job;
+//import com.example.domain.model.entities.Employee;
 import com.example.domain.model.valueobjects.*;
+import com.example.events.JobAddedToMachineEvent;
+import com.example.events.JobAddedToMachineEventData;
+import com.example.events.MachineScheduledEvent;
+import com.example.events.MachineScheduledEventData;
 import jakarta.persistence.*;
 import org.springframework.data.domain.AbstractAggregateRoot;
 
-import com.example.interfaces.rest.JobAddedToMachineEventData;
-import com.example.interfaces.rest.JobAddedToMachineEvent;
-import com.example.interfaces.rest.MachineScheduledEventData;
-import com.example.interfaces.rest.MachineScheduledEvent;
 
 @Entity
 @NamedQueries({
         @NamedQuery(name = "Machine.findAll",
                 query = "Select m from Machine m"),
-        @NamedQuery(name = "Machine.findBySchedulingId",
-                query = "Select m from Machine m where m.schedulingId = ?1"),
-        @NamedQuery(name = "Machine.findAllSchedulingId",
-                query = "Select m.schedulingId from Machine m"),
-        @NamedQuery(name = "Machine.findByMachineName",
-                query = "Select m from Machine m where m.machineName = ?1")})
+        @NamedQuery(name = "Machine.findAllMachineId",
+                query = "Select m.machineId from Machine m"),
+        @NamedQuery(name = "Machine.findByMachineId",
+                query = "Select m from Machine m where m.machineId = ?1"),
+        @NamedQuery(name = "Machine.findJobByJobNumber",
+                query = "SELECT j FROM Machine m JOIN m.jobList.jobs j WHERE j.jobNumber = :jobNumber"),
+        @NamedQuery(name = "Machine.findJobInfoByJobNumber",
+                query = "SELECT j FROM Machine m JOIN m.jobList.jobs j WHERE j.jobNumber = :jobNumber"),
+        @NamedQuery(name = "Machine.findAllCustomerJobsByCustomerName",
+                query = "SELECT j FROM Machine m JOIN m.jobList.jobs j WHERE j.customerName = :customerName"),})
+
 public class Machine extends AbstractAggregateRoot<Machine> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Embedded
-    private MachineName machineName; // Name of the Machine
-    @Embedded
-    private SchedulingId schedulingId; // Aggregate Identifier
-    @Embedded
-    private Employee employee; //Employee assigned to the Machine
+    private MachineId machineId; // Aggregate Identifier - machine Name
+    //@Embedded
+    //private Employee employee; //Employee assigned to the Machine
     @Embedded
     private JobList jobList; //List of Jobs assigned to the Machine
     @Embedded
@@ -50,31 +52,29 @@ public class Machine extends AbstractAggregateRoot<Machine> {
      *
      */
     public Machine(ScheduleMachineCommand scheduleMachineCommand) {
-        this.schedulingId = new SchedulingId(scheduleMachineCommand.getSchedulingId());
-        this.machineName = new MachineName(scheduleMachineCommand.getMachineName());
-        this.employee = new Employee(scheduleMachineCommand.getEmployeeName());
+        this.machineId = new MachineId(scheduleMachineCommand.getMachineName());
+        //this.employee = new Employee(scheduleMachineCommand.getEmployeeName());
         this.jobList = JobList.EMPTY_LIST; //Empty Job List since the Machine has no jobs assigned yet
         this.schedule = new Schedule(); //Empty Schedule since the Machine has no jobs scheduled yet
 
         // Registering the Machine Scheduled Event
         addDomainEvent(new
                 MachineScheduledEvent(
-                new MachineScheduledEventData(machineName.getMachineName(),
-                        scheduleMachineCommand.getEmployeeName())
+                new MachineScheduledEventData(machineId.getMachineId())
         ));
     }
 
-    public SchedulingId getSchedulingId() {
-        return schedulingId;
+    public MachineId getMachineId() {
+        return machineId;
     }
 
-    public Employee getEmployee() {
-        return employee;
-    }
-
-    public void setEmployee(Employee employee) {
-        this.employee = employee;
-    }
+//    public Employee getEmployee() {
+//        return employee;
+//    }
+//
+//    public void setEmployee(Employee employee) {
+//        this.employee = employee;
+//    }
 
     public JobList getJobList() {
         return jobList;
@@ -96,14 +96,14 @@ public class Machine extends AbstractAggregateRoot<Machine> {
         addDomainEvent(new
                 JobAddedToMachineEvent(
                 new JobAddedToMachineEventData(
-                        this.schedulingId.getSchedulingId(),
+                        this.machineId.getMachineId(),
                         job.getJobNumber(),
                         job.getJobTimeNeededDays(),
                         job.getPriority(),
-                        this.machineName.getMachineName(),
-                        job.getSubmitDate(),
+                        job.getDueDate(),
                         job.getMaterialNeeded(),
-                        job.getMaterialAmount())));
+                        job.getMaterialAmount(),
+                        job.getCustomerName())));
     }
 
 //    /**
@@ -126,14 +126,9 @@ public class Machine extends AbstractAggregateRoot<Machine> {
 
     @Override
     public String toString() {
-        return "Machine{" +
-                "id=" + id +
-                ", machineName=" + machineName +
-                ", schedulingId=" + schedulingId +
-                ", employee=" + employee +
-                ", jobList=" + jobList +
-                ", schedule=" + schedule +
-                ", currentJob=" + currentJob +
-                '}';
+        return "Machine " + machineId + ": " +
+                "\ncurrentJob=" + currentJob +
+                "\njobList=" + jobList +
+                "\nschedule=" + schedule;
     }
 }

@@ -1,49 +1,60 @@
 package com.example;
 
-import com.example.infrastructure.agentic.ModelLogger;
+//import com.example.infrastructure.agentic.ModelLogger;
+import com.example.application.service.SchedulingService;
+import com.example.domain.model.aggreates.Machine;
+import com.example.domain.model.valueobjects.Schedule;
+import com.example.infrastructure.repositories.MachineRepository;
 import com.example.interfaces.rest.dto.AddJobToMachineResource;
+import com.example.interfaces.rest.dto.MachineIdDto;
+import com.example.interfaces.rest.dto.ScheduleDto;
 import com.example.interfaces.rest.dto.ScheduleMachineResource;
-import com.example.interfaces.rest.dto.SchedulingIdDto;
-import dev.langchain4j.model.chat.listener.ChatModelListener;
+//import dev.langchain4j.model.chat.listener.ChatModelListener;
+import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;  //ADD THIS
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDate;
 import java.util.Date;
+import java.util.List;
 import java.util.Random;
 
 @SpringBootApplication //ADD THIS
 public class Main {
     public static void main(String[] args) throws InterruptedException {
-        org.springframework.boot.SpringApplication.run(Main.class, args); //ADD THIS BUT CHANGE *MAIN* TO WHATEVER YOUR FILE IS CALLED
+        ApplicationContext context = SpringApplication.run(Main.class, args); //ADD THIS BUT CHANGE *MAIN* TO WHATEVER YOUR FILE IS CALLED
 
+        SchedulingService service = context.getBean(SchedulingService.class);
 
         final String url = "http://localhost:8787/machinescheduling";
         //schedule some machines
         RestTemplate restTemplate = new RestTemplate();
-        ScheduleMachineResource machine1 = new ScheduleMachineResource("machine1", "John Smith");
-        SchedulingIdDto schedulingId1 = restTemplate.postForObject(url, machine1, SchedulingIdDto.class);
+        ScheduleMachineResource machine1 = new ScheduleMachineResource("machine1");
+        MachineIdDto schedulingId1 = restTemplate.postForObject(url, machine1, MachineIdDto.class);
         System.out.println("Scheduled machine: " + schedulingId1);
-        ScheduleMachineResource machine2 = new ScheduleMachineResource("machine2", "Percy Waterman");
-        SchedulingIdDto schedulingId2 = restTemplate.postForObject(url, machine2, SchedulingIdDto.class);
+        ScheduleMachineResource machine2 = new ScheduleMachineResource("machine2");
+        MachineIdDto schedulingId2 = restTemplate.postForObject(url, machine2, MachineIdDto.class);
         System.out.println("Scheduled machine: " + schedulingId2);
-        ScheduleMachineResource machine3 = new ScheduleMachineResource("machine3", "Rebecca Castle");
-        SchedulingIdDto schedulingId3 = restTemplate.postForObject(url, machine3, SchedulingIdDto.class);
+        ScheduleMachineResource machine3 = new ScheduleMachineResource("machine3");
+        MachineIdDto schedulingId3 = restTemplate.postForObject(url, machine3, MachineIdDto.class);
         System.out.println("Scheduled machine: " + schedulingId3);
-        ScheduleMachineResource machine4 = new ScheduleMachineResource("machine4", "Taz Lou");
-        SchedulingIdDto schedulingId4 = restTemplate.postForObject(url, machine4, SchedulingIdDto.class);
+        ScheduleMachineResource machine4 = new ScheduleMachineResource("machine4");
+        MachineIdDto schedulingId4 = restTemplate.postForObject(url, machine4, MachineIdDto.class);
         System.out.println("Scheduled machine: " + schedulingId4);
 
         //while true keep adding jobs to the machines
         final String urlAddJob = "http://localhost:8787/addJobToMachine";
         Random rand = new Random();
         int maxMaterials = 50;
-        int maxDays = 15;
+        int maxDays = 30;
         String[] machines = {"machine1", "machine2", "machine3", "machine4"};
         int numMachines = machines.length;
         String[] materialNeeded = {"steel", "wood", "nails", "iron"};
         int materialOptions = materialNeeded.length;
+        String[] customers = {"Michelle", "Randy", "Rob", "Deb"};
+        int numCustomers = customers.length;
         int[] priorityOptions = {1, 2, 3, 4, 5};
         int priorityNum = priorityOptions.length;
         LocalDate day = LocalDate.now();
@@ -56,19 +67,27 @@ public class Main {
             String machineId = machines[r1];
             int material = rand.nextInt(materialOptions);
             String materialName = materialNeeded[material];
+            int customer = rand.nextInt(numCustomers);
+            String customerName = customers[customer];
             int priorityChosen = rand.nextInt(priorityNum);
             int priority = priorityOptions[priorityChosen];
-            LocalDate submitDate = day.plusDays(rand.nextInt(10)); //submit date within the next 10 days
-            System.out.println("Adding job " + jobNumber + " to " + machineId + " for " + materialAmount + " of " + materialName + " on " + submitDate);
-            AddJobToMachineResource job = new AddJobToMachineResource(jobNumber, jobTimeNeededDays, priority, machineId, submitDate, materialName, materialAmount);
-            System.out.println("Posting job: " + job.toString());
-            SchedulingIdDto schedulingId = restTemplate.postForObject(urlAddJob, job, SchedulingIdDto.class);
-            System.out.println("******" + schedulingId + job + "*****");
-            System.out.println(job);
-            Thread.sleep(1000);
+            LocalDate dueDate = day.plusDays(rand.nextInt(10)); //submit date within the next 10 days
+            System.out.println("Adding job " + jobNumber + " to " + machineId + " for " + materialAmount + " of " + materialName + " on " + dueDate);
+            AddJobToMachineResource job = new AddJobToMachineResource(jobNumber, jobTimeNeededDays, priority, machineId, dueDate, materialName, materialAmount, customerName);
+            //System.out.println("Posting job: " + job.toString());
+            MachineIdDto schedulingId = restTemplate.postForObject(urlAddJob, job, MachineIdDto.class);
+            //System.out.println("******" + schedulingId + job + "*****");
+            //System.out.println(job);
+
+            ///create fake schedule
+            Schedule schedule = service.processMachine(machineId);
+
+            ScheduleDto scheduleDto = restTemplate.postForObject(urlAddJob, schedule, ScheduleDto.class);
+
+            Thread.sleep(5000);
         }
     }
 
-    @Bean
-    ChatModelListener chatModelLogger() {return new ModelLogger();}
+//    @Bean
+//    ChatModelListener chatModelLogger() {return new ModelLogger();}
 }

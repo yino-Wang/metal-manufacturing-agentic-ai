@@ -1,124 +1,126 @@
 package com.example.domain.model.aggregates;
 
+import com.example.domain.model.valueobjects.JobStatus;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+
+import java.time.LocalDate;
 import java.util.Date;
 
-/**
- * Job entity class representing a scheduled job in the system.
- * <p>
- * aggregate root：Job
- * used to manage job-related business operations and maintain consistency within the aggregate.
- * </p>
- */
 @Entity
-@Table(name = "job")
 public class Job {
+
+    @Column(name = "submitDate")
+    private LocalDate submitDate;
+    @Column(name = "startDate")
+    private LocalDate startDate;
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "job_id")
+    @Column(name = "jobId")
     private Long jobId;
-
-    @Column(name = "customer")
-    private String customer;
-
-    @Column(name = "due_date")
-    @Temporal(TemporalType.DATE)
-    private Date dueDate;
-
-    @Column(name = "priority")
+    @Column(name = "endDate")
+    private LocalDate endDate;
+    @Column(name = "materialNeeded")
+    private String materialNeeded;
+    @Column(name = "materialAmount")
+    private Integer materialAmount;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "jobStatus")
+    private JobStatus jobStatus;
+    @Column(name="jobTimeNeededDays")
+    private Integer jobTimeNeededDays;
+    @Column(name="priority")
     private Integer priority;
-
-    @Column(name = "status")
-    private String status;
-
-    @Column(name = "submit_date")
-    @Temporal(TemporalType.DATE)
-    private Date submitDate;
-
-    @Column(name = "title")
+    @Column(name="title")
     private String title;
 
-    @Column(name = "material_requirement")
-    private Integer materialRequirement;
+    public Job() {
+    }
 
-    @Column(name = "start_date")
-    @Temporal(TemporalType.DATE)
-    private Date startDate;
+    public Job(Long jobId, int jobTimeNeededDays, int priority, LocalDate submitDate, String materialNeeded, Integer materialAmount, JobStatus jobStatus) {
+        this.jobId = jobId;
+        this.jobTimeNeededDays = jobTimeNeededDays;
+        this.priority = priority;
+        this.submitDate = submitDate;
+        this.materialNeeded = materialNeeded;
+        this.materialAmount = materialAmount;
+        this.jobStatus = jobStatus;
+    }
 
-    @Column(name = "end_date")
-    @Temporal(TemporalType.DATE)
-    private Date endDate;
+    public Job(LocalDate submitDate, LocalDate startDate, LocalDate endDate, String materialNeeded, Integer materialAmount, JobStatus jobStatus) {
+        this.submitDate = submitDate;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.materialNeeded = materialNeeded;
+        this.materialAmount = materialAmount;
+        this.jobStatus = jobStatus;
 
-    @Column(name = "queue_order_number")
-    private Integer queueOrderNumber;
-
-    // 构造方法、getter、setter
-    public Job() {}
+    }
 
     public Long getJobId() {
-        return jobId; }
-
+        return jobId;
+    }
     public void setJobId(Long jobId) {
-        this.jobId = jobId; }
+        this.jobId = jobId;
+    }
+    public LocalDate getSubmitDate() {
+        return submitDate;
+    }
+    public void setSubmitDate(LocalDate submitDate) {
+        this.submitDate = submitDate;
+    }
 
-    public String getCustomer() {
-        return customer; }
 
-    public void setCustomer(String customer) {
-        this.customer = customer; }
+    public Integer getJobTimeNeededDays() {
+        return jobTimeNeededDays;
+    }
 
-    public Date getDueDate() {
-        return dueDate; }
-
-    public void setDueDate(Date dueDate) {
-        this.dueDate = dueDate; }
+    public void setJobTimeNeededDays(Integer jobTimeNeededDays) {
+        this.jobTimeNeededDays = jobTimeNeededDays;
+    }
 
     public Integer getPriority() {
-        return priority; }
+        return priority;
+    }
 
     public void setPriority(Integer priority) {
-        this.priority = priority; }
+        this.priority = priority;
+    }
 
-    public String getStatus() {
-        return status; }
-
-    public void setStatus(String status) {
-        this.status = status; }
-
-    public Date getSubmitDate() {
-        return submitDate; }
-
-    public void setSubmitDate(Date submitDate) {
-        this.submitDate = submitDate; }
-
-    public String getTitle() {
-        return title; }
+    public LocalDate getStartDate() {
+        return startDate;
+    }
+    public void setStartDate(LocalDate startDate) {
+        this.startDate = startDate;
+    }
+    public LocalDate getEndDate() {
+        return endDate;
+    }
+    public void setEndDate(LocalDate endDate) {
+        this.endDate = endDate;
+    }
+    public String getMaterialNeeded() {
+        return materialNeeded;
+    }
+    public void setMaterialNeeded(String materialNeeded) {
+        this.materialNeeded = materialNeeded;
+    }
+    public Integer getMaterialAmount() {
+        return materialAmount;
+    }
+    public void setMaterialAmount(Integer materialAmount) {
+        this.materialAmount = materialAmount;
+    }
+    public JobStatus getJobStatus() {
+        return jobStatus;
+    }
+    public void setJobStatus(JobStatus jobStatus) {
+        this.jobStatus = jobStatus;
+    }
 
     public void setTitle(String title) {
-        this.title = title; }
-
-    public Integer getMaterialRequirement() {
-        return materialRequirement; }
-
-    public void setMaterialRequirement(Integer materialRequirement) {
-        this.materialRequirement = materialRequirement; }
-
-    public Date getStartDate() {
-        return startDate; }
-
-    public void setStartDate(Date startDate) {
-        this.startDate = startDate; }
-
-    public Date getEndDate() {
-        return endDate; }
-
-    public void setEndDate(Date endDate) {
-        this.endDate = endDate; }
-
-    public Integer getQueueOrderNumber() {
-        return queueOrderNumber; }
-
-    public void setQueueOrderNumber(Integer queueOrderNumber) {
-        this.queueOrderNumber = queueOrderNumber; }
-
+        this.title = title;
+    }
+    public String getTitle() {
+        return title;
+    }
 }

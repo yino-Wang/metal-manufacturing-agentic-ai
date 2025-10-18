@@ -4,49 +4,52 @@ import java.time.LocalDate;
 
 public class AddJobToMachineResource {
     private int jobNumber;
-    private String machineName;
+    private String machineId;
     private int jobTimeNeededDays;
     private int priority;
-    private LocalDate submitDate;
+    private LocalDate dueDate;
     private String materialNeeded;
     private int materialAmount;
+    private String customerName;
 
     public AddJobToMachineResource(){ }
 
-    public AddJobToMachineResource(int jobNumber, int jobTimeNeededDays, int priority, String machineId, String materialName, int materialAmount) {
+    public AddJobToMachineResource(int jobNumber, int jobTimeNeededDays, int priority, String machineId, String materialName, int materialAmount, String customerName) {
         this.jobNumber = jobNumber;
         this.jobTimeNeededDays = jobTimeNeededDays;
         this.priority = priority;
-        this.machineName = machineId;
-        this.submitDate = LocalDate.now();
+        this.machineId = machineId;
+        this.dueDate = LocalDate.now();
         this.materialNeeded = materialName;
         this.materialAmount = materialAmount;
+        this.customerName = customerName;
     }
 
-    public AddJobToMachineResource(int jobNumber, int jobTimeNeededDays, int priority, String machineId, LocalDate submitDate, String materialName, int materialAmount) {
+    public AddJobToMachineResource(int jobNumber, int jobTimeNeededDays, int priority, String machineId, LocalDate dueDate, String materialName, int materialAmount, String customerName) {
         this.jobNumber = jobNumber;
         this.jobTimeNeededDays = jobTimeNeededDays;
         this.priority = priority;
-        this.machineName = machineId;
-        this.submitDate = submitDate;
+        this.machineId = machineId;
+        this.dueDate = dueDate;
         this.materialNeeded = materialName;
         this.materialAmount = materialAmount;
+        this.customerName = customerName;
     }
 
-    public String getMachineName() {
-        return machineName;
+    public String getMachineId() {
+        return machineId;
     }
 
-    public void setMachineName(String machineName) {
-        this.machineName = machineName;
+    public void setMachineId(String machineId) {
+        this.machineId = machineId;
     }
 
-    public LocalDate getSubmitDate() {
-        return submitDate;
+    public LocalDate getDueDate() {
+        return dueDate;
     }
 
-    public void setSubmitDate(LocalDate submitDate) {
-        this.submitDate = submitDate;
+    public void setDueDate(LocalDate dueDate) {
+        this.dueDate = dueDate;
     }
 
     public String getMaterialNeeded() {
@@ -87,16 +90,25 @@ public class AddJobToMachineResource {
         this.priority = priority;
     }
 
+    public String getCustomerName() {
+        return customerName;
+    }
+
+    public void setCustomerName(String customerName) {
+        this.customerName = customerName;
+    }
+
     @Override
     public String toString() {
         return "AddJobToMachineResource{" +
                 "jobNumber=" + jobNumber +
-                ", machineName='" + machineName + '\'' +
+                ", machineId='" + machineId + '\'' +
                 ", jobTimeNeededDays=" + jobTimeNeededDays +
                 ", priority=" + priority +
-                ", submitDate=" + submitDate +
+                ", dueDate=" + dueDate +
                 ", materialNeeded='" + materialNeeded + '\'' +
                 ", materialAmount=" + materialAmount +
+                ", customerName='" + customerName + '\'' +
                 '}';
     }
 }
