@@ -17,13 +17,11 @@ import java.util.Map;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @ActiveProfiles("test")
 @TestPropertySource(properties = {
-    "spring.datasource.url=jdbc:h2:mem:testdb",
-    "spring.jpa.hibernate.ddl-auto=create-drop",
-    "spring.main.web-application-type=none",
-    "spring.cloud.stream.default-binder=test",
-    "langchain4j.google-ai-gemini.chat-model.enabled=false",
-    "logging.level.com.example=INFO",
-    "logging.level.com.example.service.ShiftPlannerService=DEBUG"
+        "spring.datasource.url=jdbc:h2:mem:testdb",
+        "spring.jpa.hibernate.ddl-auto=create-drop",
+        "spring.main.web-application-type=none",
+        "logging.level.com.example=INFO",
+        "logging.level.com.example.service.ShiftPlannerService=DEBUG"
 })
 public class ShiftPlanGenerationTest {
 

@@ -20,7 +20,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <langchain4j.version>1.4.0</langchain4j.version>
         <langchain4j.beta-version>1.4.0-beta10</langchain4j.beta-version>
-        <spring-cloud.version>2025.0.0</spring-cloud.version>
+        <spring-cloud.version>2024.0.0</spring-cloud.version>
     </properties>
 
     <dependencyManagement>
@@ -43,14 +43,15 @@
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
 
-        <!-- Add business-service dependency to use ExternalNewSchedule -->
+
         <dependency>
             <groupId>com.example</groupId>
             <artifactId>business-service</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
 
-        <!-- LangChain4j Google AI Gemini Spring Boot Starter (包含所有必要的依赖) -->
+
+        <!-- LangChain4j Google AI Gemini Spring Boot Starter  -->
         <dependency>
             <groupId>dev.langchain4j</groupId>
             <artifactId>langchain4j-spring-boot-starter</artifactId>
@@ -95,6 +96,17 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-logging</artifactId>
         </dependency>
+
+
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-stream-kafka</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-stream-binder-kafka</artifactId>
+        </dependency>
+
 
         <dependency>
             <groupId>org.hibernate.orm</groupId>

@@ -15,6 +15,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -87,10 +88,27 @@ public class GeminiClient implements LLMClient {
         StringBuilder prompt = new StringBuilder();
         prompt.append("You are an AI scheduling assistant specialized in creating optimal shift plans based on job priorities. ");
         prompt.append("Return ONLY a valid JSON array with the following structure: ");
-        prompt.append("[{\"employeeId\": number, \"shiftDate\": \"YYYY-MM-DD\", \"jobPriority\": number}]. ");
+        prompt.append("[{\"employeeId\": number, \"shiftDate\": \"YYYY-MM-DD\", \"jobId\": number, \"jobPriority\": number}]. ");
         prompt.append("Do not include any other text or explanation.\n\n");
 
-        prompt.append("Generate an optimal shift schedule with the following requirements:\n\n");
+        prompt.append("CRITICAL SCHEDULING REQUIREMENTS:\n");
+        prompt.append("1. 一个员工一天只能做一个工作 (One employee can only do one job per day)\n");
+        prompt.append("2. 严格按优先级分配 (Strict priority-based allocation):\n");
+        prompt.append("   - Priority 1 (CRITICAL) gets employees FIRST\n");
+        prompt.append("   - Priority 2 (HIGH) gets employees SECOND\n");
+        prompt.append("   - Priority 3 (MEDIUM) gets employees THIRD\n");
+        prompt.append("   - Priority 4 (LOW) gets employees FOURTH\n");
+        prompt.append("   - Priority 5 (MINIMAL) gets employees LAST\n");
+        prompt.append("3. 工作时间统一为8小时，上午8点开始 (Standard 8-hour shifts starting at 8:00 AM)\n");
+        prompt.append("4. 每个工作需要 ").append(getRequiredEmployeesFromInput(input)).append(" 个员工\n\n");
+
+        prompt.append("ALLOCATION LOGIC:\n");
+        prompt.append("1. Sort all jobs by priority (1=highest, 5=lowest)\n");
+        prompt.append("2. For each day in the time period:\n");
+        prompt.append("   a. Start with highest priority jobs first\n");
+        prompt.append("   b. Assign available employees to each job\n");
+        prompt.append("   c. Once an employee is assigned to a job on a day, they cannot be assigned to another job that same day\n");
+        prompt.append("   d. Move to next priority level only after current priority jobs are staffed\n\n");
 
         // Time period
         prompt.append("Time period:\n");
@@ -98,67 +116,75 @@ public class GeminiClient implements LLMClient {
         prompt.append("- End: ").append(dateFormat.format(input.getEndTime())).append("\n\n");
 
         // Available employees
-        prompt.append("Available employees:\n");
-        for (Employee employee : input.getAvailableEmployees()) {
-            prompt.append("- ID: ").append(employee.getEmployeeId())
-                    .append(", Name: ").append(employee.getName())
-                    .append(", Skills: ").append(employee.getSkill())
-                    .append("\n");
+        prompt.append("Available employees (").append(input.getAvailableEmployees().size()).append(" total):\n");
+        for (Employee emp : input.getAvailableEmployees()) {
+            prompt.append("- Employee ID: ").append(emp.getEmployeeId())
+                  .append(", Skill: ").append(emp.getSkill())
+                  .append(", Pay: ").append(emp.getPay()).append("\n");
         }
         prompt.append("\n");
 
-        // Jobs with priorities (simplified - only priority info needed for scheduling)
-        prompt.append("Jobs to schedule (by priority):\n");
-        for (Job job : input.getJobsToSchedule()) {
+        // Jobs to schedule
+        prompt.append("Jobs to schedule (sorted by priority):\n");
+        List<Job> sortedJobs = input.getJobsToSchedule().stream()
+            .sorted(Comparator.comparing(Job::getPriority))
+            .collect(Collectors.toList());
+
+        for (Job job : sortedJobs) {
             prompt.append("- Job ID: ").append(job.getJobId())
-                    .append(", Priority: ").append(job.getPriority())
-                    .append(" (").append(getPriorityLevel(job.getPriority())).append(")")
-                    .append("\n");
-        }
-        prompt.append("\n");
-
-        // Staffing requirements based on priority levels
-        prompt.append("Staffing requirements by priority level:\n");
-        for (Map.Entry<String, Integer> entry : input.getStaffingRequirements().entrySet()) {
-            prompt.append("- Priority level: ").append(entry.getKey())
-                    .append(", Required employees: ").append(entry.getValue())
-                    .append("\n");
+                  .append(", Priority: ").append(job.getPriority())
+                  .append(" (").append(getPriorityName(job.getPriority())).append(")")
+                  .append(", Title: ").append(job.getTitle() != null ? job.getTitle() : "N/A").append("\n");
         }
         prompt.append("\n");
 
         // Constraints
-        prompt.append("Constraints:\n");
-        prompt.append("- Maximum hours per week: ").append(input.getConstraints().get("maxHoursPerWeek")).append("\n");
-        prompt.append("- Minimum rest hours between shifts: ").append(input.getConstraints().get("minRestHours")).append("\n");
-        prompt.append("- Priority-based scheduling enabled: ").append(input.getConstraints().get("priorityWeight")).append("\n\n");
+        if (input.getConstraints() != null) {
+            prompt.append("Additional constraints:\n");
+            input.getConstraints().forEach((key, value) ->
+                prompt.append("- ").append(key).append(": ").append(value).append("\n")
+            );
+            prompt.append("\n");
+        }
 
-        prompt.append("Priority scheduling rules (1=highest, 5=lowest):\n");
-        prompt.append("1. CRITICAL priority (1): Assign best skilled employees first\n");
-        prompt.append("2. HIGH priority (2): Assign experienced employees\n");
-        prompt.append("3. MEDIUM priority (3): Standard employee assignment\n");
-        prompt.append("4. LOW priority (4): Can use less experienced employees\n");
-        prompt.append("5. MINIMAL priority (5): Use available employees efficiently\n\n");
+        prompt.append("EXAMPLE OUTPUT FORMAT:\n");
+        prompt.append("[\n");
+        prompt.append("  {\"employeeId\": 1, \"shiftDate\": \"2025-10-20\", \"jobId\": 3, \"jobPriority\": 1},\n");
+        prompt.append("  {\"employeeId\": 2, \"shiftDate\": \"2025-10-20\", \"jobId\": 1, \"jobPriority\": 1},\n");
+        prompt.append("  {\"employeeId\": 3, \"shiftDate\": \"2025-10-20\", \"jobId\": 4, \"jobPriority\": 4}\n");
+        prompt.append("]\n\n");
 
-        prompt.append("Please consider:\n");
-        prompt.append("1. Job priority levels when assigning employees\n");
-        prompt.append("2. Employee skills matching job requirements\n");
-        prompt.append("3. Fair distribution of shifts across priority levels\n");
-        prompt.append("4. Labor law compliance\n");
-        prompt.append("5. Employee workload balance\n\n");
-
-        prompt.append("Return the schedule as a JSON array ONLY. No additional text.");
+        prompt.append("IMPORTANT: \n");
+        prompt.append("- Each employee can appear only ONCE per day across all jobs\n");
+        prompt.append("- Assign employees to highest priority jobs first\n");
+        prompt.append("- Return valid JSON array ONLY, no additional text\n");
 
         return prompt.toString();
     }
 
-    private String getPriorityLevel(Integer priority) {
-        if (priority == null) return "NORMAL";
-        if (priority == 1) return "CRITICAL";
-        if (priority == 2) return "HIGH";
-        if (priority == 3) return "MEDIUM";
-        if (priority == 4) return "LOW";
-        if (priority == 5) return "MINIMAL";
-        return "NORMAL"; // Default for any other values
+    /**
+     * 获取优先级名称
+     */
+    private String getPriorityName(Integer priority) {
+        if (priority == null) return "UNKNOWN";
+        switch (priority) {
+            case 1: return "CRITICAL";
+            case 2: return "HIGH";
+            case 3: return "MEDIUM";
+            case 4: return "LOW";
+            case 5: return "MINIMAL";
+            default: return "UNKNOWN";
+        }
+    }
+
+    /**
+     * 从输入中获取所需员工数量
+     */
+    private int getRequiredEmployeesFromInput(AgentInput input) {
+        if (input.getStaffingRequirements() != null && !input.getStaffingRequirements().isEmpty()) {
+            return input.getStaffingRequirements().values().iterator().next();
+        }
+        return 1; // 默认值
     }
 
     private List<ShiftPlan> parseResponse(String response, AgentInput input) {
@@ -257,7 +283,7 @@ public class GeminiClient implements LLMClient {
             }
 
             // Set required employees from input based on priority level
-            String priorityLevel = getPriorityLevel(schedule.getJobPriority());
+            String priorityLevel = getPriorityName(schedule.getJobPriority());
             Integer requiredEmployees = input.getStaffingRequirements().get(priorityLevel);
             schedule.setRequiredEmployees(requiredEmployees != null ? requiredEmployees : 1);
 
