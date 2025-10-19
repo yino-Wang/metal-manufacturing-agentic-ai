@@ -24,9 +24,7 @@ public class InventoryController {
         Map<String, Object> response = new LinkedHashMap<>();
         response.put("status", "success");
         response.put("material", saved);
-        response.put("message", saved.isLowStock()
-                ? "Added, but stock is below 500 (Low Stock Alert)"
-                : "Material added successfully");
+        response.put("message", "Material added successfully (auto-restock if below 100).");
         return ResponseEntity.ok(response);
     }
 
@@ -37,9 +35,7 @@ public class InventoryController {
         Map<String, Object> response = new LinkedHashMap<>();
         response.put("status", "success");
         response.put("material", updated);
-        response.put("message", updated.isLowStock()
-                ? "Stock updated, but below 500 (Low Stock Alert)"
-                : "Stock updated successfully");
+        response.put("message", "Stock updated successfully (auto-restock if below 100).");
         return ResponseEntity.ok(response);
     }
 
