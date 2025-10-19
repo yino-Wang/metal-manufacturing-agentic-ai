@@ -19,17 +19,14 @@ import java.util.List;
 public class ScheduleController {
 
     private final ScheduleService scheduleService;
-    private final MachineSchedulingQueryService machineSchedulingQueryService;
 
     @Autowired
-    public ScheduleController(ScheduleService scheduleService, MachineSchedulingQueryService machineSchedulingQueryService){
+    public ScheduleController(ScheduleService scheduleService){
         this.scheduleService = scheduleService;
-        this.machineSchedulingQueryService = machineSchedulingQueryService;
     }
 
     @GetMapping("/chat-generateSchedule/{machineId}")
     public Schedule generateSchedule(@RequestParam String machineId) {
-        Machine machine = machineSchedulingQueryService.find(new MachineId(machineId));
-        return this.scheduleService.generateSchedule(machine.getJobList());
+        return this.scheduleService.generateSchedule(machineId);
     }
 }

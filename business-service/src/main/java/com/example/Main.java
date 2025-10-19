@@ -1,8 +1,10 @@
 package com.example;
 
 //import com.example.infrastructure.agentic.ModelLogger;
+import com.example.application.agentService.ScheduleService;
 import com.example.application.service.SchedulingService;
 import com.example.domain.model.aggreates.Machine;
+import com.example.domain.model.aggreates.MachineId;
 import com.example.domain.model.valueobjects.Schedule;
 import com.example.infrastructure.repositories.MachineRepository;
 import com.example.interfaces.rest.dto.AddJobToMachineResource;
@@ -26,7 +28,7 @@ public class Main {
     public static void main(String[] args) throws InterruptedException {
         ApplicationContext context = SpringApplication.run(Main.class, args); //ADD THIS BUT CHANGE *MAIN* TO WHATEVER YOUR FILE IS CALLED
 
-        SchedulingService service = context.getBean(SchedulingService.class);
+        ScheduleService service = context.getBean(ScheduleService.class);
 
         final String url = "http://localhost:8787/machinescheduling";
         //schedule some machines
@@ -80,7 +82,7 @@ public class Main {
             //System.out.println(job);
 
             ///create fake schedule
-            Schedule schedule = service.processMachine(machineId);
+            Schedule schedule = service.generateSchedule(machineId);
 
             ScheduleDto scheduleDto = restTemplate.postForObject(urlAddJob, schedule, ScheduleDto.class);
 
