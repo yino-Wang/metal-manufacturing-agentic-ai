@@ -6,7 +6,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 /**
- * Seeds initial material data when the application starts and logs it to the console.
+ * Adds initial material data when the application starts and logs it to the console.
  */
 @Component
 public class DataInitialiser implements CommandLineRunner {
@@ -21,7 +21,7 @@ public class DataInitialiser implements CommandLineRunner {
     public void run(String... args) {
         if (inventoryRepository.count() == 0) {
             System.out.println("--------------------------------------------------");
-            System.out.println("[Init] Seeding default materials into inventory...");
+            System.out.println("[Init] Setting default materials into inventory...");
             System.out.println("--------------------------------------------------");
 
             inventoryRepository.save(new Material(0, "Steel Sheet", 500));
@@ -31,7 +31,7 @@ public class DataInitialiser implements CommandLineRunner {
 
             System.out.println("[Init] Default materials have been added.");
         } else {
-            System.out.println("[Init] Existing materials found — skipping seed.");
+            System.out.println("[Init] Existing materials found — skipping material.");
         }
 
         // Log current inventory after startup
