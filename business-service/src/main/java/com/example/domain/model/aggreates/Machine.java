@@ -3,13 +3,17 @@ package com.example.domain.model.aggreates;
 import com.example.domain.model.commands.ScheduleMachineCommand;
 //import com.example.domain.model.entities.Employee;
 import com.example.domain.model.valueobjects.*;
+import com.example.events.JobAddedToMachineEvent;
+import com.example.events.JobAddedToMachineEventData;
+import com.example.events.MachineScheduledEvent;
+import com.example.events.MachineScheduledEventData;
 import jakarta.persistence.*;
 import org.springframework.data.domain.AbstractAggregateRoot;
 
-import com.example.interfaces.rest.JobAddedToMachineEventData;
-import com.example.interfaces.rest.JobAddedToMachineEvent;
-import com.example.interfaces.rest.MachineScheduledEventData;
-import com.example.interfaces.rest.MachineScheduledEvent;
+//import com.example.interfaces.rest.JobAddedToMachineEventData;
+//import com.example.interfaces.rest.JobAddedToMachineEvent;
+//import com.example.interfaces.rest.MachineScheduledEventData;
+//import com.example.interfaces.rest.MachineScheduledEvent;
 
 @Entity
 @NamedQueries({
