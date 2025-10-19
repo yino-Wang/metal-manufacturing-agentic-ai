@@ -10,7 +10,7 @@ import jakarta.persistence.*;
 public class Material {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // Auto ID if not provided
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @Column(nullable = false)
