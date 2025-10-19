@@ -92,23 +92,34 @@ public class GeminiClient implements LLMClient {
         prompt.append("Do not include any other text or explanation.\n\n");
 
         prompt.append("CRITICAL SCHEDULING REQUIREMENTS:\n");
-        prompt.append("1. 一个员工一天只能做一个工作 (One employee can only do one job per day)\n");
-        prompt.append("2. 严格按优先级分配 (Strict priority-based allocation):\n");
+        prompt.append("1. One employee can only do one job per day\n");
+        prompt.append("2. Strict priority-based allocation:\n");
         prompt.append("   - Priority 1 (CRITICAL) gets employees FIRST\n");
         prompt.append("   - Priority 2 (HIGH) gets employees SECOND\n");
         prompt.append("   - Priority 3 (MEDIUM) gets employees THIRD\n");
         prompt.append("   - Priority 4 (LOW) gets employees FOURTH\n");
         prompt.append("   - Priority 5 (MINIMAL) gets employees LAST\n");
-        prompt.append("3. 工作时间统一为8小时，上午8点开始 (Standard 8-hour shifts starting at 8:00 AM)\n");
-        prompt.append("4. 每个工作需要 ").append(getRequiredEmployeesFromInput(input)).append(" 个员工\n\n");
+        prompt.append("3. Standard 8-hour shifts starting at 8:00 AM\n");
+        prompt.append("4. Each job needs 1 employee only\n");
+
+        prompt.append("DAY-BY-DAY PLANNING REQUIREMENTS:\n");
+        prompt.append("1. Calculate the total number of days needed to complete ALL jobs\n");
+        prompt.append("2. Plan work day by day, ensuring optimal resource allocation\n");
+        prompt.append("3. For each day, clearly assign which employee works on which job\n");
+        prompt.append("4. Ensure continuous workflow - complete higher priority jobs first\n");
+        prompt.append("5. Minimize total completion time while respecting priority constraints\n");
+        prompt.append("6. Group the output chronologically by date (earliest dates first)\n\n");
 
         prompt.append("ALLOCATION LOGIC:\n");
-        prompt.append("1. Sort all jobs by priority (1=highest, 5=lowest)\n");
-        prompt.append("2. For each day in the time period:\n");
-        prompt.append("   a. Start with highest priority jobs first\n");
-        prompt.append("   b. Assign available employees to each job\n");
-        prompt.append("   c. Once an employee is assigned to a job on a day, they cannot be assigned to another job that same day\n");
-        prompt.append("   d. Move to next priority level only after current priority jobs are staffed\n\n");
+        prompt.append("1. Calculate minimum days needed: (Total jobs × employees per job) ÷ total available employees\n");
+        prompt.append("2. Sort all jobs by priority (1=highest, 5=lowest)\n");
+        prompt.append("3. For each day in sequence:\n");
+        prompt.append("   a. Start with highest priority unfinished jobs\n");
+        prompt.append("   b. Each job just needs one employee\n");
+        prompt.append("   c. Once an employee is assigned to a job on a day, they cannot work another job that same day\n");
+        prompt.append("   d. Continue until all available employees are assigned or no more jobs can be started\n");
+        prompt.append("   e. Move to next day and repeat\n");
+        prompt.append("4. Ensure all jobs are completed within the specified time period\n\n");
 
         // Time period
         prompt.append("Time period:\n");
@@ -125,7 +136,7 @@ public class GeminiClient implements LLMClient {
         prompt.append("\n");
 
         // Jobs to schedule
-        prompt.append("Jobs to schedule (sorted by priority):\n");
+        prompt.append("Jobs to schedule (").append(input.getJobsToSchedule().size()).append(" total, sorted by priority):\n");
         List<Job> sortedJobs = input.getJobsToSchedule().stream()
             .sorted(Comparator.comparing(Job::getPriority))
             .collect(Collectors.toList());
@@ -138,6 +149,19 @@ public class GeminiClient implements LLMClient {
         }
         prompt.append("\n");
 
+        // Calculate estimated completion time
+        int totalJobs = input.getJobsToSchedule().size();
+        int employeesPerJob = getRequiredEmployeesFromInput(input);
+        int totalEmployees = input.getAvailableEmployees().size();
+        int estimatedDays = Math.max(1, (int) Math.ceil((double) (totalJobs * employeesPerJob) / totalEmployees));
+
+        prompt.append("COMPLETION TIME ESTIMATION:\n");
+        prompt.append("- Total jobs to complete: ").append(totalJobs).append("\n");
+        prompt.append("- Employees required per job = 1");
+        prompt.append("- Total available employees: ").append(totalEmployees).append("\n");
+        prompt.append("- Estimated minimum days needed: ").append(estimatedDays).append("\n");
+        prompt.append("- Plan should aim to complete within ").append(estimatedDays).append("-").append(estimatedDays + 1).append(" days\n\n");
+
         // Constraints
         if (input.getConstraints() != null) {
             prompt.append("Additional constraints:\n");
@@ -147,23 +171,31 @@ public class GeminiClient implements LLMClient {
             prompt.append("\n");
         }
 
-        prompt.append("EXAMPLE OUTPUT FORMAT:\n");
+        prompt.append("EXAMPLE OUTPUT FORMAT (grouped by day):\n");
         prompt.append("[\n");
+        prompt.append("  // Day 1 - Focus on Priority 1 jobs first\n");
         prompt.append("  {\"employeeId\": 1, \"shiftDate\": \"2025-10-20\", \"jobId\": 3, \"jobPriority\": 1},\n");
-        prompt.append("  {\"employeeId\": 2, \"shiftDate\": \"2025-10-20\", \"jobId\": 1, \"jobPriority\": 1},\n");
-        prompt.append("  {\"employeeId\": 3, \"shiftDate\": \"2025-10-20\", \"jobId\": 4, \"jobPriority\": 4}\n");
+        prompt.append("  {\"employeeId\": 2, \"shiftDate\": \"2025-10-20\", \"jobId\": 3, \"jobPriority\": 1},\n");
+        prompt.append("  {\"employeeId\": 3, \"shiftDate\": \"2025-10-20\", \"jobId\": 1, \"jobPriority\": 1},\n");
+        prompt.append("  // Day 2 - Continue with remaining Priority 1, then Priority 2\n");
+        prompt.append("  {\"employeeId\": 1, \"shiftDate\": \"2025-10-21\", \"jobId\": 1, \"jobPriority\": 1},\n");
+        prompt.append("  {\"employeeId\": 2, \"shiftDate\": \"2025-10-21\", \"jobId\": 4, \"jobPriority\": 2},\n");
+        prompt.append("  {\"employeeId\": 3, \"shiftDate\": \"2025-10-21\", \"jobId\": 4, \"jobPriority\": 2}\n");
         prompt.append("]\n\n");
 
-        prompt.append("IMPORTANT: \n");
+        prompt.append("FINAL REQUIREMENTS:\n");
+        prompt.append("- Sort output chronologically by shiftDate (earliest first)\n");
+        prompt.append("- Within each day, sort by job priority (highest priority first)\n");
         prompt.append("- Each employee can appear only ONCE per day across all jobs\n");
-        prompt.append("- Assign employees to highest priority jobs first\n");
-        prompt.append("- Return valid JSON array ONLY, no additional text\n");
+        prompt.append("- Ensure all jobs are assigned the required number of employees\n");
+        prompt.append("- Minimize total completion time while respecting priority order\n");
+        prompt.append("- Return valid JSON array ONLY, no additional text or comments\n");
 
         return prompt.toString();
     }
 
     /**
-     * 获取优先级名称
+     * get priority name from priority integer
      */
     private String getPriorityName(Integer priority) {
         if (priority == null) return "UNKNOWN";
@@ -177,14 +209,10 @@ public class GeminiClient implements LLMClient {
         }
     }
 
-    /**
-     * 从输入中获取所需员工数量
-     */
+
     private int getRequiredEmployeesFromInput(AgentInput input) {
-        if (input.getStaffingRequirements() != null && !input.getStaffingRequirements().isEmpty()) {
-            return input.getStaffingRequirements().values().iterator().next();
-        }
-        return 1; // 默认值
+
+        return 1;
     }
 
     private List<ShiftPlan> parseResponse(String response, AgentInput input) {
@@ -259,38 +287,85 @@ public class GeminiClient implements LLMClient {
 
     private ShiftPlan parseScheduleNode(JsonNode node, AgentInput input) {
         try {
-            if (!node.has("employeeId") || !node.has("shiftDate")) {
-                logger.warn("Missing required fields in schedule node: {}", node.toString());
+            // Check for required fields including jobId
+            if (!node.has("employeeId") || !node.has("shiftDate") || !node.has("jobId")) {
+                logger.warn("Missing required fields (employeeId, shiftDate, jobId) in schedule node: {}", node.toString());
                 return null;
             }
 
             ShiftPlan schedule = new ShiftPlan();
             schedule.setEmployeeId(node.get("employeeId").asLong());
-            schedule.setShiftDate(dateFormat.parse(node.get("shiftDate").asText()));
+            schedule.setJobId(node.get("jobId").asLong());
+
+            // Parse shift date
+            try {
+                schedule.setShiftDate(dateFormat.parse(node.get("shiftDate").asText()));
+            } catch (Exception e) {
+                logger.warn("Failed to parse shiftDate: {}", node.get("shiftDate").asText());
+                // Use default date if parsing fails
+                schedule.setShiftDate(input.getStartTime());
+            }
 
             // Set job priority from the response or find from jobs list
             if (node.has("jobPriority")) {
                 schedule.setJobPriority(node.get("jobPriority").asInt());
             } else {
-                // Find the highest priority job from the input (lowest number = highest priority)
-                Job highestPriorityJob = input.getJobsToSchedule().stream()
-                        .min(Comparator.comparing(Job::getPriority))
+                // Find job priority from jobs list using jobId
+                Long jobId = schedule.getJobId();
+                Job matchingJob = input.getJobsToSchedule().stream()
+                        .filter(job -> job.getJobId().equals(jobId))
+                        .findFirst()
                         .orElse(null);
-                if (highestPriorityJob != null) {
-                    schedule.setJobPriority(highestPriorityJob.getPriority());
-                    schedule.setJobId(highestPriorityJob.getJobId());
+                if (matchingJob != null) {
+                    schedule.setJobPriority(matchingJob.getPriority());
+                } else {
+                    logger.warn("Could not find job with ID {} in jobs list", jobId);
+                    schedule.setJobPriority(3); // Default medium priority
                 }
             }
+
+            // Set default status and version
+            schedule.setStatus("PENDING_APPROVAL");
+            schedule.setVersion(1);
+
+            // Set standard 8-hour work time (8:00 AM to 4:00 PM)
+            setStandardWorkTime(schedule);
 
             // Set required employees from input based on priority level
             String priorityLevel = getPriorityName(schedule.getJobPriority());
             Integer requiredEmployees = input.getStaffingRequirements().get(priorityLevel);
             schedule.setRequiredEmployees(requiredEmployees != null ? requiredEmployees : 1);
 
+            logger.debug("Successfully parsed schedule: Employee {} -> Job {} (Priority {})",
+                schedule.getEmployeeId(), schedule.getJobId(), schedule.getJobPriority());
+
             return schedule;
         } catch (Exception e) {
             logger.warn("Error parsing schedule node: {}", node.toString(), e);
             return null;
         }
+    }
+
+    /**
+     * Set standard 8-hour work time for a shift plan
+     */
+    private void setStandardWorkTime(ShiftPlan shiftPlan) {
+        if (shiftPlan.getShiftDate() == null) {
+            return;
+        }
+
+        java.util.Calendar calendar = java.util.Calendar.getInstance();
+        calendar.setTime(shiftPlan.getShiftDate());
+
+        // Set start time to 8:00 AM
+        calendar.set(java.util.Calendar.HOUR_OF_DAY, 8);
+        calendar.set(java.util.Calendar.MINUTE, 0);
+        calendar.set(java.util.Calendar.SECOND, 0);
+        calendar.set(java.util.Calendar.MILLISECOND, 0);
+        shiftPlan.setStartTime(calendar.getTime());
+
+        // Set end time to 4:00 PM (8 hours later)
+        calendar.add(java.util.Calendar.HOUR_OF_DAY, 8);
+        shiftPlan.setEndTime(calendar.getTime());
     }
 }

@@ -1,8 +1,6 @@
 package com.example.domain.model.aggregates;
 
-import com.example.domain.model.valueobjects.JobStatus;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
 import java.util.Date;

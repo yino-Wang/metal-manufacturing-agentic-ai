@@ -18,18 +18,19 @@ public class ShiftPlannerController {
     }
 
     /**
-     * using mock data to create shift plans for testing
+     * Create shift plans using ExternalMachineSchedule's mock data
      */
     @PostMapping("/create-with-mock-data")
     public ResponseEntity<List<ShiftPlan>> createShiftPlansWithMockData(
             @RequestParam(defaultValue = "1") int requiredEmployees) {
 
-        List<ShiftPlan> shiftPlans = shiftPlannerService.createShiftPlansWithMockData(requiredEmployees);
+        // Use the main method which already uses ExternalMachineSchedule's mock data
+        List<ShiftPlan> shiftPlans = shiftPlannerService.createShiftPlans(requiredEmployees);
         return ResponseEntity.ok(shiftPlans);
     }
 
     /**
-     * try to create shift plans from business-service machine schedule, if fails, fallback to mock data
+     * Create shift plans from ExternalMachineSchedule (business-service integration)
      */
     @PostMapping("/create")
     public ResponseEntity<List<ShiftPlan>> createShiftPlans(
@@ -40,11 +41,12 @@ public class ShiftPlannerController {
     }
 
     /**
-     * fetch mock machine schedule for testing
+     * Fetch machine schedule from ExternalMachineSchedule for testing
      */
     @GetMapping("/mock-schedule")
     public ResponseEntity<com.example.shared.MachineSchedule> getMockMachineSchedule() {
-        com.example.shared.MachineSchedule mockSchedule = shiftPlannerService.createMockMachineSchedule();
-        return ResponseEntity.ok(mockSchedule);
+        // Use the existing method that fetches from ExternalMachineSchedule
+        com.example.shared.MachineSchedule schedule = shiftPlannerService.fetchMachineScheduleFromBusiness();
+        return ResponseEntity.ok(schedule);
     }
 }

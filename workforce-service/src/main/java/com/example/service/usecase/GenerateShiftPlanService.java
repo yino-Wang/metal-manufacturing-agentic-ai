@@ -71,6 +71,31 @@ public class GenerateShiftPlanService {
         return savedSchedules;
     }
 
+    // Generate shift plan using ONLY Google Gemini AI without database save
+    public List<ShiftPlan> generateShiftPlanWithoutSave(Date startDate,
+                                                        Date endDate,
+                                                        List<Job> jobsToSchedule,
+                                                        int requiredEmployees) {
+        // 1. Find available employees
+        List<Employee> availableEmployees = employeeRepository.findAvailableEmployees();
+
+        if (availableEmployees.isEmpty()) {
+            throw new RuntimeException("No available employees");
+        }
+
+        // 2. 完全使用Gemini AI生成排班计划
+        System.out.println("DEBUG: Using ONLY Gemini AI for shift plan generation (without database save)");
+
+        AgentInput input = createAgentInputWithRequirements(startDate, endDate, jobsToSchedule, availableEmployees, requiredEmployees);
+        List<ShiftPlan> generatedPlans = geminiClient.generateShiftPlan(input);
+
+        // 3. 处理Gemini AI生成的结果 (但不保存到数据库)
+        List<ShiftPlan> processedPlans = processGeminiResults(generatedPlans, jobsToSchedule);
+
+        System.out.println("DEBUG: Gemini AI generated " + processedPlans.size() + " shift plans successfully (display only)");
+        return processedPlans;
+    }
+
     /**
      * 创建包含详细分配要求的AgentInput，传递给Gemini AI
      */
@@ -241,5 +266,60 @@ public class GenerateShiftPlanService {
             System.err.println("Failed to notify employee " + schedule.getEmployeeId() + ": " + e.getMessage());
             shiftPublishedEventPublisher.publish(new ShiftPublished(schedule));
         }
+    }
+
+    /**
+     * Recommend alternative employees when shift plan generation fails
+     */
+    public List<Employee> recommendAlternativeEmployees(Date startDate, String skillType, float maxCostPerHour) {
+        try {
+            // Get all available employees
+            List<Employee> availableEmployees = employeeRepository.findAvailableEmployees();
+
+            // Filter by cost if specified, ignore skill type
+            return availableEmployees.stream()
+              //  .filter(emp -> emp.getHourlyRate() == null || emp.getHourlyRate() <= maxCostPerHour)
+                .limit(5) // Limit to top 5 alternatives
+                .collect(Collectors.toList());
+        } catch (Exception e) {
+            System.err.println("Error getting alternative employees: " + e.getMessage());
+            return new ArrayList<>();
+        }
+    }
+
+    /**
+     * Update an existing shift plan
+     */
+    public ShiftPlan updateShiftPlan(Long shiftPlanId, ShiftPlan updatedData) {
+        ShiftPlan existingPlan = shiftPlanRepository.findById(shiftPlanId)
+            .orElseThrow(() -> new RuntimeException("Shift plan not found with ID: " + shiftPlanId));
+
+        // Update fields if provided
+        if (updatedData.getEmployeeId() != null) {
+            existingPlan.setEmployeeId(updatedData.getEmployeeId());
+        }
+        if (updatedData.getJobId() != null) {
+            existingPlan.setJobId(updatedData.getJobId());
+        }
+        if (updatedData.getShiftDate() != null) {
+            existingPlan.setShiftDate(updatedData.getShiftDate());
+        }
+        if (updatedData.getStartTime() != null) {
+            existingPlan.setStartTime(updatedData.getStartTime());
+        }
+        if (updatedData.getEndTime() != null) {
+            existingPlan.setEndTime(updatedData.getEndTime());
+        }
+        if (updatedData.getStatus() != null) {
+            existingPlan.setStatus(updatedData.getStatus());
+        }
+        if (updatedData.getJobPriority() != null) {
+            existingPlan.setJobPriority(updatedData.getJobPriority());
+        }
+
+        // Increment version
+        existingPlan.setVersion((existingPlan.getVersion() != null ? existingPlan.getVersion() : 0) + 1);
+
+        return shiftPlanRepository.save(existingPlan);
     }
 }

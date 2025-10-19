@@ -6,7 +6,7 @@ import com.example.domain.model.aggregates.Job;
 import com.example.domain.model.entities.ShiftPlan;
 import com.example.service.usecase.GenerateShiftPlanService;
 import com.example.infrastructure.repository.EmployeeRepository;
-import com.example.service.ExternalNewSchedule;
+import com.example.ExternalMachineSchedule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -23,67 +23,42 @@ public class ShiftPlannerService {
     private final RestTemplate restTemplate = new RestTemplate();
     private final GenerateShiftPlanService generateShiftPlanService;
     private final EmployeeRepository employeeRepository;
-    private final ExternalNewSchedule externalNewSchedule;
+    private final ExternalMachineSchedule externalMachineSchedule;
 
     public ShiftPlannerService(GenerateShiftPlanService generateShiftPlanService,
                               EmployeeRepository employeeRepository,
-                              ExternalNewSchedule externalNewSchedule) {
+                              ExternalMachineSchedule externalMachineSchedule) {
         this.generateShiftPlanService = generateShiftPlanService;
         this.employeeRepository = employeeRepository;
-        this.externalNewSchedule = externalNewSchedule;
+        this.externalMachineSchedule = externalMachineSchedule;
     }
 
     /**
-     * fetch machine schedule from business-service using ExternalNewSchedule (preferred method)
+     * fetch machine schedule from business-service using ExternalMachineSchedule (preferred method)
      */
     public MachineSchedule fetchMachineScheduleFromBusiness() {
-        logger.info("Fetching machine schedule using ExternalNewSchedule");
+        logger.info("Fetching machine schedule using ExternalMachineSchedule");
         try {
-            return externalNewSchedule.fetchNewSchedule();
+            return externalMachineSchedule.fetchNewSchedule();
         } catch (Exception e) {
-            logger.warn("Failed to fetch schedule via ExternalNewSchedule, falling back to REST API: {}", e.getMessage());
+            logger.warn("Failed to fetch schedule via ExternalMachineSchedule, falling back to REST API: {}", e.getMessage());
             String url = " "; //business-service machineSchedule endpoint todo
             return restTemplate.getForObject(url, MachineSchedule.class);
         }
     }
 
     /**
-     * create mock machine schedule for testing
-     */
-    public MachineSchedule createMockMachineSchedule() {
-        Map<String, List<JobDto>> scheduleMap = new HashMap<>();
-
-        List<JobDto> machine1Jobs = Arrays.asList(
-            createMockJobDto(1L, "High", 1, 3),
-            createMockJobDto(2L, "Low", 5, 2)
-        );
-
-        List<JobDto> machine2Jobs = Arrays.asList(
-            createMockJobDto(3L, "Urgent", 1, 2),
-            createMockJobDto(4L, "Normal", 4, 1)
-        );
-
-        scheduleMap.put("MACHINE-001", machine1Jobs);
-        scheduleMap.put("MACHINE-002", machine2Jobs);
-
-        return new MachineSchedule(scheduleMap);
-    }
-
-    /**
-     * create shift plans using mock machine schedule data
-     */
-    public List<ShiftPlan> createShiftPlansWithMockData(int defaultRequiredEmployees) {
-        logger.info("Creating shift plans using mock machine schedule data");
-        MachineSchedule machineSchedule = createMockMachineSchedule();
-        return createShiftPlansFromSchedule(machineSchedule, defaultRequiredEmployees);
-    }
-
-    /**
      * create shift plans by fetching machine schedule from business-service
      */
     public List<ShiftPlan> createShiftPlans(int defaultRequiredEmployees) {
-        logger.info("Attempting to create shift plans from business service using ExternalNewSchedule");
+        logger.info("Attempting to create shift plans from business service using ExternalMachineSchedule");
 
+        // ExternalMachineSchedule already provides mock data, no need for fallback
+        MachineSchedule machineSchedule = fetchMachineScheduleFromBusiness();
+        return createShiftPlansFromSchedule(machineSchedule, defaultRequiredEmployees);
+
+        /*
+        // Commented out fallback logic since ExternalMachineSchedule handles mock data internally
         try {
             MachineSchedule machineSchedule = fetchMachineScheduleFromBusiness();
             return createShiftPlansFromSchedule(machineSchedule, defaultRequiredEmployees);
@@ -91,6 +66,7 @@ public class ShiftPlannerService {
             logger.warn("Failed to fetch from business service, using mock data instead: {}", e.getMessage());
             return createShiftPlansWithMockData(defaultRequiredEmployees);
         }
+        */
     }
 
     /**
@@ -221,6 +197,8 @@ public class ShiftPlannerService {
         return Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
     }
 
+    /*
+    // Commented out - ExternalMachineSchedule already provides mock data
     private JobDto createMockJobDto(Long jobId, String title, Integer priority, Integer daysNeeded) {
         JobDto jobDto = new JobDto();
         jobDto.setJobId(jobId);
@@ -234,4 +212,5 @@ public class ShiftPlannerService {
         jobDto.setMaterialAmount(100);
         return jobDto;
     }
+    */
 }

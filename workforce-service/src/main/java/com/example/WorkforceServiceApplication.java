@@ -46,21 +46,21 @@ public class WorkforceServiceApplication {
         AddEmployeeRequest employee1 = new AddEmployeeRequest();
         employee1.setName("John Smith");
         employee1.setPay(28.0f);
-        employee1.setSkill("Welding,Metal Cutting,Assembly");
+        employee1.setSkill("Normal");
         employee1.setPhoneNumber("555-0101");
         employee1.setSalary(4500.0f);
         employee1.setManagementArea("Production Floor A");
-        employee1.setManagerName("Manager Anderson");
+        employee1.setManagerName("None");
         employee1.setManager(false);
 
         // Employee 2 - Quality Inspector
         AddEmployeeRequest employee2 = new AddEmployeeRequest();
         employee2.setName("Sarah Johnson");
         employee2.setPay(32.0f);
-        employee2.setSkill("Quality Control,Testing,Documentation");
+        employee2.setSkill("Normal");
         employee2.setPhoneNumber("555-0202");
         employee2.setSalary(5200.0f);
-        employee2.setManagementArea("Quality Assurance");
+        employee2.setManagementArea("None");
         employee2.setManagerName("Supervisor Williams");
         employee2.setManager(false);
 
@@ -68,10 +68,21 @@ public class WorkforceServiceApplication {
         AddEmployeeRequest employee3 = new AddEmployeeRequest();
         employee3.setName("Michael Brown");
         employee3.setPay(25.0f);
-        employee3.setSkill("Machine Operation,Maintenance,Safety");
+        employee3.setSkill("Normal");
         employee3.setPhoneNumber("555-0303");
         employee3.setSalary(4200.0f);
-        employee3.setManagementArea("Production Floor B");
+        employee3.setManagementArea("None");
+        employee3.setManagerName("Manager Anderson");
+        employee3.setManager(false);
+
+        // Employee 4=
+        AddEmployeeRequest employee4 = new AddEmployeeRequest();
+        employee3.setName("Carl Davis");
+        employee3.setPay(29.0f);
+        employee3.setSkill("Normal");
+        employee3.setPhoneNumber("555-0404");
+        employee3.setSalary(3200.0f);
+        employee3.setManagementArea("None");
         employee3.setManagerName("Manager Anderson");
         employee3.setManager(false);
 
@@ -109,9 +120,21 @@ public class WorkforceServiceApplication {
         savedEmployee3.setManager(employee3.getManager());
         savedEmployee3 = employeeRepository.save(savedEmployee3);
 
+        Employee savedEmployee4 = new Employee();
+        savedEmployee4.setName(employee4.getName());
+        savedEmployee4.setPay(employee4.getPay());
+        savedEmployee4.setSkill(employee4.getSkill());
+        savedEmployee4.setPhoneNumber(employee4.getPhoneNumber());
+        savedEmployee4.setSalary(employee4.getSalary());
+        savedEmployee4.setManagementArea(employee4.getManagementArea());
+        savedEmployee4.setManagerName(employee4.getManagerName());
+        savedEmployee4.setManager(employee4.getManager());
+        savedEmployee4 = employeeRepository.save(savedEmployee4);
+
         System.out.println("👷 Created Employee 1: " + savedEmployee1.getName() + " (ID: " + savedEmployee1.getEmployeeId() + ")");
         System.out.println("🔍 Created Employee 2: " + savedEmployee2.getName() + " (ID: " + savedEmployee2.getEmployeeId() + ")");
         System.out.println("⚙️ Created Employee 3: " + savedEmployee3.getName() + " (ID: " + savedEmployee3.getEmployeeId() + ")");
+        System.out.println("⚙️ Created Employee 4: " + savedEmployee4.getName() + " (ID: " + savedEmployee4.getEmployeeId() + ")");
 
         // Generate one timesheet for each employee
         // Create timesheet for Employee 1 - John Smith (Welder)
@@ -186,12 +209,36 @@ public class WorkforceServiceApplication {
             System.out.println("❌ Error recording timesheet for " + savedEmployee3.getName() + ": " + e.getMessage());
         }
 
+        // Create timesheet for Employee 4 - Carl Davis (Machine Operator)
+        float hoursWorked4 = 6.0f;
+        Date workDate4 = new Date(); // Today
+        LocalDateTime clockInTime4 = LocalDateTime.now().withHour(10).withMinute(0).withSecond(0);
+        LocalDateTime clockOutTime4 = clockInTime4.plusHours(6);
+        System.out.println("📊 Creating timesheet for " + savedEmployee4.getName() +
+                " - " + hoursWorked4 + " hours (" + clockInTime4.getHour() + ":" +
+                String.format("%02d", clockInTime4.getMinute()) + " - " +
+                clockOutTime4.getHour() + ":" + String.format("%02d", clockOutTime4.getMinute()) + ")");
+        try {
+            recordTimesheetService.recordTimesheet(
+                    savedEmployee4.getEmployeeId(),
+                    workDate4,
+                    hoursWorked4,
+                    clockInTime4,
+                    clockOutTime4
+            );
+            System.out.println("✅ Timesheet recorded successfully for " + savedEmployee4.getName());
+        } catch (Exception e) {
+            System.out.println("❌ Error recording timesheet for " + savedEmployee4.getName() + ": " + e.getMessage());
+        }
+
         System.out.println("🎉 Workforce Management System initialized successfully!");
-        System.out.println("📈 Created 3 employees and 3 timesheets");
-        System.out.println("💰 Total hours worked today: " + (hoursWorked1 + hoursWorked2 + hoursWorked3) + " hours");
+        System.out.println("📈 Created 4 employees and 4 timesheets");
+        System.out.println("💰 Total hours worked today: " + (hoursWorked1 + hoursWorked2 + hoursWorked3 + hoursWorked4) + " hours");
         System.out.println("💵 Estimated daily payroll: $" +
                 (hoursWorked1 * savedEmployee1.getPay() +
                         hoursWorked2 * savedEmployee2.getPay() +
-                        hoursWorked3 * savedEmployee3.getPay()));
+                        hoursWorked3 * savedEmployee3.getPay() +
+                        hoursWorked4 * savedEmployee4.getPay()));
+
     }
 }
