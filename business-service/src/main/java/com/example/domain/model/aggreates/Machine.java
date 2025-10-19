@@ -104,7 +104,7 @@ public class Machine extends AbstractAggregateRoot<Machine> {
                         job.getJobNumber(),
                         job.getJobTimeNeededDays(),
                         job.getPriority(),
-                        job.getSubmitDate(),
+                        job.getDueDate(),
                         job.getMaterialNeeded(),
                         job.getMaterialAmount(),
                         job.getCustomerName())));
