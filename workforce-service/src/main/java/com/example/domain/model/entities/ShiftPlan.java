@@ -47,6 +47,12 @@ public class ShiftPlan {
     @Column(name = "version")
     private Integer version;
 
+    @Column
+    private Date startTime;
+
+    @Column
+    private Date endTime;
+
     // Constructors
     public ShiftPlan() {}
 
@@ -143,6 +149,22 @@ public class ShiftPlan {
         this.version = version;
     }
 
+    public Date getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(Date startTime) {
+        this.startTime = startTime;
+    }
+
+    public Date getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(Date endTime) {
+        this.endTime = endTime;
+    }
+
     // Backward compatibility methods for old test code
     public String getShiftType() {
         // Convert priority to shift type for backward compatibility
@@ -172,6 +194,7 @@ public class ShiftPlan {
             default: this.jobPriority = 3; break;
         }
     }
+
 
 
 }

@@ -21,7 +21,6 @@ public class Job {
     private String materialNeeded;
     @Column(name = "materialAmount")
     private Integer materialAmount;
-    @Enumerated(EnumType.STRING)
     @Column(name="jobTimeNeededDays")
     private Integer jobTimeNeededDays;
     @Column(name="priority")

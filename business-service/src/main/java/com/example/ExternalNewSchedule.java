@@ -8,6 +8,8 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 import com.example.domain.model.aggreates.Machine;
 import com.example.domain.model.valueobjects.Job;
+import com.example.shared.MachineSchedule;
+import com.example.shared.JobDto;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,13 +19,12 @@ import java.util.Map;
 @Service
 public class ExternalNewSchedule {
 
-    //NewSchedule is the class you create - see comments below
-    public YourClass fetchNewSchedule() {
+    //Use shared MachineSchedule from sharedDomain
+    public MachineSchedule fetchNewSchedule() {
 
         RestTemplate restTemplate = new RestTemplate();
         String url = "http://localhost:8787/machinescheduling/findAllMachines"; //call function to get list of all machines
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url); //no params to pass in, just want all machines
-
 
         //exchange to handle generic list type
         ResponseEntity<List<Machine>> response = restTemplate.exchange(builder.toUriString(),
@@ -33,18 +34,34 @@ public class ExternalNewSchedule {
         List<Machine> machines = response.getBody();
 
         //create a dictionary/map, store a machineId with its job schedule
-        //i.e. {{machine1, List<job>}, {machine2, List<job>}}
+        //i.e. {{machine1, List<JobDto>}, {machine2, List<JobDto>}}
         assert machines != null;
-        Map<String, List<Job>> scheduleMap = new HashMap<>();
+        Map<String, List<JobDto>> scheduleMap = new HashMap<>();
         for (Machine machine : machines ) {
-            scheduleMap.put(machine.getMachineId().getMachineId(), machine.getSchedule().getJobs());
+            List<JobDto> jobDtos = convertJobsToJobDtos(machine.getSchedule().getJobs());
+            scheduleMap.put(machine.getMachineId().getMachineId(), jobDtos);
         }
-
 
         //add the multiple schedules to a value object in your MS (or directly in your aggregate)
         // either way as long as it is connected to your MAIN AGGREGATE, it will be saved in that repositiory
-        return new YourClass(scheduleMap);
+        return new MachineSchedule(scheduleMap);
     }
-}
 
+    // Helper method to convert domain Job objects to JobDto objects
+    private List<JobDto> convertJobsToJobDtos(List<Job> jobs) {
+        List<JobDto> jobDtos = new ArrayList<>();
+        for (Job job : jobs) {
+            JobDto jobDto = new JobDto();
+            jobDto.setJobId(job.getJobNumber().longValue());
+            jobDto.setDueDate(job.getDueDate());
+            jobDto.setStartDate(job.getStartDate());
+            jobDto.setEndDate(job.getEndDate());
+            jobDto.setMaterialNeeded(job.getMaterialNeeded());
+            jobDto.setMaterialAmount(job.getMaterialAmount());
+            jobDto.setJobTimeNeededDays(job.getJobTimeNeededDays());
+            jobDto.setPriority(job.getPriority());
+            jobDtos.add(jobDto);
+        }
+        return jobDtos;
+    }
 }
