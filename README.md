@@ -323,14 +323,9 @@ curl -X GET "http://localhost:8080/api/workforce/portal/employee/1/working-hours
 curl -X GET "http://localhost:8080/api/workforce/portal/employee/1/working-hours?startDate=2025-10-01&endDate=2025-10-31"
 ```
 
-#### 9. Get Current Salary (todo)
+#### 9. Get Current Salary 
 ```bash
 curl -X GET "http://localhost:8080/api/workforce/portal/employee/1/current-salary"
-```
-
-#### 10. Get Schedule Summary (todo)
-```bash
-curl -X GET "http://localhost:8080/api/workforce/portal/employee/1/schedule-summary"
 ```
 
 #### 11. Get Payslip Summary (todo)
@@ -344,7 +339,7 @@ curl -X GET "http://localhost:8080/api/workforce/portal/employee/1/payslip-summa
 
 ## Manager Portal APIs
 
-### Legacy Clock-In/Out (
+### Update Clock-In/Out for specific employee
 ```bash
 curl -X POST "http://localhost:8080/api/workforce/portal/employee/1/clock-in-out" -H "Content-Type: application/json" -d "{\"workDate\":\"2025-10-18\",\"hoursWorked\":8.0,\"clockInTime\":\"2025-10-18T09:00:00\",\"clockOutTime\":\"2025-10-18T17:00:00\"}"
 ```
@@ -366,14 +361,10 @@ curl -X POST "http://localhost:8080/api/workforce/portal/employee/1/clock-in-out
 }
 ```
 
-#### 12. Auto-generate Shift Plan
+#### 12. Auto-generate Shift Plan (agentic)
 #### 13. Update Shift Plan
-#### 14. Approve Shift Plan by Manager
-#### 15. Reject Shift Plan by Manager
-#### 16. Get All Shift Plans with Filtering and Pagination
-#### 17. Validate Shift Plan Compliance (Legacy)
-#### 19. Notify Employee (Legacy)
-#### 20. Get Alternative Employees (Legacy)
+#### 14. Notify Employee 
+#### 25. Get Alternative Employees 
 
 
 ### Trouble Shooting
