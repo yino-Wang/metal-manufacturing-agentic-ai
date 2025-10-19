@@ -1,13 +1,13 @@
 package com.example.infrastructure.repository;
 
-import com.example.domain.model.entities.ShiftSchedule;
+import com.example.domain.model.entities.ShiftPlan;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Date;
 import java.util.List;
 
-public interface ShiftPlanRepository extends JpaRepository<ShiftSchedule,Long> {
-    List<ShiftSchedule> findByEmployeeId(Long employeeId);
+public interface ShiftPlanRepository extends JpaRepository<ShiftPlan,Long> {
+    List<ShiftPlan> findByEmployeeId(Long employeeId);
 
-    List<ShiftSchedule> findByShiftDate(Date shiftDate);
+    List<ShiftPlan> findByShiftDate(Date shiftDate);
 }

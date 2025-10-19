@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 /**
- * JPA repository to manage Material persistence in H2.
+ * JPA repository to manage Material persistence in the database.
  */
 @Repository
 public interface InventoryRepository extends JpaRepository<Material, Integer> { }

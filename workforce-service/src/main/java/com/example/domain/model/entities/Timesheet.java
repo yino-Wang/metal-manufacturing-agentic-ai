@@ -16,7 +16,7 @@ public class Timesheet {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long timesheetId;
 
-    @Column(name = "employee_id", nullable = false, insertable = false, updatable = false)
+    @Column(name = "employee_id", nullable = false)
     private Long employeeId;
 
     @Column(name = "work_date", nullable = false)
@@ -43,7 +43,7 @@ public class Timesheet {
     private String status; // 工时状态：NORMAL/EXCEPTION/PENDING_APPROVAL/APPROVED/REJECTED
 
     @ManyToOne
-    @JoinColumn(name = "employee_id", referencedColumnName = "employee_id")
+    @JoinColumn(name = "employee_id", referencedColumnName = "employee_id", insertable = false, updatable = false)
     private Employee employee;
 
     @ManyToOne
@@ -75,7 +75,7 @@ public class Timesheet {
         return timesheetId;
     }
 
-    public void setTimesheetId(Long id)
+    public void setTimesheetId(Long timesheetId)
     {
         this.timesheetId = timesheetId;
     }

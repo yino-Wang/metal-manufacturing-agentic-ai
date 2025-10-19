@@ -1,6 +1,6 @@
 package com.example.service.usecase;
 
-import com.example.domain.model.entities.ShiftSchedule;
+import com.example.domain.model.entities.ShiftPlan;
 import com.example.domain.event.MachineScheduleCreated;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,10 +17,10 @@ public class EmployeeNotificationService {
     /**
      * Send shift assignment notification to employee
      */
-    public void notifyEmployeeOfShiftAssignment(ShiftSchedule schedule, MachineScheduleCreated originalEvent) {
+    public void notifyEmployeeOfShiftAssignment(ShiftPlan schedule, MachineScheduleCreated originalEvent) {
         try {
-            logger.info("Sending shift notification to employee ID: {} for shift on {} ({})",
-                       schedule.getEmployeeId(), schedule.getShiftDate(), schedule.getShiftType());
+            logger.info("Sending shift notification to employee ID: {} for shift on {} (Priority: {})",
+                       schedule.getEmployeeId(), schedule.getShiftDate(), schedule.getJobPriority());
 
             // TODO: Implement actual notification logic
             // - Send email notification
@@ -29,9 +29,11 @@ public class EmployeeNotificationService {
             // - SMS notification for urgent assignments
 
             // For now, just log the notification
-            logger.info("Notification sent: Employee {} assigned to {} shift on {} for machine {}",
-                       schedule.getEmployeeId(), schedule.getShiftType(),
-                       schedule.getShiftDate(), originalEvent.getMachineId());
+            logger.info("✅ Notification sent: Employee {} assigned to machine {} for job {} (Priority: {})",
+                       schedule.getEmployeeId(),
+                       originalEvent != null ? originalEvent.getMachineId() : "Unknown",
+                       originalEvent != null ? originalEvent.getJobId() : schedule.getJobId(),
+                       schedule.getJobPriority());
 
         } catch (Exception e) {
             logger.error("Failed to send notification to employee {}: {}", schedule.getEmployeeId(), e.getMessage());
@@ -39,11 +41,15 @@ public class EmployeeNotificationService {
     }
 
     /**
-     * Send batch notifications for multiple shift assignments
+     * Send notifications to multiple employees
      */
-    public void notifyMultipleEmployees(java.util.List<ShiftSchedule> schedules, MachineScheduleCreated originalEvent) {
-        for (ShiftSchedule schedule : schedules) {
+    public void notifyMultipleEmployees(java.util.List<ShiftPlan> schedules, MachineScheduleCreated originalEvent) {
+        logger.info("Sending notifications to {} employees for machine schedule", schedules.size());
+
+        for (ShiftPlan schedule : schedules) {
             notifyEmployeeOfShiftAssignment(schedule, originalEvent);
         }
+
+        logger.info("Completed sending notifications for {} employees", schedules.size());
     }
 }

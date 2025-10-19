@@ -2,42 +2,54 @@ package com.example.service.DTO;
 
 import java.util.Date;
 
-//shiftshcedule request dto
-
+/**
+ * Request DTO for auto-scheduling shifts
+ */
 public class AutoScheduleRequest {
     private Date startDate;
     private Date endDate;
     private Long jobId;
     private int requiredEmployees;
-    private String shiftType;
+    private Integer priority; // Replace shiftType with priority
 
+    // Getters and setters
     public Date getStartDate() {
-        return startDate; }
+        return startDate;
+    }
 
     public void setStartDate(Date startDate) {
-        this.startDate = startDate; }
+        this.startDate = startDate;
+    }
 
     public Date getEndDate() {
-        return endDate; }
+        return endDate;
+    }
 
     public void setEndDate(Date endDate) {
-        this.endDate = endDate; }
+        this.endDate = endDate;
+    }
 
     public Long getJobId() {
-        return jobId; }
+        return jobId;
+    }
 
     public void setJobId(Long jobId) {
-        this.jobId = jobId; }
+        this.jobId = jobId;
+    }
 
     public int getRequiredEmployees() {
-        return requiredEmployees; }
+        return requiredEmployees;
+    }
 
     public void setRequiredEmployees(int requiredEmployees) {
-        this.requiredEmployees = requiredEmployees; }
+        this.requiredEmployees = requiredEmployees;
+    }
 
-    public String getShiftType() {
-        return shiftType; }
+    public Integer getPriority() {
+        return priority;
+    }
 
-    public void setShiftType(String shiftType) {
-        this.shiftType = shiftType; }
+    public void setPriority(Integer priority) {
+        this.priority = priority;
+    }
 }

@@ -1,59 +1,66 @@
 package com.example.application;
 
 import com.example.domain.commands.AddJobMaterialsCommand;
+import com.example.domain.model.Material;
+import com.example.infrastructure.repository.InventoryRepository;
 import jakarta.transaction.Transactional;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-import java.util.UUID;
-
+/**
+ * Application service that processes incoming AddJobMaterialsCommand
+ * events from the business-service and adjusts the material inventory.
+ *
+ * If material quantity drops below 100 units after allocation,
+ * it automatically restocks by +200 units.
+ */
+@Service
 public class AllocateMaterialsCommandService {
 
-    private YourRepository yourRepository;
-
-
-    //put constructor - not empty one
+    private final InventoryRepository inventoryRepository;
 
     /**
-     * Service Command method to assign a tracking id to the booked cargo
-     * @return Tracking Number of the Cargo
+     * Constructor injection for repository dependency.
+     */
+    @Autowired
+    public AllocateMaterialsCommandService(InventoryRepository inventoryRepository) {
+        this.inventoryRepository = inventoryRepository;
+    }
+
+    /**
+     * Handles a command to allocate materials for a given job.
+     * Reduces the stock based on the job's material needs and
+     * automatically restocks by 200 if the remaining stock is < 100.
      */
     @Transactional
-    public void allocateMaterials(AddJobMaterialsCommand addJobMaterialsCommand){
-        yourClass.setJobNumber(addJobMaterialsCommand.getJobNumber());
-        yourClass.setMaterialName(addJobMaterialsCommand.getMaterialName());
-        yourClass.setMaterialAmount(addJobMaterialsCommand.getMaterialAmount());
-        //you will need to create a class, you can then add these too
-        //you could find the right material by name and add/minus the amount or something
-        //either way you have access to the most recent jobs number, material name and amount this way
-        //like:
-        Material (need to be a class) material = materialRepository.findByMaterialName( new MaterialName(addJobMaterialsCommand.getMaterialName()));
-        // ^ MaterialName must be an aggregate identifier - look at my MS with Machine and MachineId
+    public void allocateMaterials(AddJobMaterialsCommand command) {
+        String materialName = command.getMaterialName();
+        int materialAmount = command.getMaterialAmount();
 
-        yourRepository.save(material); //Save the new material number, if that's how you are doing it
-        //i assume this can be changed to just updating the total material number then saving
+        // Find the material by name (case-insensitive match)
+        Material material = inventoryRepository.findAll().stream()
+                .filter(m -> m.getName().equalsIgnoreCase(materialName))
+                .findFirst()
+                .orElseThrow(() ->
+                        new RuntimeException("Material not found in inventory: " + materialName));
+
+        // Deduct the required quantity for this job
+        int updatedQuantity = material.getQuantity() - materialAmount;
+        material.setQuantity(updatedQuantity);
+
+        System.out.println("[Material Allocation] Job #" + command.getJobNumber() +
+                " used " + materialAmount + " units of " + materialName +
+                ". Remaining: " + updatedQuantity);
+
+        // Auto-restock if below threshold
+        if (material.getQuantity() < 100) {
+            material.setQuantity(material.getQuantity() + 200);
+            System.out.println("[Auto-Restock] " + materialName +
+                    " dropped below 100 units. Added +200 automatically. New total: " +
+                    material.getQuantity());
+        }
+
+        // Save updated stock
+        inventoryRepository.save(material);
     }
-
-    //YOU WILL NEED TO MOVE THIS-------------------------------------------------------------------------------------------------------------------------
-    //to the body of whatever class you end up using. With the current code above that would be a Material aggregate
-    //i.e. whatever you are creating and saving
-    //Material(THE CLASS YOU CREATE AN OBJECT OF HERE) material = materialRepository.findByMaterialName( new MaterialName(addJobMaterialsCommand.getMaterialName()));
-
-    //        yourRepository.save(material <- AND THE THING YOU SAVE HERE);
-    /**
-     * Add a job event to the Material Details
-     * @param addJobMaterialsCommand
-     */
-    public void addJobMaterialDetails(AddJobMaterialsCommand addJobMaterialsCommand){
-        //trackingEvent is a value object
-        TrackingEvent trackingEvent = new TrackingEvent( //just adding all the values needed for trackingEvent here ->
-                new TrackingVoyageNumber(addJobMaterialsCommand.getVoyageNumber()),
-                new TrackingLocation(addJobMaterialsCommand.getLocation()),
-                new TrackingEventType(addJobMaterialsCommand.getEventType(),addJobMaterialsCommand.getEventTime()));
-        //updating the 'material' class attribute 'trackingActivityEvent'
-        //for you, this might just look like changing int totals of material amounts
-        this.trackingActivityEvent.getTrackingEvents().add(trackingEvent);
-    }
-    //--------------------------------------------------------------------------------------------------------------------------------------------------
-
-
-
 }

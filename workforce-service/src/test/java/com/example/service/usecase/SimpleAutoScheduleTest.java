@@ -1,7 +1,7 @@
 package com.example.service.usecase;
 
 import com.example.domain.model.aggregates.Employee;
-import com.example.domain.model.entities.ShiftSchedule;
+import com.example.domain.model.entities.ShiftPlan;
 import com.example.infrastructure.repository.EmployeeRepository;
 import com.example.service.DTO.AutoScheduleResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -115,7 +115,7 @@ class SimpleAutoScheduleTest {
                 System.out.printf("✅ Successfully generated %d shift plans:%n", response.getShiftSchedules().size());
 
                 for (int i = 0; i < response.getShiftSchedules().size(); i++) {
-                    ShiftSchedule schedule = response.getShiftSchedules().get(i);
+                    ShiftPlan schedule = response.getShiftSchedules().get(i);
                     System.out.printf("  Schedule %d:%n", i + 1);
                     System.out.printf("    - Employee ID: %d%n", schedule.getEmployeeId());
                     System.out.printf("    - Shift type: %s%n", schedule.getShiftType());
