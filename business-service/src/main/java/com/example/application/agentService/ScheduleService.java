@@ -1,12 +1,11 @@
 package com.example.application.agentService;
 
 
-import com.example.application.agentService.dto.ChatMessage;
 import com.example.application.agentService.dto.JobListDto;
 import com.example.application.agentService.dto.JobMapper;
+import com.example.application.agentService.dto.ScheduleMapper;
 import com.example.domain.model.aggreates.Machine;
 import com.example.domain.model.aggreates.MachineId;
-import com.example.domain.model.valueobjects.JobList;
 import com.example.domain.model.valueobjects.Schedule;
 import com.example.infrastructure.repositories.MachineRepository;
 import org.slf4j.Logger;
@@ -35,12 +34,15 @@ public class ScheduleService {
         try {
             log.info("Generating Schedule for {}, Job List: {}", machineId, jobListDto);
 
-            ChatMessage chatMessage = this.chatAgent.chat(jobListDto).content();
-            log.info("Agent schedule response: {}", chatMessage);
+            JobListDto agentResponse = this.chatAgent.chat(jobListDto).content();
+            log.info("Agent schedule response: {}", agentResponse);
 
-            return new Schedule();
+            ScheduleMapper mapper = new ScheduleMapper(machineRepository);
+            Schedule schedule = mapper.fromJobListDto(agentResponse);
+
+            return schedule;
         } catch (Exception e) {
-            log.error("Error during scheduling process");
+            log.error("Error during scheduling process", e);
             return null;
         }
     }

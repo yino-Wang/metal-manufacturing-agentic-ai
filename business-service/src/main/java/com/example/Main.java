@@ -84,9 +84,9 @@ public class Main {
             ///create fake schedule
             Schedule schedule = service.generateSchedule(machineId);
 
-            ScheduleDto scheduleDto = restTemplate.postForObject(urlAddJob, schedule, ScheduleDto.class);
+            //ScheduleDto scheduleDto = restTemplate.postForObject(urlAddJob, schedule, ScheduleDto.class);
 
-            Thread.sleep(5000);
+            Thread.sleep(3000);
         }
     }
 

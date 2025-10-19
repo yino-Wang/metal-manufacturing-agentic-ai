@@ -65,7 +65,7 @@ public class MachineSchedulingQueryService {
         return machineRepository.findAllJobsByMachineId(machineId);
     }
 
-    public Optional<Job> findJobByJobNumber(Integer jobNumber) {
+    public Job findJobByJobNumber(Integer jobNumber) {
         return machineRepository.findJobByJobNumber(jobNumber);
     }
 
