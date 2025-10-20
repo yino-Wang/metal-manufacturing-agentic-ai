@@ -50,7 +50,7 @@ public class Main {
         final String urlAddJob = "http://localhost:8787/addJobToMachine";
         Random rand = new Random();
         int maxMaterials = 50;
-        int maxDays = 10;
+        int maxDays = 10; //Maximum days a job can take
         String[] machines = {"machine1", "machine2", "machine3", "machine4"};
         int numMachines = machines.length;
         String[] materialNeeded = {"steel", "wood", "nails", "iron"};
@@ -73,7 +73,7 @@ public class Main {
             String customerName = customers[customer];
             int priorityChosen = rand.nextInt(priorityNum);
             int priority = priorityOptions[priorityChosen];
-            LocalDate dueDate = day.plusDays(rand.nextInt(30)); //due date within the next 10 days
+            LocalDate dueDate = day.plusDays(rand.nextInt(5,30)); //due date within the next 5 to 30 days
             System.out.println("Adding job " + jobNumber + " to " + machineId + " for " + materialAmount + " of " + materialName + " on " + dueDate);
             AddJobToMachineResource job = new AddJobToMachineResource(jobNumber, jobTimeNeededDays, priority, machineId, dueDate, materialName, materialAmount, customerName);
             //System.out.println("Posting job: " + job.toString());
@@ -81,12 +81,13 @@ public class Main {
             //System.out.println("******" + schedulingId + job + "*****");
             //System.out.println(job);
 
-            ///create fake schedule
+            ///create schedule
             Schedule schedule = service.generateSchedule(machineId);
 
+            /// post schedule back to update machine schedule
             //ScheduleDto scheduleDto = restTemplate.postForObject(urlAddJob, schedule, ScheduleDto.class);
 
-            Thread.sleep(3000);
+            Thread.sleep(5000);
         }
     }
 
