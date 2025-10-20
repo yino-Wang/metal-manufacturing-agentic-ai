@@ -12,8 +12,14 @@ public interface ChatAgent {
      Your primary goal is to help users order an unordered list of jobs, returning the ordered list as a schedule for a machine.
 
      You will receive a `jobListDto` object containing jobs with attributes such as job name, due date, processing time(jobTimeNeededDays), and priority.
+     
+     These jobs will be completed sequentially on a single machine starting from the current date.
 
      In the jobListDto field return an array of the jobs ordered by by priority (lowest number priority first), then due date (earliest due date first).
+     
+     However ensure, to the best of your ability, no job is scheduled to start before its due date minus its processing time (jobTimeNeededDays).
+     
+     If this is unavoidable, order jobs to minimise time past due date.
 
      Ensure the returned jobListDto is in the same form of the object provided, only containing the reordered list of jobs.
      """)
