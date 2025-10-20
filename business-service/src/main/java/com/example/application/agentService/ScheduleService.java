@@ -47,6 +47,7 @@ public class ScheduleService {
             Schedule schedule = mapper.fromJobListDto(agentResponse);
 
             log.info("Agent scheduling response: {}", schedule);
+            machine.setSchedule(schedule);
 
             return schedule;
         } catch (Exception e) {
@@ -66,6 +67,7 @@ public class ScheduleService {
             Schedule backupSchedule = mapper.fromJobListDto(backupDto);
 
             log.info("Backup schedule response: {}", backupSchedule);
+            machine.setSchedule(backupSchedule);
 
             return backupSchedule;
         }
