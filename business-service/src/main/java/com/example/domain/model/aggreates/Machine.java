@@ -85,7 +85,13 @@ public class Machine extends AbstractAggregateRoot<Machine> {
     }
 
     public Schedule getSchedule() {
-        return schedule;
+        // return a defensive copy so callers can't share the internal collection instance
+        return (this.schedule == null) ? new Schedule() : new Schedule(this.schedule.getJobs());
+    }
+
+    public void setSchedule(Schedule schedule) {
+        // defensive copy on assignment to avoid sharing collections
+        this.schedule = (schedule == null) ? new Schedule() : new Schedule(schedule.getJobs());
     }
 
     /**

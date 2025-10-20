@@ -3,7 +3,6 @@ package com.example.domain.model.valueobjects;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 @Embeddable

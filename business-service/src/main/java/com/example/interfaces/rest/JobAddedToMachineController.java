@@ -75,7 +75,7 @@ public class JobAddedToMachineController {
      */
     @GetMapping("/findJobByJobNumber")
     @ResponseBody
-    public Optional<Job> findJobByJobNumber(@RequestParam("jobNumber") Integer jobNumber) {
+    public Job findJobByJobNumber(@RequestParam("jobNumber") Integer jobNumber) {
         //System.out.println("****Finding Job for given job name ****" + jobNumber);
         return machineSchedulingQueryService.findJobByJobNumber(jobNumber);
     }
