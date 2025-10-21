@@ -60,7 +60,8 @@ public class SchedulingService {
             // and will be saved when the @Transactional method completes.
             System.out.println("  - Updated job " + job.getJobNumber() + ": start=" + job.getStartDate() + ", end=" + job.getEndDate());
 
-            machine.getSchedule().setJobs(jobs);
+
         }
+        machine.setSchedule(new Schedule(jobs));
     }
 }

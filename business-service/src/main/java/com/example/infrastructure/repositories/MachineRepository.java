@@ -18,7 +18,7 @@ public interface MachineRepository extends JpaRepository<Machine, Long> {
 
     List<Machine> findAll();
 
-    Optional<Job> findJobByJobNumber(Integer jobNumber);
+    Job findJobByJobNumber(Integer jobNumber);
 
     Job findCurrentJobByMachineId(MachineId machineId);
 

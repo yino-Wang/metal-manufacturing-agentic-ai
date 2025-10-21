@@ -36,7 +36,7 @@ and unzip it to a directory, e.g., `C:\kafka`&mdash;Windows does not like a comp
 Use the following two commands in the Windows CMD (one in each window) to start Kafka:
 ```bash
 C:\kafka\bin\windows\zookeeper-server-start.bat C:\kafka\config\zookeeper.properties
-```
+``` 
 ```bash
 C:\kafka\bin\windows\kafka-server-start.bat C:\kafka\config\server.properties
 ```
@@ -135,6 +135,102 @@ You should see three topics. You can read data in the `cargobookings` topic:
 (Windows)
 ```shell
 c:\kafka\bin\windows\kafka-console-consumer.bat --bootstrap-server localhost:9092 --topic jobAddedToMachines --from-beginning
+```
+# Inventory MS
+To run application, first run kafka then open and 
+run the business-service [Main.java](business-service/src/main/java/com/example/Main.java).
+Then open and run the inventory-service 
+[InventoryServiceApplication.java](inventory-service/src/main/java/com/example/InventoryServiceApplication.java).
+
+When you run the inventory-service application, it will automatically load 4 materials into the inventory with 150 units each, as shown below:
+```
+--------------------------------------------------
+[Init] Adding default materials into inventory...
+--------------------------------------------------
+[Init] Default materials added successfully!
+[Inventory] Current materials in stock:
+Steel (ID: 1) - 150 units
+Aluminium (ID: 2) - 150 units
+Copper (ID: 3) - 150 units
+Iron (ID: 4) - 150 units
+```
+
+### Inventory Management APIs
+#### 1. Automatic Restocking of Low Stock Items
+Whenever a material’s quantity drops below 100 units,
+the system will automatically increase its quantity by +200 units,
+then save the new total to the database.
+
+**Example:**
+
+```declarative
+Material: "Copper"
+Previous quantity: 80
+Auto-restock applied → new quantity = 280
+```
+#### 2. Add a Material
+```bash
+curl -X POST "http://localhost:8080/api/inventory/add" -H "Content-Type: application/json" -d "{\"name\":\"Zinc\",\"quantity\":150}"
+```
+**Response:**
+```json
+{"status":"success",
+  "material":{"id":5,"name":"Zinc","quantity":150,"lowStock":false},
+  "message":"Material added successfully (auto-restock applies if below 100)."
+}
+```
+
+#### 3. Update Material Quantity
+```bash
+curl -X PUT "http://localhost:8080/api/inventory/update/1?quantity=60"
+```
+**Response:**
+```json
+{
+  "status":"success",
+  "material":{"id":1,"name":"Steel","quantity":260,"lowStock":false},
+  "message":"Stock updated successfully (auto-restock applies if below 100)."
+}
+```
+
+#### 4. Get all Materials
+```bash
+curl -X GET "http://localhost:8080/api/inventory/list"
+```
+**Response:**
+```json
+[
+  {
+    "id":1,
+    "name":"Steel",
+    "quantity":260,
+    "lowStock":false
+  },
+  {
+    "id":2,
+    "name":"Aluminium",
+    "quantity":150,
+    "lowStock":false
+  },
+  {
+    "id":3,
+    "name":"Copper",
+    "quantity":150,
+    "lowStock":false
+  },
+  {
+    "id":4,
+    "name":"Iron",
+    "quantity":150,
+    "lowStock":false
+  },
+  {
+    "id":5,
+    "name":"Zinc",
+    "quantity":150,
+    "lowStock":false
+  }
+]
 ```
 
 # Workforce MS 
