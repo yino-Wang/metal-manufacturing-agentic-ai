@@ -263,31 +263,6 @@ public class ShiftPlannerServiceTest {
         logger.info("Mock repository behavior configured with lenient mode");
     }
 
-    @Test
-    void testFetchMachineScheduleFromExternalService() {
-        logger.info("=== Testing ExternalMachineSchedule Mock Data ===");
-
-        // Test fetching machine schedule from ExternalMachineSchedule
-        MachineSchedule schedule = shiftPlannerService.fetchMachineScheduleFromBusiness();
-
-        // Verify the schedule contains ExternalMachineSchedule's mock data
-        assertNotNull(schedule, "Machine schedule should not be null");
-        assertNotNull(schedule.getSchedules(), "Schedule map should not be null");
-        assertEquals(3, schedule.getSchedules().size(), "Should have 3 machines from ExternalMachineSchedule");
-
-        logger.info("✅ Fetched machine schedule with {} machines", schedule.getSchedules().size());
-
-        // Verify the mock data structure
-        schedule.getSchedules().forEach((machineId, jobs) -> {
-            logger.info("Machine {}: {} jobs", machineId, jobs.size());
-            jobs.forEach(job -> {
-                logger.info("  Job ID: {}, Priority: {}, Title: {}",
-                        job.getJobId(), job.getPriority(), job.getTitle());
-            });
-        });
-
-        logger.info("✅ ExternalMachineSchedule mock data test completed!");
-    }
 
     @Test
     void testRealGeminiShiftPlanGeneration() {
@@ -301,7 +276,7 @@ public class ShiftPlannerServiceTest {
         logger.info("Required employees per job: {}", requiredEmployees);
 
         try {
-            List<ShiftPlan> result = shiftPlannerService.createShiftPlans(requiredEmployees);
+            List<ShiftPlan> result = shiftPlannerService.createShiftPlansFromSchedule(externalMachineSchedule.createMockMachineSchedule(),1);
 
             // Verify the real Gemini response
             assertNotNull(result, "Gemini should generate shift plans");

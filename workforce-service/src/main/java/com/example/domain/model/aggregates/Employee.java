@@ -58,6 +58,9 @@ public class Employee {
     @Column(name = "scheduled_jobs")
     private Integer scheduledJobs;
 
+    @Column
+    private String status;
+
     /**
      * Default constructor.
      */
@@ -82,7 +85,7 @@ public class Employee {
      */
     public Employee(Long employeeId, String name, String phoneNumber, Float salary, Float pay, String skill,
                     Date startDatePayslip, Date endDatePayslip, Integer scheduleId, Boolean manager,
-                    String managerName, String managementArea, Integer scheduledJobs) {
+                    String managerName, String managementArea, Integer scheduledJobs, String status) {
         this.employeeId = employeeId;
         this.name = name;
         this.phoneNumber = phoneNumber;
@@ -96,6 +99,7 @@ public class Employee {
         this.managerName = managerName;
         this.managementArea = managementArea;
         this.scheduledJobs = scheduledJobs;
+        this.status = status;
     }
 
     // Getter and setter methods
@@ -196,7 +200,12 @@ public class Employee {
         this.managementArea = managementArea;
     }
 
-
+    public String getStatus() {
+        return status;
+    }
+    public void setStatus(String status) {
+        this.status = status;
+    }
 
     public Integer getScheduledJobs() {
         return scheduledJobs;

@@ -6,6 +6,6 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface EmployeeRepository extends JpaRepository<Employee, Long> {
-    @Query("SELECT e FROM Employee e WHERE e.scheduledJobs > 0")
+    @Query("SELECT e FROM Employee e WHERE e.status = 'AVAILABLE'")
     List<Employee> findAvailableEmployees();
 }

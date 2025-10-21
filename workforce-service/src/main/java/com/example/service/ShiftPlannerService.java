@@ -15,6 +15,7 @@ import org.springframework.web.client.RestTemplate;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class ShiftPlannerService {
@@ -47,32 +48,11 @@ public class ShiftPlannerService {
         }
     }
 
-    /**
-     * create shift plans by fetching machine schedule from business-service
-     */
-    public List<ShiftPlan> createShiftPlans(int defaultRequiredEmployees) {
-        logger.info("Attempting to create shift plans from business service using ExternalMachineSchedule");
-
-        // ExternalMachineSchedule already provides mock data, no need for fallback
-        MachineSchedule machineSchedule = fetchMachineScheduleFromBusiness();
-        return createShiftPlansFromSchedule(machineSchedule, defaultRequiredEmployees);
-
-        /*
-        // Commented out fallback logic since ExternalMachineSchedule handles mock data internally
-        try {
-            MachineSchedule machineSchedule = fetchMachineScheduleFromBusiness();
-            return createShiftPlansFromSchedule(machineSchedule, defaultRequiredEmployees);
-        } catch (Exception e) {
-            logger.warn("Failed to fetch from business service, using mock data instead: {}", e.getMessage());
-            return createShiftPlansWithMockData(defaultRequiredEmployees);
-        }
-        */
-    }
 
     /**
-     * create shift plans from machine schedule data using ONLY Gemini AI
+     * create shift plans from machine schedule data using Gemini AI
      */
-    private List<ShiftPlan> createShiftPlansFromSchedule(MachineSchedule machineSchedule, int defaultRequiredEmployees) {
+    public List<ShiftPlan> createShiftPlansFromSchedule(MachineSchedule machineSchedule, int defaultRequiredEmployees) {
         if (machineSchedule == null || machineSchedule.getSchedules() == null) {
             logger.warn("No machine schedules available");
             return new ArrayList<>();
@@ -93,22 +73,80 @@ public class ShiftPlannerService {
 
         logJobInformation(allJobs, machineSchedule);
 
-        // 2. 完全使用Gemini AI生成排班计划
+
         Date startDate = calculateOptimalStartDate(allJobs);
         Date endDate = calculateOptimalEndDate(allJobs);
 
-        logger.info("Using ONLY Gemini AI for shift plan generation");
+        logger.info("Using Gemini AI for shift plan generation");
         logger.info("Date range: {} to {}", startDate, endDate);
         logger.info("Jobs to schedule: {}", allJobs.size());
         logger.info("Required employees per job: {}", defaultRequiredEmployees);
 
-        // 直接调用GenerateShiftPlanService，它完全依赖Gemini AI
+        // call Gemini AI service to generate shift plans
         List<ShiftPlan> generatedPlans = generateShiftPlanService.generateShiftPlan(
             startDate, endDate, allJobs, defaultRequiredEmployees);
+
+        // 将 machineId 填回每个 ShiftPlan（优先调用 setter，否则反射设置字段）
+        for (ShiftPlan sp : generatedPlans) {
+            String machineIdStr = findMachineForJob(sp.getJobId(), machineSchedule);
+            Long machineIdLong = convertMachineIdToLong(machineIdStr);
+
+            try {
+                java.lang.reflect.Method setter = ShiftPlan.class.getMethod("setMachineId", Long.class);
+                setter.invoke(sp, machineIdLong);
+                logger.debug("Set machineId {} for ShiftPlan {} via setter", machineIdLong, sp.getShiftPlanId());
+            } catch (NoSuchMethodException nsme) {
+                try {
+                    java.lang.reflect.Field field = ShiftPlan.class.getDeclaredField("machineId");
+                    field.setAccessible(true);
+                    field.set(sp, machineIdLong);
+                    logger.debug("Set machineId {} for ShiftPlan {} via field", machineIdLong, sp.getShiftPlanId());
+                } catch (NoSuchFieldException | IllegalAccessException ex) {
+                    logger.debug("ShiftPlan has no machineId property or cannot set it via reflection", ex);
+                }
+            } catch (Exception e) {
+                logger.warn("Unexpected error setting machineId on ShiftPlan: {}", e.getMessage(), e);
+            }
+        }
+
+        markEmployeesBusy(generatedPlans);
 
         logger.info("Gemini AI generated {} shift plans", generatedPlans.size());
 
         return generatedPlans;
+    }
+
+    private void markEmployeesBusy(List<ShiftPlan> plans) {
+        if (plans == null || plans.isEmpty()) return;
+
+        Set<Long> employeeIds = plans.stream()
+                .map(ShiftPlan::getEmployeeId)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
+        if (employeeIds.isEmpty()) return;
+
+        // find employees and set status to BUSY
+        Iterable<com.example.domain.model.aggregates.Employee> employeesIt = employeeRepository.findAllById(employeeIds);
+        List<com.example.domain.model.aggregates.Employee> employees = new ArrayList<>();
+        employeesIt.forEach(employees::add);
+
+        if (employees.isEmpty()) return;
+
+        for (com.example.domain.model.aggregates.Employee emp : employees) {
+            emp.setStatus("BUSY");
+        }
+
+        // save
+        employeeRepository.saveAll(employees);
+
+        try {
+            java.lang.reflect.Method m = ShiftPlan.class.getMethod("setStatus", String.class);
+            for (ShiftPlan sp : plans) {
+                try { m.invoke(sp, "BUSY"); } catch (Exception ignored) {}
+            }
+        } catch (NoSuchMethodException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -195,6 +233,39 @@ public class ShiftPlannerService {
     private Date localDateToDate(LocalDate localDate) {
         if (localDate == null) return null;
         return Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+    }
+
+    /**
+     * Convert machine ID string to Long
+     * Handles cases like "MACHINE-001" -> 1, "MACHINE-002" -> 2, etc.
+     * For non-numeric machine IDs, returns a hash-based Long or 0 as fallback
+     */
+    private Long convertMachineIdToLong(String machineIdStr) {
+        if (machineIdStr == null || machineIdStr.trim().isEmpty() || "UNKNOWN".equals(machineIdStr)) {
+            return 0L;
+        }
+
+        try {
+            // Try direct conversion first (in case it's already numeric)
+            return Long.valueOf(machineIdStr);
+        } catch (NumberFormatException e) {
+            // Handle formatted machine IDs like "MACHINE-001", "MACHINE-002"
+            if (machineIdStr.contains("-")) {
+                String[] parts = machineIdStr.split("-");
+                if (parts.length >= 2) {
+                    try {
+                        return Long.valueOf(parts[parts.length - 1]); // Get the numeric part
+                    } catch (NumberFormatException ignored) {
+                        // Fall through to hash-based approach
+                    }
+                }
+            }
+
+            // Fallback: use hash code to generate a consistent Long ID
+            long hash = Math.abs(machineIdStr.hashCode()) % 1000000L; // Keep it reasonable
+            logger.debug("Converted non-numeric machineId '{}' to Long: {}", machineIdStr, hash);
+            return hash;
+        }
     }
 
     /*

@@ -52,13 +52,12 @@ public class GenerateShiftPlanService {
             throw new RuntimeException("No available employees");
         }
 
-        // 2. 完全使用Gemini AI生成排班计划
         System.out.println("DEBUG: Using ONLY Gemini AI for shift plan generation");
 
         AgentInput input = createAgentInputWithRequirements(startDate, endDate, jobsToSchedule, availableEmployees, requiredEmployees);
         List<ShiftPlan> generatedPlans = geminiClient.generateShiftPlan(input);
 
-        // 3. 处理Gemini AI生成的结果
+        // 3. process Gemini AI generated results
         List<ShiftPlan> processedPlans = processGeminiResults(generatedPlans, jobsToSchedule);
 
         // 4. Save and publish events
@@ -68,36 +67,12 @@ public class GenerateShiftPlanService {
         }
 
         System.out.println("DEBUG: Gemini AI generated " + savedSchedules.size() + " shift plans successfully");
+
         return savedSchedules;
     }
 
-    // Generate shift plan using ONLY Google Gemini AI without database save
-    public List<ShiftPlan> generateShiftPlanWithoutSave(Date startDate,
-                                                        Date endDate,
-                                                        List<Job> jobsToSchedule,
-                                                        int requiredEmployees) {
-        // 1. Find available employees
-        List<Employee> availableEmployees = employeeRepository.findAvailableEmployees();
-
-        if (availableEmployees.isEmpty()) {
-            throw new RuntimeException("No available employees");
-        }
-
-        // 2. 完全使用Gemini AI生成排班计划
-        System.out.println("DEBUG: Using ONLY Gemini AI for shift plan generation (without database save)");
-
-        AgentInput input = createAgentInputWithRequirements(startDate, endDate, jobsToSchedule, availableEmployees, requiredEmployees);
-        List<ShiftPlan> generatedPlans = geminiClient.generateShiftPlan(input);
-
-        // 3. 处理Gemini AI生成的结果 (但不保存到数据库)
-        List<ShiftPlan> processedPlans = processGeminiResults(generatedPlans, jobsToSchedule);
-
-        System.out.println("DEBUG: Gemini AI generated " + processedPlans.size() + " shift plans successfully (display only)");
-        return processedPlans;
-    }
-
     /**
-     * 创建包含详细分配要求的AgentInput，传递给Gemini AI
+     * transform input data to AgentInput
      */
     private AgentInput createAgentInputWithRequirements(Date startDate, Date endDate, List<Job> jobsToSchedule,
                                                       List<Employee> availableEmployees, int requiredEmployees) {
@@ -107,7 +82,6 @@ public class GenerateShiftPlanService {
         input.setEndTime(endDate);
         input.setJobsToSchedule(jobsToSchedule);
 
-        // 设置详细的分配要求
         Map<String, Object> constraints = new HashMap<>();
         constraints.put("maxHoursPerWeek", 40);
         constraints.put("minRestHours", 12);
@@ -118,7 +92,7 @@ public class GenerateShiftPlanService {
         constraints.put("workStartTime", "08:00");
         input.setConstraints(constraints);
 
-        // 设置人员配置要求
+
         Map<String, Integer> staffingRequirements = new HashMap<>();
         for (Job job : jobsToSchedule) {
             String priorityLevel = getPriorityLevel(job.getPriority());
@@ -130,19 +104,19 @@ public class GenerateShiftPlanService {
     }
 
     /**
-     * 处理Gemini AI生成的结果
+     * process Gemini AI generated
      */
     private List<ShiftPlan> processGeminiResults(List<ShiftPlan> generatedPlans, List<Job> jobsToSchedule) {
         List<ShiftPlan> processedPlans = new ArrayList<>();
 
         for (ShiftPlan plan : generatedPlans) {
-            // 确保所有必要字段都已设置
+
             if (plan.getEmployeeId() == null || plan.getJobId() == null) {
                 System.out.println("DEBUG: Skipping incomplete plan - missing employeeId or jobId");
                 continue;
             }
 
-            // 设置缺失的字段
+
             if (plan.getStatus() == null) {
                 plan.setStatus("PENDING_APPROVAL");
             }
@@ -150,7 +124,7 @@ public class GenerateShiftPlanService {
                 plan.setVersion(1);
             }
 
-            // 查找对应的工作以获取优先级
+            // get proiority from corresponding job
             Job correspondingJob = jobsToSchedule.stream()
                 .filter(job -> job.getJobId().equals(plan.getJobId()))
                 .findFirst()
@@ -160,7 +134,6 @@ public class GenerateShiftPlanService {
                 plan.setJobPriority(correspondingJob.getPriority());
             }
 
-            // 如果Gemini AI没有设置开始和结束时间，设置标准8小时工作时间
             if (plan.getStartTime() == null || plan.getEndTime() == null) {
                 setStandardWorkTime(plan);
                 System.out.println("DEBUG: Set standard work time for Employee " + plan.getEmployeeId() +

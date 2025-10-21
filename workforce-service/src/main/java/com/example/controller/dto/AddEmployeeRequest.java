@@ -9,12 +9,13 @@ public class AddEmployeeRequest {
     private String managementArea;
     private String managerName;
     private Boolean manager;
+    private String status;
 
     // Constructors
     public AddEmployeeRequest() {}
 
     public AddEmployeeRequest(String name, Float pay, String skill, String phoneNumber,
-                             Float salary, String managementArea, String managerName, Boolean manager) {
+                             Float salary, String managementArea, String managerName, Boolean manager, String status) {
         this.name = name;
         this.pay = pay;
         this.skill = skill;
@@ -23,6 +24,7 @@ public class AddEmployeeRequest {
         this.managementArea = managementArea;
         this.managerName = managerName;
         this.manager = manager;
+        this.status = status;
     }
 
     // Getters and Setters
@@ -49,4 +51,6 @@ public class AddEmployeeRequest {
 
     public Boolean getManager() { return manager; }
     public void setManager(Boolean manager) { this.manager = manager; }
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
 }

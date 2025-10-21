@@ -72,12 +72,12 @@ public class RecordTimesheetTest {
         long initialCount = timesheetRepository.count();
 
         // Test recording timesheet for employee 1
-        recordTimesheetService.recordTimesheet(employeeId1, new java.util.Date(), 8f,
+        recordTimesheetService.recordTimesheet(employeeId1,1L ,new java.util.Date(), 8f,
                 java.time.LocalDateTime.of(2025, 6, 2, 9, 0),
                 java.time.LocalDateTime.of(2025, 6, 2, 17, 0));
 
         // Test recording timesheet for employee 2
-        recordTimesheetService.recordTimesheet(employeeId2, new java.util.Date(), 6f,
+        recordTimesheetService.recordTimesheet(employeeId2, 2L,new java.util.Date(), 6f,
                 java.time.LocalDateTime.of(2025, 6, 2, 10, 0),
                 java.time.LocalDateTime.of(2025, 6, 2, 16, 0));
 
@@ -148,7 +148,7 @@ public class RecordTimesheetTest {
     void testRecordTimesheetWithInvalidEmployee() {
         // Test recording timesheet for non-existent employee
         assertThrows(RuntimeException.class, () -> {
-            recordTimesheetService.recordTimesheet(999L, new java.util.Date(), 8f,
+            recordTimesheetService.recordTimesheet(999L, 88L,new java.util.Date(), 8f,
                     java.time.LocalDateTime.of(2025, 6, 2, 9, 0),
                     java.time.LocalDateTime.of(2025, 6, 2, 17, 0));
         }, "Should throw RuntimeException for non-existent employee");

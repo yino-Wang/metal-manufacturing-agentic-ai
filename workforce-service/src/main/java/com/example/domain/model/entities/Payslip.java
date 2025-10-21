@@ -11,6 +11,9 @@ public class Payslip {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long payslipId;
 
+    @Column(name = "employee_id")
+    private Long employeeId;
+
     @Column(name = "start_date")
     @Temporal(TemporalType.DATE)
     private Date startDate;
@@ -22,31 +25,19 @@ public class Payslip {
     @Column(name = "total_salary")
     private Float totalSalary;
 
-    @Column(name = "pay")
-    private Float pay;
-
-    @Column(name = "tax")
-    private Float tax;
-
-    @Column(name = "super")
-    private Float superAmount;
-
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private Employee employee;
+    @Column(name = "this_pay")
+    private Float thisPay;
 
     // 构造方法、getter、setter
     public Payslip() {}
 
-    public Payslip(Long payslipId, Date startDate, Date endDate, Float totalSalary, Float pay, Float tax, Float superAmount, Employee employee) {
+    public Payslip(Long payslipId, Date startDate, Date endDate, Float totalSalary, Float thisPay, Long employeeId) {
         this.payslipId = payslipId;
         this.startDate = startDate;
         this.endDate = endDate;
         this.totalSalary = totalSalary;
-        this.pay = pay;
-        this.tax = tax;
-        this.superAmount = superAmount;
-        this.employee = employee;
+        this.thisPay = thisPay;
+        this.employeeId = employeeId;
     }
 
     public Long getPayslipId() {
@@ -73,29 +64,17 @@ public class Payslip {
     public void setTotalSalary(Float totalSalary) {
         this.totalSalary = totalSalary; }
 
-    public Float getPay() {
-        return pay; }
+    public Float getThisPay() {
+        return thisPay; }
 
-    public void setPay(Float pay) {
-        this.pay = pay; }
+    public void setThisPay(Float thisPay) {
+        this.thisPay = thisPay; }
 
-    public Float getTax() {
-        return tax; }
+    public Long getEmployeeId() {
+        return employeeId; }
 
-    public void setTax(Float tax) {
-        this.tax = tax; }
-
-    public Float getSuperAmount() {
-        return superAmount; }
-
-    public void setSuperAmount(Float superAmount) {
-        this.superAmount = superAmount; }
-
-    public Employee getEmployee() {
-        return employee; }
-
-    public void setEmployee(Employee employee) {
-        this.employee = employee; }
+    public void setEmployeeId(Long employeeId) {
+        this.employeeId = employeeId; }
 
 
 }

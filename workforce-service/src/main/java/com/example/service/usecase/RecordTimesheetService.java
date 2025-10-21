@@ -2,11 +2,9 @@ package com.example.service.usecase;
 
 import com.example.domain.event.TimesheetEvent;
 import com.example.domain.model.aggregates.Employee;
+import com.example.domain.model.entities.Payslip;
 import com.example.domain.model.entities.Timesheet;
-import com.example.infrastructure.repository.EmployeeRepository;
-import com.example.infrastructure.repository.TimesheetRepository;
-import com.example.infrastructure.repository.ShiftPlanRepository;
-import com.example.infrastructure.repository.TimesheetEventRepository;
+import com.example.infrastructure.repository.*;
 import com.example.domain.model.entities.ShiftPlan;
 import com.example.domain.model.commands.RecordTimesheetCommand;
 import com.example.infrastructure.messaging.TimesheetEventPublisher;
@@ -22,17 +20,19 @@ public class RecordTimesheetService {
     private final ShiftPlanRepository shiftPlanRepository;
     private final TimesheetEventRepository timesheetEventRepository;
     private final TimesheetEventPublisher timesheetEventPublisher;
+    private final PayslipRepository payslipRepository;
 
 
-    public RecordTimesheetService(TimesheetRepository timesheetRepository, EmployeeRepository employeeRepository, ShiftPlanRepository shiftPlanRepository, TimesheetEventRepository timesheetEventRepository, TimesheetEventPublisher timesheetEventPublisher) {
+    public RecordTimesheetService(TimesheetRepository timesheetRepository, EmployeeRepository employeeRepository, ShiftPlanRepository shiftPlanRepository, TimesheetEventRepository timesheetEventRepository, TimesheetEventPublisher timesheetEventPublisher, PayslipRepository payslipRepository) {
         this.timesheetRepository = timesheetRepository;
         this.employeeRepository = employeeRepository;
         this.shiftPlanRepository = shiftPlanRepository;
         this.timesheetEventRepository = timesheetEventRepository;
         this.timesheetEventPublisher = timesheetEventPublisher;
+        this.payslipRepository = payslipRepository;
     }
 
-    public void recordTimesheet(Long employeeId, Date date, Float hoursWorked, LocalDateTime clockInTime, LocalDateTime clockOutTime) {
+    public void recordTimesheet(Long employeeId, Long jobId, Date date, Float hoursWorked, LocalDateTime clockInTime, LocalDateTime clockOutTime) {
         // Business logic to record timesheet
         // 1. Validate employee exists
         Employee employee = employeeRepository.findById(employeeId)
@@ -40,6 +40,7 @@ public class RecordTimesheetService {
         // 2. Create and save timesheet entry
         Timesheet timesheet = new Timesheet();
         timesheet.setEmployeeId(employeeId);
+        timesheet.setJobId(jobId);
         timesheet.setWorkDate(date);
         timesheet.setClockInTime(clockInTime);
         timesheet.setClockOutTime(clockOutTime);
@@ -50,6 +51,7 @@ public class RecordTimesheetService {
         Float salaryPaid = payRate != null ? payRate * hoursWorked : 0f;
         timesheet.setSalaryPaid(salaryPaid);
 
+        employee.setSalary(employee.getSalary() + salaryPaid);
         // determine status based on shift plan
         ShiftPlan shiftPlan = shiftPlanRepository.findAll().stream()
             .filter(sp -> sp.getEmployeeId().equals(employeeId) && sp.getShiftDate().equals(date))
@@ -66,6 +68,17 @@ public class RecordTimesheetService {
         TimesheetEvent timesheetEvent = new TimesheetEvent(timesheet);
         timesheetEventRepository.save(timesheetEvent);
         timesheetEventPublisher.publish(timesheetEvent);
+
+        //record this payslip to employee
+        Payslip payslip = new Payslip();
+        payslip.setEmployeeId(employeeId);
+        payslip.setStartDate(date); // for simplicity, set startDate as workDate
+        payslip.setEndDate(date); // for simplicity, set endDate as workDate
+        payslip.setThisPay(salaryPaid);
+        payslip.setTotalSalary(employee.getSalary());
+        payslipRepository.save(payslip);
+        System.out.println("Payslip recorded!");
+
     }
 
     /**
