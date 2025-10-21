@@ -20,7 +20,7 @@ public class AllocateMaterialsCommandService {
      */
     @Transactional
     public void allocateMaterials(AddJobMaterialsCommand cmd) {
-        System.out.println("[Service] Allocating materials for Job #" + cmd.getJobNumber());
+        System.out.println("[Service] Allocating materials for Job...");
 
         Material material = inventoryRepository.findAll().stream()
                 .filter(m -> m.getName().equalsIgnoreCase(cmd.getMaterialName()))
@@ -31,11 +31,12 @@ public class AllocateMaterialsCommandService {
         material.setQuantity(newQty);
 
         if (newQty < 100) {
-            System.out.println("[Auto-Restock] " + material.getName() + " below 100 units. Adding +200.");
-            material.setQuantity(newQty + 200);
+            System.out.println("[Auto-Restock] " + material.getName() + " below threshold. Adding +100 units.");
+            material.setQuantity(newQty + 100);
         }
 
         inventoryRepository.save(material);
+
         System.out.println("[Service] Updated stock for " + material.getName() +
                 ": " + material.getQuantity() + " units remaining.");
     }

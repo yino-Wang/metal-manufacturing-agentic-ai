@@ -1,43 +1,32 @@
 package com.example.controller;
 
 import com.example.domain.model.Material;
-import com.example.service.InventoryService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.infrastructure.repository.InventoryRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-/**
- * REST API for managing inventory materials.
- * Provides endpoints for adding, updating, and viewing stock.
- */
 @RestController
 @RequestMapping("/api/inventory")
 public class InventoryController {
 
-    @Autowired
-    private InventoryService inventoryService;
+    private final InventoryRepository inventoryRepository;
 
-    /**
-     * GET /api/inventory/list
-     * Returns a list of all materials currently in the inventory.
-     */
-    @GetMapping("/list")
-    public ResponseEntity<List<Material>> listAll() {
-        List<Material> materials = inventoryService.getAll();
-        return ResponseEntity.ok(materials);
+    public InventoryController(InventoryRepository inventoryRepository) {
+        this.inventoryRepository = inventoryRepository;
     }
 
-    /**
-     * POST /api/inventory/add
-     * Adds a new material to the inventory.
-     */
+    // ---------------------------------------------------------------
+    // ✅ Add a new material
+    // ---------------------------------------------------------------
     @PostMapping("/add")
     public ResponseEntity<Map<String, Object>> addMaterial(@RequestBody Material material) {
-        Material saved = inventoryService.saveMaterial(material);
+        Material saved = inventoryRepository.save(material);
 
-        Map<String, Object> response = new LinkedHashMap<>();
+        Map<String, Object> response = new HashMap<>();
         response.put("status", "success");
         response.put("material", saved);
         response.put("message", "Material added successfully (auto-restock applies if below 100).");
@@ -45,19 +34,36 @@ public class InventoryController {
         return ResponseEntity.ok(response);
     }
 
-    /**
-     * PUT /api/inventory/update/{id}?quantity={value}
-     * Updates the quantity of an existing material by its ID.
-     */
+    // ---------------------------------------------------------------
+    // ✅ Update material quantity (increase or decrease)
+    // ---------------------------------------------------------------
     @PutMapping("/update/{id}")
-    public ResponseEntity<Map<String, Object>> updateStock(@PathVariable int id, @RequestParam int quantity) {
-        Material updated = inventoryService.updateStock(id, quantity);
+    public ResponseEntity<Map<String, Object>> updateMaterialQuantity(
+            @PathVariable Long id,
+            @RequestParam long quantity) {
 
-        Map<String, Object> response = new LinkedHashMap<>();
-        response.put("status", "success");
-        response.put("material", updated);
-        response.put("message", "Stock updated successfully (auto-restock applies if below 100).");
+        return inventoryRepository.findById(id)
+                .map(material -> {
+                    material.setQuantity(material.getQuantity() + quantity);
+                    inventoryRepository.save(material);
 
-        return ResponseEntity.ok(response);
+                    Map<String, Object> response = new HashMap<>();
+                    response.put("status", "success");
+                    response.put("material", material);
+                    response.put("message", "Stock updated successfully (auto-restock applies if below 100).");
+
+                    return ResponseEntity.ok(response);
+                })
+                .orElseGet(() -> ResponseEntity.status(404)
+                        .body(Map.of("status", "error", "message", "Material not found.")));
+    }
+
+    // ---------------------------------------------------------------
+    // ✅ Get all materials
+    // ---------------------------------------------------------------
+    @GetMapping("/list")
+    public ResponseEntity<List<Material>> getAllMaterials() {
+        List<Material> materials = inventoryRepository.findAll();
+        return ResponseEntity.ok(materials);
     }
 }

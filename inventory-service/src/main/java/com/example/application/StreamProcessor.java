@@ -22,7 +22,7 @@ public class StreamProcessor {
                         System.out.println("→ Material: " + value.getMaterialName());
                         System.out.println("→ Quantity Required: " + value.getMaterialRequired());
                         System.out.println("--------------------------------------------------");
-                        return KeyValue.pair(value.getMaterialName(), (long) value.getMaterialRequired());
+                        return KeyValue.pair(value.getMaterialName(), (int) value.getMaterialRequired());
                     })
                     .groupByKey()
                     .windowedBy(TimeWindows.ofSizeWithNoGrace(Duration.ofSeconds(30)))
