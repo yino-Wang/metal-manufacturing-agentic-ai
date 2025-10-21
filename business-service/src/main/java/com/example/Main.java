@@ -1,8 +1,10 @@
 package com.example;
 
 //import com.example.infrastructure.agentic.ModelLogger;
+import com.example.application.agentService.ScheduleService;
 import com.example.application.service.SchedulingService;
 import com.example.domain.model.aggreates.Machine;
+import com.example.domain.model.aggreates.MachineId;
 import com.example.domain.model.valueobjects.Schedule;
 import com.example.infrastructure.repositories.MachineRepository;
 import com.example.interfaces.rest.dto.AddJobToMachineResource;
@@ -26,7 +28,7 @@ public class Main {
     public static void main(String[] args) throws InterruptedException {
         ApplicationContext context = SpringApplication.run(Main.class, args); //ADD THIS BUT CHANGE *MAIN* TO WHATEVER YOUR FILE IS CALLED
 
-        SchedulingService service = context.getBean(SchedulingService.class);
+        ScheduleService service = context.getBean(ScheduleService.class);
 
         final String url = "http://localhost:8787/machinescheduling";
         //schedule some machines
@@ -48,7 +50,7 @@ public class Main {
         final String urlAddJob = "http://localhost:8787/addJobToMachine";
         Random rand = new Random();
         int maxMaterials = 50;
-        int maxDays = 30;
+        int maxDays = 10; //Maximum days a job can take
         String[] machines = {"machine1", "machine2", "machine3", "machine4"};
         int numMachines = machines.length;
         String[] materialNeeded = {"steel", "wood", "nails", "iron"};
@@ -71,7 +73,7 @@ public class Main {
             String customerName = customers[customer];
             int priorityChosen = rand.nextInt(priorityNum);
             int priority = priorityOptions[priorityChosen];
-            LocalDate dueDate = day.plusDays(rand.nextInt(10)); //submit date within the next 10 days
+            LocalDate dueDate = day.plusDays(rand.nextInt(5,30)); //due date within the next 5 to 30 days
             System.out.println("Adding job " + jobNumber + " to " + machineId + " for " + materialAmount + " of " + materialName + " on " + dueDate);
             AddJobToMachineResource job = new AddJobToMachineResource(jobNumber, jobTimeNeededDays, priority, machineId, dueDate, materialName, materialAmount, customerName);
             //System.out.println("Posting job: " + job.toString());
@@ -79,10 +81,11 @@ public class Main {
             //System.out.println("******" + schedulingId + job + "*****");
             //System.out.println(job);
 
-            ///create fake schedule
-            Schedule schedule = service.processMachine(machineId);
+            ///create schedule
+            Schedule schedule = service.generateSchedule(machineId);
 
-            ScheduleDto scheduleDto = restTemplate.postForObject(urlAddJob, schedule, ScheduleDto.class);
+            /// post schedule back to update machine schedule
+            //ScheduleDto scheduleDto = restTemplate.postForObject(urlAddJob, schedule, ScheduleDto.class);
 
             Thread.sleep(5000);
         }

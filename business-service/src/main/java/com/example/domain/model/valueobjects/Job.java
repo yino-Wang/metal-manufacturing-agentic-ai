@@ -1,7 +1,6 @@
 package com.example.domain.model.valueobjects;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
 
