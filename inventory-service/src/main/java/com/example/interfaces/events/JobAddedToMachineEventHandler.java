@@ -9,34 +9,39 @@ import org.springframework.context.annotation.Configuration;
 import java.util.function.Consumer;
 
 /**
- * Event Handler for the Cargo Routed Event that the Tracking Bounded Context is interested in
+ * Stream processor for the "jobAddedToMachines" Kafka topic.
+ * When a job event arrives, it allocates the required materials.
  */
 @Configuration
 public class JobAddedToMachineEventHandler {
 
-        private AllocateMaterialsCommandService allocateMaterialsCommandService; // Application Service Dependency
+    private final AllocateMaterialsCommandService allocateMaterialsCommandService;
 
-        /**
-         * Provide the dependencies
-         *
-         * @param allocateMaterialsCommandService
-         */
-        public JobAddedToMachineEventHandler(AllocateMaterialsCommandService allocateMaterialsCommandService) {
-            this.allocateMaterialsCommandService = allocateMaterialsCommandService;
-        }
+    // Constructor-based dependency injection
+    public JobAddedToMachineEventHandler(AllocateMaterialsCommandService allocateMaterialsCommandService) {
+        this.allocateMaterialsCommandService = allocateMaterialsCommandService;
+    }
 
-        @Bean
-        public Consumer<JobAddedToMachineEvent> receiveJobAddedEvent() {
-            return JobAddedToMachineEvent -> {
-                System.out.println("Job added to machine event" + JobAddedToMachineEvent);
-                System.out.println(JobAddedToMachineEvent.getJobAddedToMachineEventData());
-                System.out.println(JobAddedToMachineEvent.getJobAddedToMachineEventData().toString());
-                //Process the Event
-                allocateMaterialsCommandService.allocateMaterials(
-                        JobMaterialsCommandEventAssembler
-                                .toCommandFromEvent(JobAddedToMachineEvent));
-            };
-        }
+    /**
+     * Spring Cloud Stream function bean.
+     * Triggered automatically whenever a JobAddedToMachineEvent
+     * message is received from Kafka.
+     */
+    @Bean
+    public Consumer<JobAddedToMachineEvent> process() {
+        return event -> {
+            System.out.println("[Stream] Received jobAddedToMachines event:");
+            System.out.println("   → Job number: " + event.getJobAddedToMachineEventData().getJobNumber());
+            System.out.println("   → Material: " + event.getJobAddedToMachineEventData().getMaterialNeeded());
+            System.out.println("   → Amount: " + event.getJobAddedToMachineEventData().getMaterialAmount());
 
+            // Allocate the materials for this job
+            allocateMaterialsCommandService.allocateMaterials(
+                    JobMaterialsCommandEventAssembler.toCommandFromEvent(event)
+            );
 
+            System.out.println("[Stream] Materials allocated for job: "
+                    + event.getJobAddedToMachineEventData().getJobNumber());
+        };
+    }
 }

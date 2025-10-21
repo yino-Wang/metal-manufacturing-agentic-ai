@@ -36,7 +36,7 @@ and unzip it to a directory, e.g., `C:\kafka`&mdash;Windows does not like a comp
 Use the following two commands in the Windows CMD (one in each window) to start Kafka:
 ```bash
 C:\kafka\bin\windows\zookeeper-server-start.bat C:\kafka\config\zookeeper.properties
-```
+``` 
 ```bash
 C:\kafka\bin\windows\kafka-server-start.bat C:\kafka\config\server.properties
 ```

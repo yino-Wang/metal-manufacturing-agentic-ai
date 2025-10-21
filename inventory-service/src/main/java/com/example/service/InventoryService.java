@@ -2,6 +2,7 @@ package com.example.service;
 
 import com.example.domain.model.Material;
 import com.example.infrastructure.repository.InventoryRepository;
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -10,6 +11,7 @@ import java.util.List;
 /**
  * Handles business logic for inventory.
  * Automatically restocks 200 units if stock < 100.
+ * Adds initial materials when the service starts.
  */
 @Service
 public class InventoryService {
@@ -18,7 +20,38 @@ public class InventoryService {
     private InventoryRepository inventoryRepository;
 
     /**
-     * Adds or updates a material record.
+     * Adds the default materials at application startup if none exist.
+     */
+    @PostConstruct
+    public void initialiseMaterials() {
+        if (inventoryRepository.count() == 0) {
+            System.out.println("--------------------------------------------------");
+            System.out.println("[Init] Adding default materials into inventory...");
+            System.out.println("--------------------------------------------------");
+
+            inventoryRepository.saveAll(List.of(
+                    new Material(1, "Steel", 150),
+                    new Material(2, "Aluminium", 150),
+                    new Material(3, "Copper", 150),
+                    new Material(4, "Iron", 150)
+            ));
+
+            System.out.println("[Init] Default materials have been added.");
+        } else {
+            System.out.println("[Init] Existing materials found — skipping material.");
+        }
+
+        // Log current inventory
+        System.out.println("--------------------------------------------------");
+        System.out.println("[Inventory] Current materials in stock:");
+        inventoryRepository.findAll().forEach(material ->
+                System.out.println("   • " + material.getName() + " → " + material.getQuantity() + " units")
+        );
+        System.out.println("--------------------------------------------------");
+    }
+
+    /**
+     * Adds or updates a material.
      * Automatically restocks +200 if below 100 units.
      */
     public Material saveMaterial(Material material) {
