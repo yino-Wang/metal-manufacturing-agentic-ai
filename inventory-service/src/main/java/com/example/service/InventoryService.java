@@ -3,18 +3,17 @@ package com.example.service;
 import com.example.domain.event.LowStockEvent;
 import com.example.domain.model.Material;
 import com.example.infrastructure.repository.InventoryRepository;
+import com.example.interfaces.events.transform.JobAddedToMachineEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
+import org.springframework.cloud.stream.annotation.StreamListener;
+import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-/**
- * Handles business logic and publishes low stock events to Kafka.
- * Also seeds initial materials once the application is ready.
- */
 @Service
 public class InventoryService {
 
@@ -25,8 +24,7 @@ public class InventoryService {
     private KafkaTemplate<String, Object> kafkaTemplate;
 
     /**
-     * Seeds default materials into the inventory after application startup.
-     * This runs only once, after JPA and the database are ready.
+     * Seeds default materials into the database after app startup.
      */
     @EventListener(ApplicationReadyEvent.class)
     public void seedInitialMaterials() {
@@ -44,9 +42,8 @@ public class InventoryService {
 
             inventoryRepository.saveAll(materials);
             System.out.println("[Init] Default materials added successfully!");
-
-            // 🧾 Print the inventory list after seeding
             System.out.println("[Inventory] Current materials in stock:");
+
             inventoryRepository.findAll().forEach(m ->
                     System.out.println(m.getName() + " (ID: " + m.getId() + ") - " + m.getQuantity() + " units")
             );
@@ -59,10 +56,11 @@ public class InventoryService {
 
     /**
      * Adds or updates a material.
-     * Publishes a Kafka low-stock event if quantity < 100.
+     * Sends Kafka event if low stock is detected.
      */
     public Material saveMaterial(Material material) {
         Material saved = inventoryRepository.save(material);
+
         if (saved.isLowStock()) {
             LowStockEvent event = new LowStockEvent(saved);
             try {
@@ -74,25 +72,25 @@ public class InventoryService {
             }
             System.out.println(event.getMessage());
         }
+
         return saved;
     }
 
     /**
-     * Returns all materials currently in inventory.
+     * Fetch all materials from inventory.
      */
     public List<Material> getAll() {
         return inventoryRepository.findAll();
     }
 
     /**
-     * Updates the stock quantity of an existing material.
-     * If stock falls below threshold, automatically adds 200 units.
+     * Update material quantity manually.
+     * Auto-restocks if quantity is low.
      */
     public Material updateStock(int id, int newQty) {
         return inventoryRepository.findById(id).map(material -> {
             material.setQuantity(newQty);
 
-            // Auto-restock if below 100
             if (material.getQuantity() < 100) {
                 System.out.println("[Auto Restock] " + material.getName() +
                         " below 100 units. Adding 200 more automatically.");
@@ -101,5 +99,46 @@ public class InventoryService {
 
             return saveMaterial(material);
         }).orElseThrow(() -> new RuntimeException("Material not found"));
+    }
+
+    /**
+     * Stream listener for incoming job events.
+     * Deducts the required materials and logs result.
+     */
+    @StreamListener("process-in-0")
+    public void handleJobAddedToMachine(@Payload JobAddedToMachineEvent event) {
+        System.out.println("--------------------------------------------------");
+        System.out.println("[Job Received] Material required: " + event.getMaterialName());
+        System.out.println("[Job Received] Quantity needed: " + event.getMaterialRequired());
+
+        inventoryRepository.findAll().stream()
+                .filter(m -> m.getName().equalsIgnoreCase(event.getMaterialName()))
+                .findFirst()
+                .ifPresentOrElse(material -> {
+                    int before = material.getQuantity();
+                    int after = before - event.getMaterialRequired();
+
+                    material.setQuantity(after);
+                    inventoryRepository.save(material);
+
+                    System.out.println("[Inventory Update] " + material.getName() +
+                            " reduced from " + before + " → " + after + " units.");
+
+                    if (material.isLowStock()) {
+                        System.out.println("[Warning] Low stock detected for " + material.getName() +
+                                " (remaining: " + after + ")");
+                        LowStockEvent lowStockEvent = new LowStockEvent(material);
+                        try {
+                            if (kafkaTemplate != null) {
+                                kafkaTemplate.send("low-stock-topic", lowStockEvent);
+                            }
+                        } catch (Exception e) {
+                            System.out.println("[Warning] Kafka unavailable, skipping low-stock event.");
+                        }
+                    }
+
+                }, () -> System.out.println("[Warning] Material '" +
+                        event.getMaterialName() + "' not found in inventory."));
+        System.out.println("--------------------------------------------------");
     }
 }
