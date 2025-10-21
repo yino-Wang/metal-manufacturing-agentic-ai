@@ -2,34 +2,38 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+
     <modelVersion>4.0.0</modelVersion>
 
-    <!-- Parent project reference -->
     <parent>
-        <groupId>com.example</groupId>
-        <artifactId>metal-manufacturing-ai</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.3.2</version>
+        <relativePath/>
     </parent>
 
-    <!-- Unique artifactId for this microservice -->
+    <groupId>com.example</groupId>
     <artifactId>inventory-service</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
     <name>Inventory Service</name>
-    <packaging>jar</packaging>
+    <description>Handles machine inventory events, Kafka stream processing, and scheduling analytics.</description>
 
     <properties>
         <java.version>21</java.version>
         <spring-cloud.version>2023.0.3</spring-cloud.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
     <dependencies>
 
-        <!-- ===== Core Framework ===== -->
+        <!-- Shared domain models -->
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
+            <groupId>com.example</groupId>
+            <artifactId>sharedDomain</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
         </dependency>
 
-        <!-- ===== Messaging / Stream Processing (Kafka) ===== -->
+        <!-- Spring Cloud Stream + Kafka -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-stream</artifactId>
@@ -39,7 +43,21 @@
             <artifactId>spring-cloud-stream-binder-kafka</artifactId>
         </dependency>
 
-        <!-- ===== Data Persistence ===== -->
+        <!-- Kafka Core -->
+        <dependency>
+            <groupId>org.apache.kafka</groupId>
+            <artifactId>kafka-streams</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.kafka</groupId>
+            <artifactId>spring-kafka</artifactId>
+        </dependency>
+
+        <!-- Web + Persistence -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
@@ -50,15 +68,7 @@
             <scope>runtime</scope>
         </dependency>
 
-        <!-- ===== Shared Domain (internal library) ===== -->
-        <dependency>
-            <groupId>com.example</groupId>
-            <artifactId>sharedDomain</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-            <scope>compile</scope>
-        </dependency>
-
-        <!-- ===== Testing ===== -->
+        <!-- Testing -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
@@ -70,7 +80,7 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- ===== Jakarta XML (for potential shared domain marshalling) ===== -->
+        <!-- XML Binding -->
         <dependency>
             <groupId>jakarta.xml.bind</groupId>
             <artifactId>jakarta.xml.bind-api</artifactId>
@@ -96,9 +106,6 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <configuration>
-                    <layers enabled="true" />
-                </configuration>
             </plugin>
         </plugins>
     </build>
