@@ -239,7 +239,7 @@ curl -X GET "http://localhost:8080/api/inventory/list"
 
 #### 1. Add New Employee
 ```bash
-curl -X POST "http://localhost:8080/api/workforce/employees" -H "Content-Type: application/json" -d "{\"name\":\"John Smith\",\"pay\":28.0,\"skill\":\"Welding,Metal Cutting,Assembly\",\"phoneNumber\":\"555-0101\",\"salary\":4500.0,\"managementArea\":\"Production Floor A\",\"managerName\":\"Manager Anderson\",\"manager\":false}"
+curl -X POST "http://localhost:8080/api/workforce/employees" -H "Content-Type: application/json" -d "{\"name\":\"Alice Wu\",\"pay\":28.0,\"skill\":\"Normal\",\"phoneNumber\":\"555-0101\",\"salary\":4500.0,\"managementArea\":\"None\",\"managerName\":\"Manager Anderson\",\"manager\":false}"
 ```
 
 **Response:**
@@ -250,9 +250,9 @@ curl -X POST "http://localhost:8080/api/workforce/employees" -H "Content-Type: a
   "employeeId": 1,
   "employee": {
     "id": 1,
-    "name": "John Smith",
+    "name": "Alice Wu",
     "pay": 28.0,
-    "skill": "Welding,Metal Cutting,Assembly"
+    "skill": "Normal"
   }
 }
 ```
@@ -310,7 +310,7 @@ curl -X DELETE "http://localhost:8080/api/workforce/employees/1"
 
 #### 4. Add New Timesheet for specific Employee
 ```bash
-curl -X POST "http://localhost:8080/api/workforce/timesheets" -H "Content-Type: application/json" -d "{\"employeeId\":1,\"workDate\":\"2025-10-18\",\"hoursWorked\":8.0,\"clockInTime\":\"2025-10-18T09:00:00\",\"clockOutTime\":\"2025-10-18T17:00:00\",\"jobId\":123}"
+curl -X POST "http://localhost:8080/api/workforce/timesheets" -H "Content-Type: application/json" -d "{\"employeeId\":5,\"workDate\":\"2025-10-18\",\"hoursWorked\":8.0,\"clockInTime\":\"2025-10-18T09:00:00\",\"clockOutTime\":\"2025-10-18T17:00:00\",\"jobId\":5}"
 ```
 
 **Response:**
@@ -319,14 +319,15 @@ curl -X POST "http://localhost:8080/api/workforce/timesheets" -H "Content-Type: 
   "success": true,
   "message": "Timesheet recorded successfully",
   "timesheet": {
-    "timesheetId": 1,
-    "employeeId": 1,
+    "timesheetId": 5,
+    "employeeId": 5,
     "workDate": "2025-10-18",
     "hoursWorked": 8.0,
     "salaryPaid": 224.0,
     "status": "EXCEPTION",
     "clockInTime": "2025-10-18T09:00:00",
-    "clockOutTime": "2025-10-18T17:00:00"
+    "clockOutTime": "2025-10-18T17:00:00",
+    "jobId": 5
   }
 }
 ```
@@ -424,7 +425,7 @@ curl -X GET "http://localhost:8080/api/workforce/portal/employee/1/working-hours
 curl -X GET "http://localhost:8080/api/workforce/portal/employee/1/current-salary"
 ```
 
-#### 11. Get Payslip Summary (todo)
+#### 11. Get Payslip Summary 
 ```bash
 # Get all payslips
 curl -X GET "http://localhost:8080/api/workforce/portal/employee/1/payslip-summary"
@@ -437,7 +438,7 @@ curl -X GET "http://localhost:8080/api/workforce/portal/employee/1/payslip-summa
 
 ### Update Clock-In/Out for specific employee
 ```bash
-curl -X POST "http://localhost:8080/api/workforce/portal/employee/1/clock-in-out" -H "Content-Type: application/json" -d "{\"workDate\":\"2025-10-18\",\"hoursWorked\":8.0,\"clockInTime\":\"2025-10-18T09:00:00\",\"clockOutTime\":\"2025-10-18T17:00:00\"}"
+curl -X POST "http://localhost:8080/api/workforce/portal/employee/1/clock-in-out" -H "Content-Type: application/json" -d "{\"workDate\":\"2025-10-18\",\"hoursWorked\":8.0,\"clockInTime\":\"2025-10-18T09:00:00\",\"clockOutTime\":\"2025-10-18T17:00:00\",\"jobId\":1}"
 ```
 **Response:**
 ```json
@@ -457,10 +458,93 @@ curl -X POST "http://localhost:8080/api/workforce/portal/employee/1/clock-in-out
 }
 ```
 
-#### 12. Auto-generate Shift Plan (agentic)
-#### 13. Update Shift Plan
-#### 14. Notify Employee 
-#### 25. Get Alternative Employees 
+### 12. Auto-generate Shift Plan using data from Business MS (agentic) and notify employees
+```bash
+curl -X POST "http://localhost:8080/api/shift-planner/create?requiredEmployees=1" \
+  -H "Content-Type: application/json"
+```
+
+### 12(1). Auto-generate Shift Plan using mock data (agentic) and notify employees
+```bash
+curl -X POST "http://localhost:8080/api/shift-planner/create-with-mock-data?requiredEmployees=1" -H "Content-Type: application/json"
+
+```
+**Response:**
+```json
+[
+  {
+    "employeeId": 101,
+    "shiftDate": "2025-10-22",
+    "startTime": "08:00",
+    "endTime": "16:00",
+    "jobId": 55,
+    "jobPriority": 2
+  },
+  {
+    "employeeId": 102,
+    "shiftDate": "2025-10-22",
+    "startTime": "08:00",
+    "endTime": "16:00",
+    "jobId": 55,
+    "jobPriority": 2
+  },
+  {
+    "employeeId": 103,
+    "shiftDate": "2025-10-22",
+    "startTime": "08:00",
+    "endTime": "16:00",
+    "jobId": 55,
+    "jobPriority": 2
+  }
+]
+
+```
+####  Fetch machine schedule from ExternalMachineSchedule for testing
+```bash
+curl -X GET "http://localhost:8080/api/shift-planner/mock-schedule" -H "Accept: application/json"
+```
+**Response:**
+```json
+{
+  "scheduleId": "1",
+  "machineId": "1",
+  "startTime": "2025-10-23T09:00:00Z",
+  "endTime": "2025-10-23T17:00:00Z",
+  "jobId": 77,
+  "priority": 1,
+  "requiredEmployees": 1
+}
+
+```
+### 13. Update Shift Plan
+```bash
+# bash
+curl -X PUT "http://localhost:8080/api/workforce/manager/portal/shift-plan/1" -H "Content-Type: application/json" -d "{\"employeeId\":1,\"shiftDate\":\"2025-10-22\",\"startTime\":\"2025-10-22\",\"endTime\":\"2025-10-23\",\"status\":\"BUSY\",\"version\":2,\"jobId\":10,\"requiredEmployees\":1}"
+```
+**responseL**
+```json
+{
+  "success": true,
+  "message": "Shift plan updated successfully",
+  "shiftPlan": {
+    "shiftPlanId": 1,
+    "employeeId": 1,
+    "shiftDate": "2025-10-22",
+    "startTime": "2025-10-23",
+    "endTime": "2025-10-24",
+    "status": "BUSY",
+    "version": 2,
+    "jobId": 9
+  }
+}
+```
+
+### 14. Get all Shift Plans
+```bash
+curl -X GET "http://localhost:8080/api/workforce/manager/portal/shift-plans"
+```
+
+
 
 
 ### Trouble Shooting

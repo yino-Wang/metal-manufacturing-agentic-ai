@@ -34,12 +34,11 @@ public class ShiftPlan {
     @JoinColumn(name = "employee_id", referencedColumnName = "employee_id", insertable = false, updatable = false)
     private Employee employee;
 
-    @ManyToOne
-    @JoinColumn(name = "job", insertable = false, updatable = false)
-    private Job job;
-
     @Column(name = "job_id")
     private Long jobId;
+
+    @Column(name = "machine_id")
+    private String machineId;
 
     @Column(name = "status")
     private String status;
@@ -56,16 +55,16 @@ public class ShiftPlan {
     // Constructors
     public ShiftPlan() {}
 
-    public ShiftPlan(Long employeeId, Date shiftDate, Integer jobPriority, int requiredEmployees, Employee employee, Job job, Long jobId, String status, Integer version) {
+    public ShiftPlan(Long employeeId, Date shiftDate, Integer jobPriority, int requiredEmployees, Employee employee, Long jobId, String status, Integer version, String machineId, Date startTime, Date endTime) {
         this.employeeId = employeeId;
         this.shiftDate = shiftDate;
         this.jobPriority = jobPriority;
         this.requiredEmployees = requiredEmployees;
         this.employee = employee;
-        this.job = job;
         this.jobId = jobId;
         this.status = status;
         this.version = version;
+        this.machineId = machineId;
     }
 
     // Getter and setter methods
@@ -117,13 +116,6 @@ public class ShiftPlan {
         this.employee = employee;
     }
 
-    public Job getJob() {
-        return job;
-    }
-
-    public void setJob(Job job) {
-        this.job = job;
-    }
 
     public Long getJobId() {
         return jobId;
@@ -164,6 +156,11 @@ public class ShiftPlan {
     public void setEndTime(Date endTime) {
         this.endTime = endTime;
     }
+
+    public String getMachineId() {
+        return machineId;
+    }
+    public void setMachineId(String machineId) {}
 
     // Backward compatibility methods for old test code
     public String getShiftType() {

@@ -57,7 +57,6 @@ public class AgentInput {
         this.staffingRequirements = staffingRequirements;
     }
 
-    // Alias method for compatibility
     public void setEmployeeRequirements(Map<String, Integer> requirements) {
         this.staffingRequirements = requirements;
     }

@@ -52,6 +52,7 @@ public class WorkforceServiceApplication {
         employee1.setManagementArea("Production Floor A");
         employee1.setManagerName("None");
         employee1.setManager(false);
+        employee1.setStatus("AVAILABLE");
 
         // Employee 2 - Quality Inspector
         AddEmployeeRequest employee2 = new AddEmployeeRequest();
@@ -63,6 +64,7 @@ public class WorkforceServiceApplication {
         employee2.setManagementArea("None");
         employee2.setManagerName("Supervisor Williams");
         employee2.setManager(false);
+        employee2.setStatus("AVAILABLE");
 
         // Employee 3 - Machine Operator
         AddEmployeeRequest employee3 = new AddEmployeeRequest();
@@ -74,17 +76,19 @@ public class WorkforceServiceApplication {
         employee3.setManagementArea("None");
         employee3.setManagerName("Manager Anderson");
         employee3.setManager(false);
+        employee3.setStatus("AVAILABLE");
 
-        // Employee 4=
+        // Employee 4
         AddEmployeeRequest employee4 = new AddEmployeeRequest();
-        employee3.setName("Carl Davis");
-        employee3.setPay(29.0f);
-        employee3.setSkill("Normal");
-        employee3.setPhoneNumber("555-0404");
-        employee3.setSalary(3200.0f);
-        employee3.setManagementArea("None");
-        employee3.setManagerName("Manager Anderson");
-        employee3.setManager(false);
+        employee4.setName("Carl Davis");
+        employee4.setPay(29.0f);
+        employee4.setSkill("Normal");
+        employee4.setPhoneNumber("555-0404");
+        employee4.setSalary(3200.0f);
+        employee4.setManagementArea("None");
+        employee4.setManagerName("Manager Anderson");
+        employee4.setManager(false);
+        employee4.setStatus("AVAILABLE");
 
         // Save employees directly to database (simpler approach)
         Employee savedEmployee1 = new Employee();
@@ -96,6 +100,7 @@ public class WorkforceServiceApplication {
         savedEmployee1.setManagementArea(employee1.getManagementArea());
         savedEmployee1.setManagerName(employee1.getManagerName());
         savedEmployee1.setManager(employee1.getManager());
+        savedEmployee1.setStatus(employee1.getStatus());
         savedEmployee1 = employeeRepository.save(savedEmployee1);
 
         Employee savedEmployee2 = new Employee();
@@ -107,6 +112,7 @@ public class WorkforceServiceApplication {
         savedEmployee2.setManagementArea(employee2.getManagementArea());
         savedEmployee2.setManagerName(employee2.getManagerName());
         savedEmployee2.setManager(employee2.getManager());
+        savedEmployee2.setStatus(employee2.getStatus());
         savedEmployee2 = employeeRepository.save(savedEmployee2);
 
         Employee savedEmployee3 = new Employee();
@@ -118,6 +124,7 @@ public class WorkforceServiceApplication {
         savedEmployee3.setManagementArea(employee3.getManagementArea());
         savedEmployee3.setManagerName(employee3.getManagerName());
         savedEmployee3.setManager(employee3.getManager());
+        savedEmployee3.setStatus(employee3.getStatus());
         savedEmployee3 = employeeRepository.save(savedEmployee3);
 
         Employee savedEmployee4 = new Employee();
@@ -129,6 +136,7 @@ public class WorkforceServiceApplication {
         savedEmployee4.setManagementArea(employee4.getManagementArea());
         savedEmployee4.setManagerName(employee4.getManagerName());
         savedEmployee4.setManager(employee4.getManager());
+        savedEmployee4.setStatus(employee4.getStatus());
         savedEmployee4 = employeeRepository.save(savedEmployee4);
 
         System.out.println("👷 Created Employee 1: " + savedEmployee1.getName() + " (ID: " + savedEmployee1.getEmployeeId() + ")");
@@ -138,10 +146,11 @@ public class WorkforceServiceApplication {
 
         // Generate one timesheet for each employee
         // Create timesheet for Employee 1 - John Smith (Welder)
-        float hoursWorked1 = 8.5f;
+        float hoursWorked1 = 7.5f;
+        Long jobId1 = 1L;
         Date workDate1 = new Date(); // Today
-        LocalDateTime clockInTime1 = LocalDateTime.now().withHour(9).withMinute(0).withSecond(0);
-        LocalDateTime clockOutTime1 = clockInTime1.plusHours(8).plusMinutes(30);
+        LocalDateTime clockInTime1 = LocalDateTime.now().withHour(8).withMinute(0).withSecond(0);
+        LocalDateTime clockOutTime1 = clockInTime1.plusHours(7).plusMinutes(30);
 
         System.out.println("📊 Creating timesheet for " + savedEmployee1.getName() +
                 " - " + hoursWorked1 + " hours (" + clockInTime1.getHour() + ":" +
@@ -151,6 +160,7 @@ public class WorkforceServiceApplication {
         try {
             recordTimesheetService.recordTimesheet(
                     savedEmployee1.getEmployeeId(),
+                    jobId1,
                     workDate1,
                     hoursWorked1,
                     clockInTime1,
@@ -163,8 +173,9 @@ public class WorkforceServiceApplication {
 
         // Create timesheet for Employee 2 - Sarah Johnson (Quality Inspector)
         float hoursWorked2 = 7.0f;
+        Long jobId2 = 2L;
         Date workDate2 = new Date(); // Today
-        LocalDateTime clockInTime2 = LocalDateTime.now().withHour(8).withMinute(30).withSecond(0);
+        LocalDateTime clockInTime2 = LocalDateTime.now().withHour(8).withMinute(0).withSecond(0);
         LocalDateTime clockOutTime2 = clockInTime2.plusHours(7);
 
         System.out.println("📊 Creating timesheet for " + savedEmployee2.getName() +
@@ -175,6 +186,7 @@ public class WorkforceServiceApplication {
         try {
             recordTimesheetService.recordTimesheet(
                     savedEmployee2.getEmployeeId(),
+                    jobId2,
                     workDate2,
                     hoursWorked2,
                     clockInTime2,
@@ -186,10 +198,11 @@ public class WorkforceServiceApplication {
         }
 
         // Create timesheet for Employee 3 - Michael Brown (Machine Operator)
-        float hoursWorked3 = 9.0f;
+        float hoursWorked3 = 6.0f;
+        Long jobId3 = 3L;
         Date workDate3 = new Date(); // Today
-        LocalDateTime clockInTime3 = LocalDateTime.now().withHour(7).withMinute(45).withSecond(0);
-        LocalDateTime clockOutTime3 = clockInTime3.plusHours(9);
+        LocalDateTime clockInTime3 = LocalDateTime.now().withHour(8).withMinute(0).withSecond(0);
+        LocalDateTime clockOutTime3 = clockInTime3.plusHours(6);
 
         System.out.println("📊 Creating timesheet for " + savedEmployee3.getName() +
                 " - " + hoursWorked3 + " hours (" + clockInTime3.getHour() + ":" +
@@ -199,6 +212,7 @@ public class WorkforceServiceApplication {
         try {
             recordTimesheetService.recordTimesheet(
                     savedEmployee3.getEmployeeId(),
+                    jobId3,
                     workDate3,
                     hoursWorked3,
                     clockInTime3,
@@ -211,8 +225,9 @@ public class WorkforceServiceApplication {
 
         // Create timesheet for Employee 4 - Carl Davis (Machine Operator)
         float hoursWorked4 = 6.0f;
+        Long jobId4 = 4L;
         Date workDate4 = new Date(); // Today
-        LocalDateTime clockInTime4 = LocalDateTime.now().withHour(10).withMinute(0).withSecond(0);
+        LocalDateTime clockInTime4 = LocalDateTime.now().withHour(9).withMinute(0).withSecond(0);
         LocalDateTime clockOutTime4 = clockInTime4.plusHours(6);
         System.out.println("📊 Creating timesheet for " + savedEmployee4.getName() +
                 " - " + hoursWorked4 + " hours (" + clockInTime4.getHour() + ":" +
@@ -221,6 +236,7 @@ public class WorkforceServiceApplication {
         try {
             recordTimesheetService.recordTimesheet(
                     savedEmployee4.getEmployeeId(),
+                    jobId4,
                     workDate4,
                     hoursWorked4,
                     clockInTime4,

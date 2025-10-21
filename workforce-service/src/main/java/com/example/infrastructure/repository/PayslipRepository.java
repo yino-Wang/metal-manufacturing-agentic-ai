@@ -7,6 +7,6 @@ import java.util.Date;
 import java.util.List;
 
 public interface PayslipRepository extends JpaRepository<Payslip, Long> {
-    List<Payslip> findByEmployee_EmployeeId(Long employeeId);
-    List<Payslip> findByEmployee_EmployeeIdAndStartDate(Long employeeId, Date startDate);
+    List<Payslip> findByEmployeeId(Long employeeId);
+    List<Payslip> findByEmployeeIdAndStartDate(Long employeeId, Date startDate);
 }

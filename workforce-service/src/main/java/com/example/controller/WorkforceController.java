@@ -38,8 +38,7 @@ public class WorkforceController {
     private PayslipRepository payslipRepository;
     @Autowired
     private ShiftPlanRepository shiftPlanRepository;
-    @Autowired
-    private IndividualScheduleRepository individualScheduleRepository;
+
     @Autowired
     private TimesheetEventRepository timesheetEventRepository;
     @Autowired
@@ -176,7 +175,7 @@ public class WorkforceController {
     // ==================== TIMESHEET MANAGEMENT APIs ====================
 
     /**
-     * Add/Record a new timesheet entry (Improved version)
+     * Add/Record a new timesheet entry
      */
     @PostMapping("/timesheets")
     public ResponseEntity<Map<String, Object>> addTimesheet(@RequestBody RecordTimesheetRequest request) {
@@ -185,6 +184,11 @@ public class WorkforceController {
             if (request.getEmployeeId() == null) {
                 return ResponseEntity.badRequest()
                     .body(Map.of("success", false, "error", "Employee ID is required"));
+            }
+
+            if (request.getJobId() == null) {
+                return ResponseEntity.badRequest()
+                        .body(Map.of("success", false, "error", "Job ID is required"));
             }
 
             if (request.getWorkDate() == null) {
@@ -210,7 +214,7 @@ public class WorkforceController {
 
             // Record timesheet
             recordTimesheetService.recordTimesheet(
-                request.getEmployeeId(),
+                request.getEmployeeId(), request.getJobId(),
                 request.getWorkDate(),
                 request.getHoursWorked(),
                 request.getClockInTime(),
@@ -233,6 +237,7 @@ public class WorkforceController {
                 response.put("timesheet", Map.of(
                     "timesheetId", createdTimesheet.getTimesheetId(),
                     "employeeId", createdTimesheet.getEmployeeId(),
+                    "jobId", createdTimesheet.getJobId(),
                     "workDate", createdTimesheet.getWorkDate(),
                     "hoursWorked", createdTimesheet.getHoursWorked(),
                     "salaryPaid", createdTimesheet.getSalaryPaid(),
@@ -282,6 +287,7 @@ public class WorkforceController {
             response.put("timesheets", timesheets.stream().map(ts -> Map.of(
                 "timesheetId", ts.getTimesheetId(),
                 "employeeId", ts.getEmployeeId(),
+                "jobId", ts.getJobId(),
                 "workDate", ts.getWorkDate(),
                 "hoursWorked", ts.getHoursWorked(),
                 "salaryPaid", ts.getSalaryPaid() != null ? ts.getSalaryPaid() : 0.0f,
@@ -297,7 +303,8 @@ public class WorkforceController {
         }
     }
 
-    // ==================== EMPLOYEE PORTAL APIs (Updated) ====================
+    // ==================== EMPLOYEE PORTAL APIs  ====================
+    //manager gets employee's workedhours
     @GetMapping("/portal/employee/{employeeId}/working-hours")
     public Map<String, Object> getEmployeeWorkingHours(
             @PathVariable Long employeeId,
@@ -325,11 +332,11 @@ public class WorkforceController {
         java.util.Calendar cal = java.util.Calendar.getInstance();
         cal.set(java.util.Calendar.DAY_OF_MONTH, 1); // First day of current month
         Date currentMonthStart = cal.getTime();
-        List<Payslip> currentMonthPayslips = payslipRepository.findByEmployee_EmployeeIdAndStartDate(employeeId, currentMonthStart);
+        List<Payslip> currentMonthPayslips = payslipRepository.findByEmployeeIdAndStartDate(employeeId, currentMonthStart);
 
         Map<String, Object> response = new HashMap<>();
-        response.put("baseSalary", employee.getSalary()); // Assuming base salary is stored in Employee entity
-        response.put("currentMonthSalary", calculateCurrentMonthSalary(currentMonthPayslips));
+        response.put("currentSalary", employee.getSalary()); // Assuming base salary is stored in Employee entity
+  //      response.put("currentMonthSalary", calculateCurrentMonthSalary(currentMonthPayslips));
         return response;
     }
 
@@ -351,7 +358,7 @@ public class WorkforceController {
             @PathVariable Long employeeId,
             @RequestParam(required = false) Integer year,
             @RequestParam(required = false) Integer month) {
-        List<Payslip> payslips = payslipRepository.findByEmployee_EmployeeId(employeeId);
+        List<Payslip> payslips = payslipRepository.findByEmployeeId(employeeId);
 
         Map<String, Object> response = new HashMap<>();
         response.put("payslips", payslips);
@@ -466,66 +473,9 @@ public class WorkforceController {
 
     // ==================== MANAGER PORTAL APIs ====================
 
-    /**
-     * Auto-generate shift plan with improved response handling
-     */
-    @PostMapping("/manager/portal/auto-schedule")
-    public ResponseEntity<Map<String, Object>> autoSchedule(@RequestBody AutoScheduleRequest request) {
-        try {
-            // Validate input
-            if (request.getStartDate() == null || request.getEndDate() == null) {
-                return ResponseEntity.badRequest()
-                    .body(Map.of("success", false, "error", "Start date and end date are required"));
-            }
-
-            if (request.getRequiredEmployees() <= 0) {
-                return ResponseEntity.badRequest()
-                    .body(Map.of("success", false, "error", "Required employees must be greater than 0"));
-            }
-
-            // Create Job object with priority from request
-            Job job = new Job();
-            job.setJobId(request.getJobId());
-            job.setPriority(request.getPriority() != null ? request.getPriority() : 3);
-            List<Job> jobsToSchedule = Arrays.asList(job);
-
-            AutoScheduleResponse autoResponse = generateShiftPlanService.autoGenerateShiftPlan(
-                    request.getStartDate(), request.getEndDate(), jobsToSchedule,
-                    request.getRequiredEmployees()
-            );
-
-            Map<String, Object> response = new HashMap<>();
-            response.put("success", true);
-            response.put("message", "Shift plan generated successfully");
-            response.put("shiftPlans", autoResponse.getShiftPlans());
-
-            if (autoResponse.getAlternatives() != null && !autoResponse.getAlternatives().isEmpty()) {
-                response.put("alternatives", autoResponse.getAlternatives());
-                response.put("note", "Some shifts could not be filled, alternatives provided");
-            }
-
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            try {
-                List<Employee> alternatives = generateShiftPlanService.recommendAlternativeEmployees(
-                        request.getStartDate(), "general", 100f);
-
-                Map<String, Object> response = new HashMap<>();
-                response.put("success", false);
-                response.put("error", "Failed to generate shift plan: " + e.getMessage());
-                response.put("alternatives", alternatives);
-                response.put("message", "No available employees found, please consider the alternatives provided");
-
-                return ResponseEntity.badRequest().body(response);
-            } catch (Exception ex) {
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(Map.of("success", false, "error", "Failed to generate shift plan and alternatives: " + ex.getMessage()));
-            }
-        }
-    }
 
     /**
-     * Update shift plan with comprehensive validation
+     * Update shift plan
      */
     @PutMapping("/manager/portal/shift-plan/{id}")
     public ResponseEntity<Map<String, Object>> updateShiftPlan(@PathVariable Long id, @RequestBody ShiftPlan updatedData) {
@@ -567,144 +517,38 @@ public class WorkforceController {
         }
     }
 
-    /**
-     * Approve shift plan with notification
-     */
-    @PutMapping("/manager/portal/shift-plan/{id}/approve")
-    public ResponseEntity<Map<String, Object>> approveShiftPlan(@PathVariable Long id) {
-        try {
-            // Validate shift plan exists
-            if (!shiftPlanRepository.existsById(id)) {
-                return ResponseEntity.badRequest()
-                    .body(Map.of("success", false, "error", "Shift plan not found with ID: " + id));
-            }
-
-            ShiftPlan approved = generateShiftPlanService.approveShiftPlan(id);
-
-            Map<String, Object> response = new HashMap<>();
-            response.put("success", true);
-            response.put("message", "Shift plan approved successfully");
-            response.put("shiftPlan", Map.of(
-                "shiftPlanId", approved.getShiftPlanId(),
-                "employeeId", approved.getEmployeeId(),
-                "shiftDate", approved.getShiftDate(),
-                "status", approved.getStatus(),
-                "version", approved.getVersion(),
-                "approvedAt", new Date()
-            ));
-            response.put("notification", "Employee has been notified automatically");
-
-            return ResponseEntity.ok(response);
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest()
-                .body(Map.of("success", false, "error", e.getMessage()));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(Map.of("success", false, "error", "Failed to approve shift plan: " + e.getMessage()));
-        }
-    }
 
     /**
-     * Reject shift plan
+     * Get all shift plans
      */
-    @PutMapping("/manager/portal/shift-plan/{id}/reject")
-    public ResponseEntity<Map<String, Object>> rejectShiftPlan(
-            @PathVariable Long id,
-            @RequestBody(required = false) Map<String, String> requestBody) {
-        try {
-            // Validate shift plan exists
-            if (!shiftPlanRepository.existsById(id)) {
-                return ResponseEntity.badRequest()
-                    .body(Map.of("success", false, "error", "Shift plan not found with ID: " + id));
-            }
-
-            ShiftPlan shiftPlan = shiftPlanRepository.findById(id).orElseThrow();
-            shiftPlan.setStatus("REJECTED");
-
-            // Add rejection reason if provided
-            String reason = requestBody != null ? requestBody.get("reason") : "No reason provided";
-
-            ShiftPlan rejected = shiftPlanRepository.save(shiftPlan);
-
-            Map<String, Object> response = new HashMap<>();
-            response.put("success", true);
-            response.put("message", "Shift plan rejected successfully");
-            response.put("shiftPlan", Map.of(
-                "shiftPlanId", rejected.getShiftPlanId(),
-                "employeeId", rejected.getEmployeeId(),
-                "shiftDate", rejected.getShiftDate(),
-                "status", rejected.getStatus(),
-                "rejectionReason", reason,
-                "rejectedAt", new Date()
-            ));
-
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(Map.of("success", false, "error", "Failed to reject shift plan: " + e.getMessage()));
-        }
-    }
-
-    /**
-     * Get all shift plans with filtering and pagination
-     */
+    // java
     @GetMapping("/manager/portal/shift-plans")
-    public ResponseEntity<Map<String, Object>> getAllShiftPlans(
-            @RequestParam(required = false) Long employeeId,
-            @RequestParam(required = false) String status,
-            @RequestParam(required = false) String startDate,
-            @RequestParam(required = false) String endDate,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
+    public ResponseEntity<Map<String, Object>> getAllShiftPlans() {
         try {
             List<ShiftPlan> allShiftPlans = shiftPlanRepository.findAll();
 
-            // Apply filters
-            if (employeeId != null) {
-                allShiftPlans = allShiftPlans.stream()
-                    .filter(sp -> sp.getEmployeeId().equals(employeeId))
-                    .collect(Collectors.toList());
-            }
-
-            if (status != null && !status.trim().isEmpty()) {
-                allShiftPlans = allShiftPlans.stream()
-                    .filter(sp -> status.equalsIgnoreCase(sp.getStatus()))
-                    .collect(Collectors.toList());
-            }
-
-            // Sort by date (newest first)
             allShiftPlans.sort(Comparator.comparing(ShiftPlan::getShiftDate).reversed());
-
-            // Simple pagination
-            int totalElements = allShiftPlans.size();
-            int fromIndex = Math.min(page * size, totalElements);
-            int toIndex = Math.min(fromIndex + size, totalElements);
-            List<ShiftPlan> pagedShiftPlans = allShiftPlans.subList(fromIndex, toIndex);
 
             Map<String, Object> response = new HashMap<>();
             response.put("success", true);
-            response.put("shiftPlans", pagedShiftPlans.stream().map(sp -> Map.of(
-                "shiftPlanId", sp.getShiftPlanId(),
-                "employeeId", sp.getEmployeeId(),
-                "shiftDate", sp.getShiftDate(),
-                "status", sp.getStatus() != null ? sp.getStatus() : "PENDING",
-                "jobId", sp.getJobId() != null ? sp.getJobId() : 0L,
-                "requiredEmployees", sp.getRequiredEmployees() != 0 ? sp.getRequiredEmployees() : 1,
-                "version", sp.getVersion() != null ? sp.getVersion() : 1
+            response.put("count", allShiftPlans.size());
+            response.put("shiftPlans", allShiftPlans.stream().map(sp -> Map.of(
+                    "shiftPlanId", sp.getShiftPlanId(),
+                    "employeeId", sp.getEmployeeId(),
+                    "shiftDate", sp.getShiftDate(),
+                    "status", sp.getStatus() != null ? sp.getStatus() : "PENDING",
+                    "jobId", sp.getJobId() != null ? sp.getJobId() : 0L,
+                    "requiredEmployees", sp.getRequiredEmployees() != 0 ? sp.getRequiredEmployees() : 1,
+                    "version", sp.getVersion() != null ? sp.getVersion() : 1
             )).collect(Collectors.toList()));
-            response.put("pagination", Map.of(
-                "currentPage", page,
-                "pageSize", size,
-                "totalElements", totalElements,
-                "totalPages", (int) Math.ceil((double) totalElements / size)
-            ));
 
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(Map.of("success", false, "error", "Failed to retrieve shift plans: " + e.getMessage()));
+                    .body(Map.of("success", false, "error", "Failed to retrieve shift plans: " + e.getMessage()));
         }
     }
+
 
     // Helper methods
     private double calculateCurrentMonthHours(List<Timesheet> timesheets) {

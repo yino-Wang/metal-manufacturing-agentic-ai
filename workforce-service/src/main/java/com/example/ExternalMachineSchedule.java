@@ -46,22 +46,21 @@ public class ExternalMachineSchedule {
      * Create mock machine schedule data that matches the expected format
      * This ensures Gemini AI has proper data to work with for day-by-day planning
      */
-    private MachineSchedule createMockMachineSchedule() {
+    public MachineSchedule createMockMachineSchedule() {
         Map<String, List<JobDto>> scheduleMap = new HashMap<>();
 
         // Machine 1 - Critical and High priority jobs (Priority 1-2)
         List<JobDto> machine1Jobs = new ArrayList<>();
         machine1Jobs.add(createJobDto(1L, "Emergency Steel Production", 1, 2, "Steel", 100));
-        machine1Jobs.add(createJobDto(3L, "High Priority Assembly", 2, 1, "Aluminum", 75));
+        machine1Jobs.add(createJobDto(2L, "High Priority Assembly", 2, 1, "Aluminum", 75));
 
         // Machine 2 - Medium priority jobs (Priority 3)
         List<JobDto> machine2Jobs = new ArrayList<>();
-        machine2Jobs.add(createJobDto(4L, "Standard Production Run", 3, 2, "Iron", 80));
+        machine2Jobs.add(createJobDto(3L, "Standard Production Run", 3, 2, "Iron", 80));
 
         // Machine 3 - Low and Minimal priority jobs (Priority 4-5)
         List<JobDto> machine3Jobs = new ArrayList<>();
-        machine3Jobs.add(createJobDto(7L, "Equipment Calibration", 4, 1, "Calibration_Tools", 10));
-        machine3Jobs.add(createJobDto(10L, "Training Setup", 5, 1, "Training_Materials", 8));
+        machine3Jobs.add(createJobDto(4L, "Training Setup", 5, 1, "Training_Materials", 8));
 
         scheduleMap.put("MACHINE-001", machine1Jobs);
         scheduleMap.put("MACHINE-002", machine2Jobs);
