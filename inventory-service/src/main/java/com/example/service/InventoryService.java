@@ -44,6 +44,14 @@ public class InventoryService {
 
             inventoryRepository.saveAll(materials);
             System.out.println("[Init] Default materials added successfully!");
+
+            // 🧾 Print the inventory list after seeding
+            System.out.println("[Inventory] Current materials in stock:");
+            inventoryRepository.findAll().forEach(m ->
+                    System.out.println(m.getName() + " (ID: " + m.getId() + ") - " + m.getQuantity() + " units")
+            );
+
+            System.out.println("--------------------------------------------------");
         } else {
             System.out.println("[Init] Materials already exist — skipping seed.");
         }
