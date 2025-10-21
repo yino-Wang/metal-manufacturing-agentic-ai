@@ -2,18 +2,13 @@ package com.example.domain.event;
 
 import com.example.domain.model.Material;
 
-/**
- * Represents an event triggered when a material's stock falls below threshold.
- * Used by InventoryService to notify other microservices (via Kafka).
- */
 public class LowStockEvent {
 
     private String materialName;
     private int quantity;
     private String message;
 
-    public LowStockEvent() {
-    }
+    public LowStockEvent() {}
 
     public LowStockEvent(Material material) {
         this.materialName = material.getName();
