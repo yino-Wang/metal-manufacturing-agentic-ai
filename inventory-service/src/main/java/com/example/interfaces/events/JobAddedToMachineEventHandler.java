@@ -3,6 +3,7 @@ package com.example.interfaces.events;
 import com.example.application.AllocateMaterialsCommandService;
 import com.example.domain.commands.AddJobMaterialsCommand;
 import com.example.events.JobAddedToMachineEvent;
+import com.example.interfaces.events.transform.JobMaterialsCommandEventAssembler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -40,14 +41,15 @@ public class JobAddedToMachineEventHandler {
             System.out.println("--------------------------------------------------");
 
             // Create command to allocate materials for the job
-            AddJobMaterialsCommand cmd = new AddJobMaterialsCommand(
-                    event.getJobAddedToMachineEventData().getJobNumber(),
-                    event.getJobAddedToMachineEventData().getMaterialNeeded(),
-                    event.getJobAddedToMachineEventData().getMaterialAmount()
-            );
+//            AddJobMaterialsCommand cmd = new AddJobMaterialsCommand(
+//                    event.getJobAddedToMachineEventData().getJobNumber(),
+//                    event.getJobAddedToMachineEventData().getMaterialNeeded(),
+//                    event.getJobAddedToMachineEventData().getMaterialAmount()
+//            );
 
             // Trigger material allocation using the service
-            allocateMaterialsCommandService.allocateMaterials(cmd);
+            allocateMaterialsCommandService.allocateMaterials(
+                    JobMaterialsCommandEventAssembler.toCommandFromEvent(event));
 
             // Log completion of material allocation
             System.out.println("[Stream] Material allocation completed for job: "

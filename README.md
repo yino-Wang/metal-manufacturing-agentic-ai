@@ -230,6 +230,39 @@ curl -X GET "http://localhost:8080/api/inventory/list"
 ]
 ```
 
+#### 5. Kafka stream processing and Interactive Query
+After starting Kafka, run `business-service`'s main class, this main class will create 4 machines and
+will continuously assign random jobs to random machines. Then run 'inventory-service''s InventoryServiceApplication class.
+
+The following REST API is provided to query the results:
+```shell
+curl -X GET -H "Content-Type:application/json" http://localhost:8080/queries/api/analytics/material-usage
+```
+### View Booking Event Stream
+After running the main classes, check the Kafka topics with the following command:
+
+(Linux/MacOS)
+```shell
+./bin/kafka-topics.sh --bootstrap-server=localhost:9092 --list
+```
+(Windows)
+```shell
+C:\kafka\bin\windows\kafka-topics.bat --bootstrap-server=localhost:9092 --list
+```
+You should see three topics. You can read data in the `materialsConsumed` topic:
+
+(Linux/MacOS)
+```shell
+./bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic materialsConsumed --from-beginning
+```
+(Windows)
+```shell
+c:\kafka\bin\windows\kafka-console-consumer.bat --bootstrap-server localhost:9092 --topic materialsConsumed --from-beginning
+```
+
+
+
+
 # Maintenance MS
 Run MaintenanceReportServiceApplication.java to start the Maintenance MS.
 Employs a persistent database (H2) to store maintenance reports for machines, should be prepopulated with 4 machines and reports.

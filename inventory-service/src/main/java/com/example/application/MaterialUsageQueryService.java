@@ -1,5 +1,6 @@
 package com.example.application;
 
+import com.example.interfaces.dto.MaterialConsumedByName;
 import org.apache.kafka.streams.KeyValue;
 import org.apache.kafka.streams.kstream.Windowed;
 import org.apache.kafka.streams.state.KeyValueIterator;
@@ -22,41 +23,50 @@ import java.util.Map;
 public class MaterialUsageQueryService {
 
     private final InteractiveQueryService interactiveQueryService;
-
-    @Value("${windowstore.name}")
-    private String windowStoreName;
-
-    @Value("${window.size.ms}")
-    private long windowSizeMs;
+    @Value("${windowstore.name:inventory-windowstore}")
+    private String WINDOWSTORE_NAME;
+    @Value("${window.size.ms:30000}")
+    private long WINDOW_SIZE_MS;
 
     public MaterialUsageQueryService(InteractiveQueryService interactiveQueryService) {
         this.interactiveQueryService = interactiveQueryService;
     }
 
+
     /**
-     * Retrieves total material usage from the most recent completed window.
+     * Retrieves total material usage from the most recent completed window
+     *
+     * @return A list of {@link MaterialConsumedByName} objects
      */
-    public List<Map.Entry<String, Long>> getRecentMaterialUsage() {
-        List<Map.Entry<String, Long>> usageStats = new ArrayList<>();
+    public List<MaterialConsumedByName> getRecentMaterialUsage() {
+        List<MaterialConsumedByName> usageStats = new ArrayList<>();
         long now = Instant.now().toEpochMilli();
 
-        long targetWindowStartTime = (now / windowSizeMs) * windowSizeMs - windowSizeMs;
+        long targetWindowStartTime = (now / WINDOW_SIZE_MS) * WINDOW_SIZE_MS - WINDOW_SIZE_MS;
         Instant timeFrom = Instant.ofEpochMilli(targetWindowStartTime);
-        Instant timeTo = timeFrom.plus(Duration.ofMillis(windowSizeMs));
+        Instant timeTo = timeFrom.plus(Duration.ofMillis(WINDOW_SIZE_MS));
 
         try (KeyValueIterator<Windowed<String>, Long> iterator = getWindowStore().fetchAll(timeFrom, timeTo)) {
             while (iterator.hasNext()) {
                 KeyValue<Windowed<String>, Long> record = iterator.next();
-                String material = record.key.key();
-                Long totalUsed = record.value;
-                usageStats.add(Map.entry(material, totalUsed));
+                MaterialConsumedByName amountPerMaterial = new MaterialConsumedByName();
+                amountPerMaterial.setName(record.key.key());
+                amountPerMaterial.setQuantity(record.value); // This value is the sum of booking amounts, not a quantity.
+                usageStats.add(amountPerMaterial);
             }
         }
 
         return usageStats;
     }
 
+    /**
+     * Helper method to retrieve the read-only window store for job material analytics.
+     * It uses the InteractiveQueryService to get a queryable handle to the state store.
+     *
+     * @return A {@link ReadOnlyWindowStore} that can be queried for aggregated material data.
+     */
     private ReadOnlyWindowStore<String, Long> getWindowStore() {
-        return interactiveQueryService.getQueryableStore(windowStoreName, QueryableStoreTypes.windowStore());
+        return this.interactiveQueryService.getQueryableStore(WINDOWSTORE_NAME,
+                QueryableStoreTypes.windowStore());
     }
 }
