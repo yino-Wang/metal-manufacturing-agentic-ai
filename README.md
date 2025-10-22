@@ -194,8 +194,17 @@ c:\kafka\bin\windows\kafka-console-consumer.bat --bootstrap-server localhost:909
 ```
 
 ### Schedule job APIs
-Commands to ...
-#### 12. 
+This functional requirement does not require the user to use any unique or different commands. 
+Every time a job is added (either in the main loop or by a user) the agentic AI scheduler is called
+and the new job's assigned machine's schedule is updated and saved. This means that whenever the above
+manager APIs are called, the generated schedule can already be viewed (as long as there is at least one job in a machine).
+
+In order to not have to find the relevant command again - the below command will show all machines and their schedules.
+Keep running the command every 5 seconds (after a new job is added) to see how the schedule dynamically changes.
+#### 12. View machines and their agentic AI generated schedules
+```shell
+curl "http://localhost:8787/machinescheduling/findAllMachines"
+```
 
 
 
