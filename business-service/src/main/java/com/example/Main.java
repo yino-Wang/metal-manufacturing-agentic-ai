@@ -20,7 +20,6 @@ public class Main {
     public static void main(String[] args) throws InterruptedException {
         ApplicationContext context = SpringApplication.run(Main.class, args); //ADD THIS BUT CHANGE *MAIN* TO WHATEVER YOUR FILE IS CALLED
 
-        //ScheduleService service = context.getBean(ScheduleService.class);
         ScheduleService scheduleService = context.getBean(ScheduleService.class);
 
         final String url = "http://localhost:8787/machinescheduling";
@@ -69,20 +68,10 @@ public class Main {
             LocalDate dueDate = day.plusDays(rand.nextInt(5,30)); //due date within the next 5 to 30 days
             System.out.println("Adding job " + jobNumber + " to " + machineId + " for " + materialAmount + " of " + materialName + " on " + dueDate);
             AddJobToMachineResource job = new AddJobToMachineResource(jobNumber, jobTimeNeededDays, priority, machineId, dueDate, materialName, materialAmount, customerName);
-            //System.out.println("Posting job: " + job.toString());
             MachineIdDto schedulingId = restTemplate.postForObject(urlAddJob, job, MachineIdDto.class);
-            //System.out.println("******" + schedulingId + job + "*****");
-            //System.out.println(job);
 
             ///create schedule
-            //Schedule schedule = service.generateSchedule(machineId);
-
-            /// post schedule back to update machine schedule
-            //ScheduleDto scheduleDto = restTemplate.postForObject(urlAddJob, schedule, ScheduleDto.class);
-
-
-            Schedule newSchedule = scheduleService.generateSchedule(machineId);
-
+            Schedule updatedSchedule = scheduleService.generateSchedule(machineId);
 
             Thread.sleep(5000);
         }
