@@ -24,13 +24,13 @@ public class InventoryService {
         return inputStream -> inputStream.foreach((key, event) -> {
 
             String materialName = event.getMaterialName();
-            int materialRequired = event.getMaterialRequired();
+            long materialRequired = event.getMaterialRequired();
 
             System.out.println("--------------------------------------------------");
             System.out.println("[Job Received] Material: " + materialName + " | Amount required: " + materialRequired);
 
             inventoryRepository.findByName(materialName).ifPresentOrElse(material -> {
-                int newQty = material.getQuantity() - materialRequired;
+                long newQty = material.getQuantity() - materialRequired;
 
                 if (newQty < 0) {
                     System.out.println("[Warning] Not enough " + materialName + " in stock! Job requires "

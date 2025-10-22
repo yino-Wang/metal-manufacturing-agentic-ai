@@ -10,11 +10,11 @@ public class Material {
     private int id;
 
     private String name;
-    private int quantity;
+    private long quantity;
 
     public Material() {}
 
-    public Material(String name, int quantity) {
+    public Material(String name, long quantity) {
         this.name = name;
         this.quantity = quantity;
     }
@@ -31,11 +31,11 @@ public class Material {
         this.name = name;
     }
 
-    public int getQuantity() {
+    public long getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(int quantity) {
+    public void setQuantity(long quantity) {
         this.quantity = quantity;
     }
 }

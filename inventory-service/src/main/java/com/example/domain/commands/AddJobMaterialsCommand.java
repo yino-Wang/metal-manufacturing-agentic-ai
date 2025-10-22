@@ -4,12 +4,11 @@ public class AddJobMaterialsCommand {
 
     private int jobNumber;
     private String materialName;
-    private int materialAmount;
+    private long materialAmount;
 
-    public AddJobMaterialsCommand() {
-    }
+    public AddJobMaterialsCommand() {}
 
-    public AddJobMaterialsCommand(int jobNumber, String materialName, int materialAmount) {
+    public AddJobMaterialsCommand(int jobNumber, String materialName, long materialAmount) {
         this.jobNumber = jobNumber;
         this.materialName = materialName;
         this.materialAmount = materialAmount;
@@ -31,11 +30,11 @@ public class AddJobMaterialsCommand {
         this.materialName = materialName;
     }
 
-    public int getMaterialAmount() {
+    public long getMaterialAmount() {
         return materialAmount;
     }
 
-    public void setMaterialAmount(int materialAmount) {
+    public void setMaterialAmount(long materialAmount) {
         this.materialAmount = materialAmount;
     }
 }

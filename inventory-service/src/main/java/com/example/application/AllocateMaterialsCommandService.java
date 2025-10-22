@@ -27,7 +27,7 @@ public class AllocateMaterialsCommandService {
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("Material not found: " + cmd.getMaterialName()));
 
-        int newQty = material.getQuantity() - cmd.getMaterialAmount();
+        long newQty = material.getQuantity() - cmd.getMaterialAmount();
         material.setQuantity(newQty);
 
         if (newQty < 100) {

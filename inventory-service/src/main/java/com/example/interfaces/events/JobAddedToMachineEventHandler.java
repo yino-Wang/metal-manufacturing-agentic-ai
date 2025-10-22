@@ -1,0 +1,52 @@
+package com.example.interfaces.events;
+
+import com.example.application.AllocateMaterialsCommandService;
+import com.example.domain.commands.AddJobMaterialsCommand;
+import com.example.events.JobAddedToMachineEvent;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+import java.util.function.Consumer;
+
+/**
+ * Handles JobAddedToMachineEvent messages published by the Business Service.
+ * When a new job event is received, it triggers material allocation in the inventory.
+ */
+@Configuration
+public class JobAddedToMachineEventHandler {
+
+    private final AllocateMaterialsCommandService allocateMaterialsCommandService;
+
+    public JobAddedToMachineEventHandler(AllocateMaterialsCommandService allocateMaterialsCommandService) {
+        this.allocateMaterialsCommandService = allocateMaterialsCommandService;
+    }
+
+    /**
+     * Spring Cloud Stream consumer that listens for JobAddedToMachineEvent events from Kafka.
+     */
+    @Bean
+    public Consumer<JobAddedToMachineEvent> process() {
+        return event -> {
+            System.out.println("--------------------------------------------------");
+            System.out.println("[Stream] Received JobAddedToMachineEvent:");
+            System.out.println("   → Machine ID: " + event.getJobAddedToMachineEventData().getMachineId());
+            System.out.println("   → Job Number: " + event.getJobAddedToMachineEventData().getJobNumber());
+            System.out.println("   → Material Needed: " + event.getJobAddedToMachineEventData().getMaterialNeeded());
+            System.out.println("   → Amount: " + event.getJobAddedToMachineEventData().getMaterialAmount());
+            System.out.println("   → Customer: " + event.getJobAddedToMachineEventData().getCustomerName());
+            System.out.println("--------------------------------------------------");
+
+            AddJobMaterialsCommand cmd = new AddJobMaterialsCommand(
+                    event.getJobAddedToMachineEventData().getJobNumber(),
+                    event.getJobAddedToMachineEventData().getMaterialNeeded(),
+                    event.getJobAddedToMachineEventData().getMaterialAmount()
+            );
+
+            allocateMaterialsCommandService.allocateMaterials(cmd);
+
+            System.out.println("[Stream] Material allocation completed for job: "
+                    + event.getJobAddedToMachineEventData().getJobNumber());
+            System.out.println("--------------------------------------------------");
+        };
+    }
+}

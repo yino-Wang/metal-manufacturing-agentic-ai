@@ -5,7 +5,7 @@ import com.example.domain.model.Material;
 public class LowStockEvent {
 
     private String materialName;
-    private int quantity;
+    private long quantity;
     private String message;
 
     public LowStockEvent() {}
@@ -20,7 +20,7 @@ public class LowStockEvent {
         return materialName;
     }
 
-    public int getQuantity() {
+    public long getQuantity() {
         return quantity;
     }
 

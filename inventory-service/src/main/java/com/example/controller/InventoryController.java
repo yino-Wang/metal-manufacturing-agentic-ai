@@ -19,9 +19,6 @@ public class InventoryController {
         this.inventoryRepository = inventoryRepository;
     }
 
-    // ---------------------------------------------------------------
-    // ✅ Add a new material
-    // ---------------------------------------------------------------
     @PostMapping("/add")
     public ResponseEntity<Map<String, Object>> addMaterial(@RequestBody Material material) {
         Material saved = inventoryRepository.save(material);
@@ -34,13 +31,10 @@ public class InventoryController {
         return ResponseEntity.ok(response);
     }
 
-    // ---------------------------------------------------------------
-    // ✅ Update material quantity (increase or decrease)
-    // ---------------------------------------------------------------
     @PutMapping("/update/{id}")
     public ResponseEntity<Map<String, Object>> updateMaterialQuantity(
             @PathVariable int id,
-            @RequestParam int quantity) {
+            @RequestParam long quantity) {
 
         return inventoryRepository.findById(id)
                 .map(material -> {
@@ -58,9 +52,6 @@ public class InventoryController {
                         .body(Map.of("status", "error", "message", "Material not found.")));
     }
 
-    // ---------------------------------------------------------------
-    // ✅ Get all materials
-    // ---------------------------------------------------------------
     @GetMapping("/list")
     public ResponseEntity<List<Material>> getAllMaterials() {
         List<Material> materials = inventoryRepository.findAll();
