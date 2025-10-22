@@ -233,6 +233,143 @@ curl -X GET "http://localhost:8080/api/inventory/list"
 ]
 ```
 
+# Maintenance MS
+Run MaintenanceReportServiceApplication.java to start the Maintenance MS.
+Employs a persistent database (H2) to store maintenance reports for machines, should be prepopulated with 4 machines and reports.
+
+### Report Management APIs
+Commands to view, add, update, and delete maintenance reports for machines.
+#### 1. Get All Machines and Corresponding Reports
+```bash
+curl -X GET "http://localhost:8080/maintenance/machines"
+```
+#### Response:
+```json
+[
+	{
+		"machineId": "machine1",
+		"reports": [
+			{
+				"reportId": "11",
+				"reportDate": "2025-10-03",
+				"machineId": "machine1",
+				"issue": "Poor Surface Finish",
+				"solution": "Replace Loose Chuck"
+			}
+		]
+	},
+	{
+		"machineId": "machine2",
+		"reports": [
+			{
+				"reportId": "21",
+				"reportDate": "2025-10-14",
+				"machineId": "machine2",
+				"issue": "Excessive Tool Wear",
+				"solution": "Reduce Cutting Speed"
+			}
+		]
+	},
+	{
+		"machineId": "machine3",
+		"reports": [
+			{
+				"reportId": "31",
+				"reportDate": "2025-09-28",
+				"machineId": "machine3",
+				"issue": "Edges burred",
+				"solution": "Use sharper tool"
+			}
+		]
+	},
+	{
+		"machineId": "machine4",
+		"reports": [
+			{
+				"reportId": "41",
+				"reportDate": "2025-09-29",
+				"machineId": "machine4",
+				"issue": "Poor surface finish",
+				"solution": "Fix coolant pressure"
+			}
+		]
+	}
+]
+```
+#### 2. Add New Maintenance Report
+```bash
+curl -X POST "http://localhost:8080/maintenance/reports" -H "Content-Type: application/json" -d "{\"reportId\":\"12\",\"reportDate\":\"2025-10-23\",\"machineId\":\"machine1\",\"issue\":\"Machine Chatter\",\"solution\":\"Reduce Tool Overhang\"}"
+```
+#### 3. View Specific Machine's Reports
+```bash
+curl -X GET "http://localhost:8080/maintenance/machines/machine1
+```
+#### Response:
+```json
+[
+    {
+        "reportId": "11",
+        "reportDate": "2025-10-03",
+        "machineId": "machine1",
+        "issue": "Poor Surface Finish",
+        "solution": "Replace Loose Chuck"
+    },
+    {
+        "reportId": "12",
+        "reportDate": "2025-10-23",
+        "machineId": "machine1",
+        "issue": "Machine Chatter",
+        "solution": "Reduce Tool Overhang"
+    }
+]
+```
+#### 4. Update Maintenance Report
+```bash
+curl -X PATCH "http://localhost:8080/maintenance/reports/12" -H "Content-Type: application/json" -d "{\"reportDate\":\"2025-10-24\"}"
+```
+#### 5. View Specific Maintenance Report
+```bash
+curl -X GET "http://localhost:8080/maintenance/reports/12"
+```
+#### Response:
+```json
+{
+    "reportId": "12",
+    "reportDate": "2025-10-24",
+    "machineId": "machine1",
+    "issue": "Machine Chatter",
+    "solution": "Reduce Tool Overhang"
+}
+```
+#### 6. Delete Maintenance Report
+```bash
+curl -X DELETE "http://localhost:8080/maintenance/reports/12"
+```
+### Agentic Support APIs
+Microservice employs an agentic support system to assist users in troubleshooting machine issues based on historical maintenance reports.
+Following are example commands to interact with the agentic support system.
+#### 1. Enquire Agent about Machine Issue
+Post request includes field 'userMessage' which includes the content of the user's enquiry about a machine issue.
+```bash
+curl -X POST "http://localhost:8080/maintenance/support" -H "Content-Type: application/json" -d "{\"sessionId\":\"session-123\",\"userMessage\":\"Machine 4 is producing poor surface finish\"}"
+```
+#### 2. Continue Support Conversation until Solution
+Provide subsequent requested information in the 'userMessage' field until a solution is suggested e.g.
+```bash
+curl -X POST "http://localhost:8080/maintenance/support" -H "Content-Type: application/json" -d "{\"sessionId\":\"session-123\",\"userMessage\":\"No loud sounds and no warning on the control panel\"}"
+```
+The provided solution will contain information of the report it is drawn from and a summary of the suggested solution.
+#### Example Response:
+```
+Machine Id: machine4 | Issue: Poor surface finish | Solution: Fix coolant pressure
+
+The provided solution suggests fixing the coolant pressure. 
+This could help because inadequate coolant pressure can lead to increased friction and heat between the cutting tool and the workpiece, resulting in a poor surface finish. 
+Ensuring proper coolant pressure will help to dissipate heat, lubricate the cutting process, and flush away chips, all of which contribute to a better surface finish.
+```
+
+
+
 # Workforce MS 
 
 ### Employee Management APIs

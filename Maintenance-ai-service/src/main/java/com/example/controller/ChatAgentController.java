@@ -14,7 +14,7 @@ public class ChatAgentController {
         this.agentService = agentService;
     }
 
-    @PostMapping("/chat-recommend")
+    @PostMapping("/maintenance/support")
     public String getRecommendation(@RequestBody ChatRequest request) {
         return this.agentService.recommend(request.getSessionId(), request.getUserMessage());
     }
