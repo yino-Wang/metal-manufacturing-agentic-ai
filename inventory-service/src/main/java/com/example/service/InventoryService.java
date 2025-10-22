@@ -1,8 +1,5 @@
 package com.example.service;
-
-import com.example.domain.model.Material;
-import com.example.infrastructure.repository.InventoryRepository;
-import com.example.interfaces.events.transform.JobAddedToMachineEvent;
+import com.example.events.JobAddedToMachineEvent;
 import org.apache.kafka.streams.kstream.KStream;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
