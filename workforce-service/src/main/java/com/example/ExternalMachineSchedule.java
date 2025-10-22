@@ -117,9 +117,8 @@ public class ExternalMachineSchedule {
                 logger.info("Raw response (first 500 chars): {}",
                         rawResponse.length() > 500 ? rawResponse.substring(0, 500) + "..." : rawResponse);
 
-                // 首先检查响应格式
                 if (rawResponse.trim().startsWith("Machine MachineId:")) {
-                    // 这是文本格式响应，使用文本解析
+
                     logger.info("🔍 Detected text format response, using text parser");
                     try {
                         MachineSchedule parsedSchedule = parseTextResponse(rawResponse);
@@ -133,7 +132,6 @@ public class ExternalMachineSchedule {
                         logger.error("❌ Text parsing failed: {}", textParseEx.getMessage(), textParseEx);
                     }
                 } else if (rawResponse.trim().startsWith("{") || rawResponse.trim().startsWith("[")) {
-                    // 这是JSON格式响应
                     logger.info("🔍 Detected JSON format response, using JSON parser");
                     try {
                         ObjectMapper mapper = new ObjectMapper();
@@ -173,7 +171,6 @@ public class ExternalMachineSchedule {
             Map<String, List<JobDto>> schedules = new HashMap<>();
             List<JobDto> jobs = new ArrayList<>();
 
-            // 提取机器 ID
             String machineId = "machine2"; // 默认值
             if (textResponse.contains("MachineId: ")) {
                 String[] parts = textResponse.split("MachineId: ");
@@ -184,7 +181,6 @@ public class ExternalMachineSchedule {
                 }
             }
 
-            // 按行分割并解析
             String[] lines = textResponse.split("\n");
             JobDto currentJob = null;
             boolean inJobSection = false;
@@ -194,13 +190,11 @@ public class ExternalMachineSchedule {
                 logger.debug("Processing line {}: {}", i, line);
 
                 if (line.startsWith("Job ") && line.contains("PRIORITY:")) {
-                    // 保存前一个作业
                     if (currentJob != null) {
                         jobs.add(currentJob);
                         logger.info("✅ Added job {} to list", currentJob.getJobId());
                     }
 
-                    // 创建新作业
                     currentJob = new JobDto();
                     inJobSection = true;
 
@@ -208,12 +202,11 @@ public class ExternalMachineSchedule {
                     try {
                         String[] parts = line.split(":");
                         if (parts.length >= 3) {
-                            // 提取作业ID
+
                             String jobIdStr = parts[0].replace("Job", "").trim();
                             long jobId = Long.parseLong(jobIdStr);
                             currentJob.setJobId(jobId);
 
-                            // 提取优先级
                             String priorityStr = parts[2].trim();
                             int priority = Integer.parseInt(priorityStr);
                             currentJob.setPriority(priority);
@@ -227,29 +220,24 @@ public class ExternalMachineSchedule {
                     }
 
                 } else if (currentJob != null && line.contains("dueDate:")) {
-                    // 解析日期行: "dueDate: 2025-10-27, startDate: 2025-10-26, endDate: 2025-11-04, requiredDuration: 9"
                     parseJobDatesImproved(line, currentJob);
 
                 } else if (currentJob != null && line.contains("customerName:")) {
-                    // 解析客户和材料行: "customerName: Deb, materialNeeded: iron, materialAmount: 48"
                     parseJobMaterialsImproved(line, currentJob);
                 }
             }
 
-            // 添加最后一个作业
             if (currentJob != null) {
                 jobs.add(currentJob);
                 logger.info("✅ Added final job {} to list", currentJob.getJobId());
             }
 
-            // 转换机器ID格式
             String formattedMachineId = convertToMachineFormat(machineId);
             schedules.put(formattedMachineId, jobs);
             schedule.setSchedules(schedules);
 
             logger.info("🎉 Successfully parsed {} jobs for machine {}", jobs.size(), formattedMachineId);
 
-            // 打印解析结果的详细信息
             for (JobDto job : jobs) {
                 logger.info("📋 Job {}: {} - {} (Priority: {}, Material: {} x{})",
                     job.getJobId(), job.getTitle(), job.getDueDate(),
@@ -268,7 +256,6 @@ public class ExternalMachineSchedule {
         try {
             logger.debug("🗓️ Parsing dates from: {}", line);
 
-            // 分割逗号分隔的部分
             String[] parts = line.split(",");
 
             for (String part : parts) {
@@ -293,7 +280,7 @@ public class ExternalMachineSchedule {
             }
         } catch (Exception e) {
             logger.warn("Failed to parse job dates from: {}, error: {}", line, e.getMessage());
-            // 设置默认值
+
             job.setDueDate(LocalDate.now().plusDays(7));
             job.setStartDate(LocalDate.now());
             job.setEndDate(LocalDate.now().plusDays(5));
@@ -305,7 +292,6 @@ public class ExternalMachineSchedule {
         try {
             logger.debug("🔧 Parsing materials from: {}", line);
 
-            // 分割逗号分隔的部分
             String[] parts = line.split(",");
 
             for (String part : parts) {
@@ -326,7 +312,7 @@ public class ExternalMachineSchedule {
             }
         } catch (Exception e) {
             logger.warn("Failed to parse job materials from: {}, error: {}", line, e.getMessage());
-            // 设置默认值
+
             job.setMaterialNeeded("steel");
             job.setMaterialAmount(10);
             if (job.getTitle() == null) {

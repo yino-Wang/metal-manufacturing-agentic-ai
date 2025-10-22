@@ -40,7 +40,7 @@ public class GenerateShiftPlanService {
         this.employeeNotificationService = employeeNotificationService;
     }
 
-    // Generate shift plan using ONLY Google Gemini AI
+    // Generate shift plan using  Google Gemini AI
     public List<ShiftPlan> generateShiftPlan(Date startDate,
                                              Date endDate,
                                              List<Job> jobsToSchedule,
@@ -147,9 +147,6 @@ public class GenerateShiftPlanService {
         return processedPlans;
     }
 
-    /**
-     * 为ShiftPlan设置标准8小时工作时间（上午8点到下午4点）
-     */
     private void setStandardWorkTime(ShiftPlan shiftPlan) {
         if (shiftPlan.getShiftDate() == null) {
             shiftPlan.setShiftDate(new Date());
@@ -158,14 +155,12 @@ public class GenerateShiftPlanService {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(shiftPlan.getShiftDate());
 
-        // 设置开始时间为上午8点
         calendar.set(Calendar.HOUR_OF_DAY, 8);
         calendar.set(Calendar.MINUTE, 0);
         calendar.set(Calendar.SECOND, 0);
         calendar.set(Calendar.MILLISECOND, 0);
         shiftPlan.setStartTime(calendar.getTime());
 
-        // 设置结束时间为下午4点（8小时后）
         calendar.add(Calendar.HOUR_OF_DAY, 8);
         shiftPlan.setEndTime(calendar.getTime());
     }

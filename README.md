@@ -372,8 +372,13 @@ Ensuring proper coolant pressure will help to dissipate heat, lubricate the cutt
 ### Employee Management APIs
 
 #### 1. Add New Employee
+Windows
 ```bash
 curl -X POST "http://localhost:8080/api/workforce/employees" -H "Content-Type: application/json" -d "{\"name\":\"Alice Wu\",\"pay\":28.0,\"skill\":\"Normal\",\"phoneNumber\":\"555-0101\",\"salary\":4500.0,\"managementArea\":\"None\",\"managerName\":\"Manager Anderson\",\"manager\":false}"
+```
+Mac/Linux
+```bash
+curl -X POST "http://localhost:8080/api/workforce/employees" \ -H "Content-Type: application/json" \ -d '{"name":"Alice Wu","pay":28.0,"skill":"Normal","phoneNumber":"555-0101","salary":4500.0,"managementArea":"None","managerName":"Manager Anderson","manager":false}'
 ```
 
 **Response:**
@@ -392,10 +397,14 @@ curl -X POST "http://localhost:8080/api/workforce/employees" -H "Content-Type: a
 ```
 
 #### 2. Get All Employees
+Windows
 ```bash
 curl -X GET "http://localhost:8080/api/workforce/employees"
 ```
-
+Mac/Linux
+```bash
+curl -H "Accept: application/json" 'http://localhost:8080/api/workforce/employees'
+```
 **Response:**
 ```json
 {
@@ -415,10 +424,14 @@ curl -X GET "http://localhost:8080/api/workforce/employees"
 ```
 
 #### 3. Delete Employee (with all timesheets)
+Windows
 ```bash
 curl -X DELETE "http://localhost:8080/api/workforce/employees/1"
 ```
-
+Mac/Linux
+```bash
+curl -X DELETE 'http://localhost:8080/api/workforce/employees/1' -H 'Accept: application/json'
+```
 **Response:**
 ```json
 {
@@ -443,10 +456,14 @@ curl -X DELETE "http://localhost:8080/api/workforce/employees/1"
 ### Timesheet Management APIs
 
 #### 4. Add New Timesheet for specific Employee
+Windows
 ```bash
 curl -X POST "http://localhost:8080/api/workforce/timesheets" -H "Content-Type: application/json" -d "{\"employeeId\":5,\"workDate\":\"2025-10-18\",\"hoursWorked\":8.0,\"clockInTime\":\"2025-10-18T09:00:00\",\"clockOutTime\":\"2025-10-18T17:00:00\",\"jobId\":5}"
 ```
-
+Mac/Linux
+```bash
+curl -X POST 'http://localhost:8080/api/workforce/timesheets' -H 'Content-Type: application/json' -d '{"employeeId":5,"workDate":"2025-10-18","hoursWorked":8.0,"clockInTime":"2025-10-18T09:00:00","clockOutTime":"2025-10-18T17:00:00","jobId":5}'
+```
 **Response:**
 ```json
 {
@@ -467,6 +484,7 @@ curl -X POST "http://localhost:8080/api/workforce/timesheets" -H "Content-Type: 
 ```
 
 #### 5. Get All Timesheets 
+Windows
 ```bash
 # Get all timesheets
 curl -X GET "http://localhost:8080/api/workforce/timesheets"
@@ -479,6 +497,20 @@ curl -X GET "http://localhost:8080/api/workforce/timesheets?status=APPROVED"
 
 # Get timesheets for specific employee with specific status
 curl -X GET "http://localhost:8080/api/workforce/timesheets?employeeId=1&status=APPROVED"
+```
+Mac/Linux
+```bash
+# Get all timesheets
+curl -H 'Accept: application/json' 'http://localhost:8080/api/workforce/timesheets'
+
+# Get timesheets for specific employee
+curl -H 'Accept: application/json' 'http://localhost:8080/api/workforce/timesheets?employeeId=1'
+
+# Get timesheets by status
+curl -H 'Accept: application/json' 'http://localhost:8080/api/workforce/timesheets?status=APPROVED'
+
+# Get timesheets for specific employee with specific status
+curl -H 'Accept: application/json' 'http://localhost:8080/api/workforce/timesheets?employeeId=1&status=APPROVED'
 ```
 
 **Response:**
@@ -502,10 +534,14 @@ curl -X GET "http://localhost:8080/api/workforce/timesheets?employeeId=1&status=
 ```
 
 #### 6. Approve Timesheet
+Windows
 ```bash
 curl -X PUT "http://localhost:8080/api/workforce/portal/timesheet/1/approve"
 ```
-
+Mac/Linux
+```bash
+curl -X PUT 'http://localhost:8080/api/workforce/portal/timesheet/1/approve' -H 'Accept: application/json'
+```
 **Response:**
 ```json
 {
@@ -523,10 +559,14 @@ curl -X PUT "http://localhost:8080/api/workforce/portal/timesheet/1/approve"
 ```
 
 #### 7. Reject Timesheet
+Windows
 ```bash
 curl -X PUT "http://localhost:8080/api/workforce/portal/timesheet/1/reject"
 ```
-
+Mac/Linux
+```bash
+curl -X PUT 'http://localhost:8080/api/workforce/portal/timesheet/1/reject' -H 'Accept: application/json'
+```
 **Response:**
 ```json
 {
@@ -546,6 +586,7 @@ curl -X PUT "http://localhost:8080/api/workforce/portal/timesheet/1/reject"
 ### Employee Portal APIs
 
 #### 8. Get Employee Working Hours
+Windows
 ```bash
 # Get total working hours for employee
 curl -X GET "http://localhost:8080/api/workforce/portal/employee/1/working-hours"
@@ -553,13 +594,25 @@ curl -X GET "http://localhost:8080/api/workforce/portal/employee/1/working-hours
 # Get working hours with date range
 curl -X GET "http://localhost:8080/api/workforce/portal/employee/1/working-hours?startDate=2025-10-01&endDate=2025-10-31"
 ```
+Mac/Linux
+```bash
+curl -H 'Accept: application/json' 'http://localhost:8080/api/workforce/portal/employee/1/working-hours'
+
+# Get working hours with date range
+curl -H 'Accept: application/json' 'http://localhost:8080/api/workforce/portal/employee/1/working-hours?startDate=2025-10-01&endDate=2025-10-31'
+```
 
 #### 9. Get Current Salary 
+Windows
 ```bash
 curl -X GET "http://localhost:8080/api/workforce/portal/employee/1/current-salary"
 ```
-
+Mac/Linux
+```bash
+curl -H 'Accept: application/json' 'http://localhost:8080/api/workforce/portal/employee/1/current-salary'
+```
 #### 11. Get Payslip Summary 
+Windows
 ```bash
 # Get all payslips
 curl -X GET "http://localhost:8080/api/workforce/portal/employee/1/payslip-summary"
@@ -567,12 +620,24 @@ curl -X GET "http://localhost:8080/api/workforce/portal/employee/1/payslip-summa
 # Get payslips for specific year and month
 curl -X GET "http://localhost:8080/api/workforce/portal/employee/1/payslip-summary?year=2025&month=10"
 ```
+Mac/Linux
+```bash
+curl -H 'Accept: application/json' 'http://localhost:8080/api/workforce/portal/employee/1/payslip-summary'
 
+curl -H 'Accept: application/json' 'http://localhost:8080/api/workforce/portal/employee/1/payslip-summary?year=2025&month=10'
+```
 ## Manager Portal APIs
 
 ### Update Clock-In/Out for specific employee
+Windows
 ```bash
 curl -X POST "http://localhost:8080/api/workforce/portal/employee/1/clock-in-out" -H "Content-Type: application/json" -d "{\"workDate\":\"2025-10-18\",\"hoursWorked\":8.0,\"clockInTime\":\"2025-10-18T09:00:00\",\"clockOutTime\":\"2025-10-18T17:00:00\",\"jobId\":1}"
+```
+Mac/Linux
+```bash
+curl -X POST 'http://localhost:8080/api/workforce/portal/employee/1/clock-in-out' \ 
+  -H 'Content-Type: application/json' \ 
+  -d '{"workDate":"2025-10-18","hoursWorked":8.0,"clockInTime":"2025-10-18T09:00:00","clockOutTime":"2025-10-18T17:00:00","jobId":1}'
 ```
 **Response:**
 ```json
@@ -593,18 +658,34 @@ curl -X POST "http://localhost:8080/api/workforce/portal/employee/1/clock-in-out
 ```
 
 ### 12. Auto-generate Shift Plan using data from Business MS (agentic) and notify employees
+Windows
 ```bash
 curl -X POST "http://localhost:8080/api/shift-planner/create-from-api?machineId=machine2"
 ```
-### 12(1) . Fetch machine schedule from Business MS
+Mac/Linux
+```bash
+curl -X POST 'http://localhost:8080/api/shift-planner/create-from-api?machineId=machine2' \ 
+  -H 'Accept: application/json'
+```
+#### 12(1) . Fetch machine schedule from Business MS
+Windows
 ```bash
 curl "http://localhost:8080/api/shift-planner/api-schedule"
-
+```
+Mac/Linux
+```bash
+curl -H 'Accept: application/json' 'http://localhost:8080/api/shift-planner/api-schedule'
 ```
 ### 13. Update Shift Plan
+Windows
 ```bash
-# bash
 curl -X PUT "http://localhost:8080/api/workforce/manager/portal/shift-plan/1" -H "Content-Type: application/json" -d "{\"employeeId\":1,\"shiftDate\":\"2025-10-22\",\"startTime\":\"2025-10-22\",\"endTime\":\"2025-10-23\",\"status\":\"BUSY\",\"version\":2,\"jobId\":10,\"requiredEmployees\":1}"
+```
+Mac/Linux
+```bash
+curl -X PUT 'http://localhost:8080/api/workforce/manager/portal/shift-plan/1' \
+  -H 'Content-Type: application/json' \
+  -d '{"employeeId":1,"shiftDate":"2025-10-22","startTime":"2025-10-22","endTime":"2025-10-23","status":"BUSY","version":2,"jobId":10,"requiredEmployees":1}'
 ```
 **responseL**
 ```json
@@ -625,8 +706,13 @@ curl -X PUT "http://localhost:8080/api/workforce/manager/portal/shift-plan/1" -H
 ```
 
 ### 14. Get all Shift Plans
+Windows
 ```bash
 curl -X GET "http://localhost:8080/api/workforce/manager/portal/shift-plans"
+```
+Mac/Linux
+```bash
+curl -H 'Accept: application/json' 'http://localhost:8080/api/workforce/manager/portal/shift-plans'
 ```
 
 
