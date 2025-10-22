@@ -26,7 +26,7 @@ public class StreamProcessor {
                     })
                     .groupByKey()
                     .windowedBy(TimeWindows.ofSizeWithNoGrace(Duration.ofSeconds(30)))
-                    .reduce(Long::sum)
+                    .reduce(Integer::sum)
                     .toStream()
                     .foreach((windowedKey, totalUsed) -> {
                         System.out.println("[Stream Window] Material: " + windowedKey.key()
