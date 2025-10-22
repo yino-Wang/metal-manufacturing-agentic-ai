@@ -4,7 +4,7 @@ import com.example.domain.model.aggreates.Machine;
 import com.example.domain.model.aggreates.MachineId;
 import com.example.domain.model.commands.ScheduleMachineCommand;
 import com.example.domain.model.commands.AddJobToMachineCommand;
-import com.example.domain.model.valueobjects.Job;
+import com.example.domain.model.entities.Job;
 import com.example.infrastructure.repositories.MachineRepository;
 import org.springframework.stereotype.Service;
 

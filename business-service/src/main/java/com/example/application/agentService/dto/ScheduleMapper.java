@@ -1,13 +1,12 @@
 package com.example.application.agentService.dto;
 
-import com.example.domain.model.valueobjects.Job;
+import com.example.domain.model.entities.Job;
 import com.example.domain.model.valueobjects.Schedule;
 import com.example.infrastructure.repositories.MachineRepository;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 public final class ScheduleMapper {

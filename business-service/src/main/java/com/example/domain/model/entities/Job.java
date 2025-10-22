@@ -1,4 +1,4 @@
-package com.example.domain.model.valueobjects;
+package com.example.domain.model.entities;
 
 import jakarta.persistence.*;
 

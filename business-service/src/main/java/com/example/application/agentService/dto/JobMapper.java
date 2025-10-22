@@ -1,6 +1,6 @@
 package com.example.application.agentService.dto;
 
-import com.example.domain.model.valueobjects.Job;
+import com.example.domain.model.entities.Job;
 import com.example.domain.model.valueobjects.JobList;
 
 import java.time.LocalDate;

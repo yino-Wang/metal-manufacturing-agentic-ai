@@ -1,6 +1,6 @@
 package com.example.interfaces.rest.dto;
 
-import com.example.domain.model.valueobjects.Job;
+import com.example.domain.model.entities.Job;
 
 import java.util.ArrayList;
 import java.util.List;

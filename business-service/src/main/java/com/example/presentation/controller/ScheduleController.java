@@ -5,7 +5,7 @@ import com.example.application.agentService.ScheduleService;
 import com.example.application.queryservices.MachineSchedulingQueryService;
 import com.example.domain.model.aggreates.Machine;
 import com.example.domain.model.aggreates.MachineId;
-import com.example.domain.model.valueobjects.Job;
+import com.example.domain.model.entities.Job;
 import com.example.domain.model.valueobjects.Schedule;
 import com.example.infrastructure.repositories.MachineRepository;
 import org.springframework.beans.factory.annotation.Autowired;

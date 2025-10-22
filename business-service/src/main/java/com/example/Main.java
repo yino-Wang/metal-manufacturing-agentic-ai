@@ -2,25 +2,17 @@ package com.example;
 
 //import com.example.infrastructure.agentic.ModelLogger;
 import com.example.application.agentService.ScheduleService;
-import com.example.application.service.SchedulingService;
-import com.example.domain.model.aggreates.Machine;
-import com.example.domain.model.aggreates.MachineId;
 import com.example.domain.model.valueobjects.Schedule;
-import com.example.infrastructure.repositories.MachineRepository;
 import com.example.interfaces.rest.dto.AddJobToMachineResource;
 import com.example.interfaces.rest.dto.MachineIdDto;
-import com.example.interfaces.rest.dto.ScheduleDto;
 import com.example.interfaces.rest.dto.ScheduleMachineResource;
 //import dev.langchain4j.model.chat.listener.ChatModelListener;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;  //ADD THIS
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.Bean;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDate;
-import java.util.Date;
-import java.util.List;
 import java.util.Random;
 
 @SpringBootApplication //ADD THIS
@@ -28,7 +20,8 @@ public class Main {
     public static void main(String[] args) throws InterruptedException {
         ApplicationContext context = SpringApplication.run(Main.class, args); //ADD THIS BUT CHANGE *MAIN* TO WHATEVER YOUR FILE IS CALLED
 
-        ScheduleService service = context.getBean(ScheduleService.class);
+        //ScheduleService service = context.getBean(ScheduleService.class);
+        ScheduleService scheduleService = context.getBean(ScheduleService.class);
 
         final String url = "http://localhost:8787/machinescheduling";
         //schedule some machines
@@ -82,10 +75,14 @@ public class Main {
             //System.out.println(job);
 
             ///create schedule
-            Schedule schedule = service.generateSchedule(machineId);
+            //Schedule schedule = service.generateSchedule(machineId);
 
             /// post schedule back to update machine schedule
             //ScheduleDto scheduleDto = restTemplate.postForObject(urlAddJob, schedule, ScheduleDto.class);
+
+
+            Schedule newSchedule = scheduleService.generateSchedule(machineId);
+
 
             Thread.sleep(5000);
         }

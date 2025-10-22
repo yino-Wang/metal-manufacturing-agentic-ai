@@ -4,7 +4,7 @@ import com.example.application.commandservices.MachineSchedulingCommandService;
 import com.example.application.queryservices.MachineSchedulingQueryService;
 import com.example.domain.model.aggreates.Machine;
 import com.example.domain.model.aggreates.MachineId;
-import com.example.domain.model.valueobjects.Job;
+import com.example.domain.model.entities.Job;
 import com.example.interfaces.rest.dto.AddJobToMachineResource;
 import com.example.interfaces.rest.transform.AddJobToMachineCommandDTOAssembler;
 import org.springframework.stereotype.Controller;

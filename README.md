@@ -81,12 +81,12 @@ set machineId=<<machineId>>
 ```shell
 curl "http://localhost:8787/addJobToMachine/findJobsByMachineId?machineId=%machineId%"
 ```
-Find the first scheduled job of a specific machine via machineId
+Find a job by job number:
 ```shell
-set machineId=<<machineId>>
+set jobNumber=<<jobNumber>>
 ```
 ```shell
-curl "http://localhost:8787/addJobToMachine/findCurrentJobByMachineId?machineId=%machineId%"
+curl "http://localhost:8787/addJobToMachine/findJobByJobNumber?jobNumber=%jobNumber%"
 ```
 
 
@@ -97,9 +97,6 @@ curl "http://localhost:8787/addJobToMachine/findCurrentJobByMachineId?machineId=
 Find a job by job number:
 ```shell
 set jobNumber=<<jobNumber>>
-```
-```shell
-curl "http://localhost:8787/addJobToMachine/findJobByJobNumber?jobNumber=%jobNumber%"
 ```
 ```shell
 curl "http://localhost:8787/addJobToMachine/findJobInfoByJobNumber?jobNumber=%jobNumber%"

@@ -4,6 +4,7 @@ import com.example.application.commandservices.MachineSchedulingCommandService;
 import com.example.application.queryservices.MachineSchedulingQueryService;
 import com.example.domain.model.aggreates.Machine;
 import com.example.domain.model.aggreates.MachineId;
+import com.example.domain.model.valueobjects.Schedule;
 import com.example.interfaces.rest.dto.ScheduleMachineResource;
 import com.example.interfaces.rest.transform.ScheduleMachineCommandDTOAssembler;
 import org.springframework.stereotype.Controller;
@@ -67,7 +68,7 @@ public class MachineScheduledController {
     }
 
     /**
-     * GET method to retrieve a list of SchedulingIds
+     * GET method to retrieve a list of machines
      * @param
      * @return List<MachineId>
      */

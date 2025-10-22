@@ -2,6 +2,7 @@ package com.example.domain.model.aggreates;
 
 import com.example.domain.model.commands.ScheduleMachineCommand;
 //import com.example.domain.model.entities.Employee;
+import com.example.domain.model.entities.Job;
 import com.example.domain.model.valueobjects.*;
 import com.example.events.JobAddedToMachineEvent;
 import com.example.events.JobAddedToMachineEventData;
@@ -42,8 +43,6 @@ public class Machine extends AbstractAggregateRoot<Machine> {
     private JobList jobList; //List of Jobs assigned to the Machine
     @Embedded
     private Schedule schedule; //Schedule of the Machine
-    @Embedded
-    private CurrentJob currentJob; //Current Job being handled by the Machine
 
     /**
      * Default Constructor
@@ -137,7 +136,6 @@ public class Machine extends AbstractAggregateRoot<Machine> {
     @Override
     public String toString() {
         return "Machine " + machineId + ": " +
-                "\ncurrentJob=" + currentJob +
                 "\njobList=" + jobList +
                 "\nschedule=" + schedule;
     }
