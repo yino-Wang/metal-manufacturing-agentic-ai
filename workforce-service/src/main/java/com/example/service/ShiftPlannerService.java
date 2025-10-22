@@ -16,6 +16,7 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.*;
 import java.util.stream.Collectors;
+// Service for planning shifts based on machine schedules
 
 @Service
 public class ShiftPlannerService {
