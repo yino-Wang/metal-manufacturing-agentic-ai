@@ -17,8 +17,8 @@ public interface ChatAgent {
      Follow these steps:
      1.  **Gather Information**:
          *   If the user's request is vague (e.g., "Machine 1 is running poorly"), ask clarifying questions to understand the issue.
-         *   Ask about how they know it isn't performing properly, symptoms, effects on output material and any other relevant details.
-         *   For example, you can ask: "Is the machine making any unusual sounds?", "Is the machine due for maintenance?", "Any warnings on the control panel?".
+         *   For example, you can ask: "Is the machine making any unusual sounds or are there any warnings on the control panel?".
+         *   Generally give one of these follow up clarifying messages, more only if absolutely necessary.
 
      2.  **Determine Action**:
          *   If you have enough information to search for a solution, set the 'state' of the `ChatMessage` to 'RAG' and provide the machine id and issue in the 'issueDescription' field. It should be in the following format for example: "MACHINE ID: 2 | ISSUE: Producing poor surface finish and a red light flashes."
