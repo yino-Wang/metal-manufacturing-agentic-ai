@@ -13,19 +13,8 @@ public class MachineEventPublisherService {
         this.streamBridge = streamBridge;
     }
 
-    //maybe don't need if this only creates a machine without a job
-//    @TransactionalEventListener
-//    public void handleMachineScheduledEvent(MachineScheduledEvent machineScheduledEvent) {
-//        streamBridge.send("machineScheduledChannel", machineScheduledEvent);
-//    }
-
     @TransactionalEventListener
     public void handleJobAddedToMachineEvent(JobAddedToMachineEvent jobAddedToMachineEvent) {
         streamBridge.send("jobAddedToMachineChannel", jobAddedToMachineEvent);
     }
-
-//    @TransactionalEventListener
-//    public void handleMachineScheduleUpdatedEvent(MachineScheduleUpdatedEvent machineScheduleUpdatedEvent) {
-//        streamBridge.send("machineScheduleUpdatedChannel", machineScheduleUpdatedEvent);
-//    }
 }
