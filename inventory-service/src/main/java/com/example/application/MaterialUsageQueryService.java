@@ -1,14 +1,20 @@
 package com.example.application;
 
 import com.example.interfaces.dto.MaterialConsumedByName;
+import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.KeyValue;
 import org.apache.kafka.streams.kstream.Windowed;
 import org.apache.kafka.streams.state.KeyValueIterator;
 import org.apache.kafka.streams.state.QueryableStoreTypes;
 import org.apache.kafka.streams.state.ReadOnlyWindowStore;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.stream.binder.kafka.streams.InteractiveQueryService;
+import org.springframework.cloud.stream.binder.kafka.streams.KafkaStreamsRegistry;
+import org.springframework.kafka.config.StreamsBuilderFactoryBean;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -22,14 +28,36 @@ import java.util.Map;
 @Service
 public class MaterialUsageQueryService {
 
+    private final StreamsBuilderFactoryBean streamsBuilderFactoryBean;
+    private RestTemplate restTemplate;
+
     private final InteractiveQueryService interactiveQueryService;
     @Value("${windowstore.name:inventory-windowstore}")
     private String WINDOWSTORE_NAME;
     @Value("${window.size.ms:30000}")
     private long WINDOW_SIZE_MS;
 
-    public MaterialUsageQueryService(InteractiveQueryService interactiveQueryService) {
+
+//    public MaterialUsageQueryService(StreamsBuilderFactoryBean streamsBuilderFactoryBean, InteractiveQueryService interactiveQueryService) {
+//        this.streamsBuilderFactoryBean = streamsBuilderFactoryBean;
+//        this.interactiveQueryService = interactiveQueryService;
+//    }
+
+    // Use a constructor for injection.
+    @Autowired
+    public MaterialUsageQueryService(
+            InteractiveQueryService interactiveQueryService,
+            RestTemplate restTemplate,
+            @Qualifier("materialUsageAggregator-builder") StreamsBuilderFactoryBean streamsBuilderFactoryBean) {
         this.interactiveQueryService = interactiveQueryService;
+        this.restTemplate = restTemplate;
+        this.streamsBuilderFactoryBean = streamsBuilderFactoryBean;
+    }
+
+    // This method checks the stream's state.
+    public boolean areStreamsReady() {
+        KafkaStreams kafkaStreams = streamsBuilderFactoryBean.getKafkaStreams();
+        return kafkaStreams != null && kafkaStreams.state().isRunningOrRebalancing();
     }
 
 

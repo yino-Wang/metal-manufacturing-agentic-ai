@@ -2,6 +2,8 @@ package com.example.controller;
 
 import com.example.application.MaterialUsageQueryService;
 import com.example.interfaces.dto.MaterialConsumedByName;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,8 +25,17 @@ public class AnalyticsController {
         this.materialUsageQueryService = materialUsageQueryService;
     }
 
-    @GetMapping("/api/analytics/material-usage")
-    public List<MaterialConsumedByName> getRecentUsage() {
-        return materialUsageQueryService.getRecentMaterialUsage();
+//    @GetMapping("/api/analytics/material-usage")
+//    public List<MaterialConsumedByName> getRecentUsage() {
+//        return materialUsageQueryService.getRecentMaterialUsage();
+//    }
+
+    @GetMapping("/recent")
+    public ResponseEntity<List<MaterialConsumedByName>> getRecentUsage() {
+        if (!materialUsageQueryService.areStreamsReady()) {
+            // Return a "Service Unavailable" status until the streams are running.
+            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).build();
+        }
+        return ResponseEntity.ok(materialUsageQueryService.getRecentMaterialUsage());
     }
 }
