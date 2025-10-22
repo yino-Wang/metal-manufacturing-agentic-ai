@@ -16,6 +16,10 @@ import java.util.List;
 
 import org.springframework.cloud.stream.binder.kafka.streams.InteractiveQueryService;
 
+
+//IMPORTANT: code taken from CSCI318 lab example Cargo Tracker (Stream Processing) InteractiveQuery class
+//variable names have been changed and a composite serdeKey has been used instead
+//" start quote
 /**
  * A Spring Service that provides an interface for querying the underlying Kafka Streams state stores.
  * This class uses the {@link InteractiveQueryService} to expose the aggregated stream data,
@@ -78,3 +82,4 @@ public class InteractiveQuery {
     }
 
 }
+//" end quote

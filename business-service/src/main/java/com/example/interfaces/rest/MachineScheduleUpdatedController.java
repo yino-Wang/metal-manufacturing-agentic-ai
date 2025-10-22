@@ -1,4 +1,4 @@
-package com.example.interfaces.rest;
-
-public class MachineScheduleUpdatedController {
-}
+//package com.example.interfaces.rest;
+//
+//public class MachineScheduleUpdatedController {
+//}

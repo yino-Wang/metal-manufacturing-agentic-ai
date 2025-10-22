@@ -18,7 +18,6 @@ public class AddJobToMachineCommandDTOAssembler {
             currentDate = addJobToMachineResource.getDueDate();
         }
         return new AddJobToMachineCommand(
-                //addJobToMachineResource.getSchedulingId(),
                 addJobToMachineResource.getMachineId(),
                 addJobToMachineResource.getJobTimeNeededDays(),
                 addJobToMachineResource.getPriority(),

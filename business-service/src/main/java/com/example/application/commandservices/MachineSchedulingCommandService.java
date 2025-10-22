@@ -22,17 +22,13 @@ public class MachineSchedulingCommandService {
     }
 
     /**
-     * Service Command method to schedule a new machine
+     * Service Command method to create a new machine
      *
-     * @return scheudlingId of the machine
+     * @return machineId of the machine
      */
 
     public MachineId scheduleMachine(ScheduleMachineCommand scheduleMachineCommand) {
 
-        //String random = UUID.randomUUID().toString().toUpperCase();
-        //String scheduleIdStr = random.substring(0, random.indexOf("-"));
-        //System.out.println("Random is :" + scheduleIdStr);
-        //scheduleMachineCommand.setSchedulingId(scheduleIdStr);
         Machine machine = new Machine(scheduleMachineCommand);
         machineRepository.save(machine);
         return new MachineId(scheduleMachineCommand.getMachineName());
@@ -44,8 +40,6 @@ public class MachineSchedulingCommandService {
      */
 
     public Job addJobToMachine(AddJobToMachineCommand addJobToMachineCommand) {
-        //System.out.println("Adding job: " + addJobToMachineCommand);
-        //System.out.println("****Adding Job to Machine ****" + addJobToMachineCommand.getJobNumber());
         Machine machine = machineRepository.findByMachineId(
                 new MachineId(addJobToMachineCommand.getMachineId()));
 
