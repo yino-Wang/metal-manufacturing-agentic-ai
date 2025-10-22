@@ -90,7 +90,4 @@ public class Main {
             Thread.sleep(5000);
         }
     }
-
-//    @Bean
-//    ChatModelListener chatModelLogger() {return new ModelLogger();}
 }
