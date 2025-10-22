@@ -43,10 +43,15 @@ public class JobAddedToMachineController {
     public Job addJobToMachine(@RequestBody AddJobToMachineResource addJobToMachineResource) {
         //System.out.println("****Job Added to Machine ****" + addJobToMachineResource.getMachineId());
         String machineId = addJobToMachineResource.getMachineId();
+        Integer jobNumber = addJobToMachineResource.getJobNumber();
         Job job = machineSchedulingCommandService.addJobToMachine(
                 AddJobToMachineCommandDTOAssembler.toCommandFromDTO(addJobToMachineResource));
         Schedule updatedSchedule = scheduleService.generateSchedule(machineId);
-        return job;
+        List<Job> scheduledJobs = updatedSchedule.getJobs();
+        Optional<Job> scheduledJobOpt = scheduledJobs.stream()
+                .filter(j -> j.getJobNumber() != null && j.getJobNumber().equals(jobNumber))
+                .findFirst();
+        return scheduledJobOpt.orElse(job);
     }
 
     /**
