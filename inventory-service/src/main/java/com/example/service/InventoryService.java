@@ -23,7 +23,7 @@ public class InventoryService {
      * When a job arrives, it deducts material usage and prints the updated inventory.
      */
     @Bean
-    public Consumer<KStream<String, JobAddedToMachineEvent>> process() {
+    public Consumer<KStream<String, JobAddedToMachineEvent>> handleJobStream() {
         return inputStream -> inputStream.foreach((key, event) -> {
 
             String materialName = event.getMaterialName();
