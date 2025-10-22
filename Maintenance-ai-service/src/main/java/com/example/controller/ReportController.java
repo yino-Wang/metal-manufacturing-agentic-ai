@@ -19,52 +19,52 @@ public class ReportController {
         this.reportService = reportService;
     }
 
-    @GetMapping("/admin/reports/{reportId}")
+    @GetMapping("/maintenance/reports/{reportId}")
     public ReportDto getReportById(@PathVariable String reportId) {
         return reportService.getReport(reportId);
     }
 
-    @GetMapping("/admin/machines/{machineId}")
+    @GetMapping("/maintenance/machines/{machineId}")
     public MachineDto getMachineById(@PathVariable String machineId) {
         return reportService.getMachine(machineId);
     }
 
-    @GetMapping("/admin/reports")
+    @GetMapping("/maintenance/reports")
     public List<ReportDto> getAllReports() {
         return reportService.findAllReports();
     }
 
-    @GetMapping("/admin/machines")
+    @GetMapping("/maintenance/machines")
     public List<MachineDto> getAllMachines() {
         return reportService.findAllMachines();
     }
 
-    @PostMapping("/admin/reports")
+    @PostMapping("/maintenance/reports")
     public void addReport(@RequestBody ReportDto reportDto) {
         reportService.addReport(reportDto);
     }
 
-    @PostMapping("/admin/machines")
+    @PostMapping("/maintenance/machines")
     public void addMachine(@RequestBody MachineDto machineDto) {
         reportService.addMachine(machineDto);
     }
 
-    @PatchMapping("/admin/reports/{reportId}")
+    @PatchMapping("/maintenance/reports/{reportId}")
     public void patchReport(@PathVariable String reportId, @RequestBody Map<String, Object> updates) {
         reportService.patchReport(reportId, updates);
     }
 
-    @PatchMapping("/admin/machines/{machineId}")
+    @PatchMapping("/maintenance/machines/{machineId}")
     public void patchMachine(@PathVariable String machineId, @RequestBody Map<String, Object> updates) {
         reportService.patchMachine(machineId, updates);
     }
 
-    @DeleteMapping("/admin/reports/{reportId}")
+    @DeleteMapping("/maintenance/reports/{reportId}")
     public void removeReport(@PathVariable String reportId) {
         reportService.removeReport(reportId);
     }
 
-    @DeleteMapping("/admin/machines/{machineId}")
+    @DeleteMapping("/maintenance/machines/{machineId}")
     public void removeMachine(@PathVariable String machineId) {
         reportService.removeMachine(machineId);
     }

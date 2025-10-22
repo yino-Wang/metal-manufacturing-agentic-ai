@@ -177,10 +177,12 @@ public class ReportService {
     private Machine mapDtoToMachine(MachineDto dto) {
         Machine machine = new Machine();
         machine.setMachineId(dto.machineId());
-        List<Report> reports = dto.reports().stream()
-                .map(this::mapDtoToReport)
-                .toList();
-        machine.setMaintenanceReports(reports);
+        if (dto.reports() != null) {
+            List<Report> reports = dto.reports().stream()
+                    .map(this::mapDtoToReport)
+                    .toList();
+            machine.setMaintenanceReports(reports);
+        }
         return machine;
     }
 
