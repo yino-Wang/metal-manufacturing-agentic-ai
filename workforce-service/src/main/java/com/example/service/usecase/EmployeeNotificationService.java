@@ -52,8 +52,8 @@ public class EmployeeNotificationService {
                 java.lang.reflect.Method getter = schedule.getClass().getMethod("getMachineId");
                 Object val = getter.invoke(schedule);
                 if (val != null) {
-                    // Convert Long to meaningful string representation
-                    return convertLongToMachineIdString(((Long) val));
+                    // Normalize value without assuming it's a Long to avoid ClassCastException
+                    return normalizeMachineIdObject(val);
                 }
             } catch (NoSuchMethodException | IllegalAccessException | java.lang.reflect.InvocationTargetException ignored) {
 
@@ -65,8 +65,8 @@ public class EmployeeNotificationService {
                 field.setAccessible(true);
                 Object val = field.get(schedule);
                 if (val != null) {
-                    // Convert Long to meaningful string representation
-                    return convertLongToMachineIdString(((Long) val));
+                    // Normalize value without assuming it's a Long to avoid ClassCastException
+                    return normalizeMachineIdObject(val);
                 }
             } catch (NoSuchFieldException | IllegalAccessException ignored) {
 
@@ -75,10 +75,23 @@ public class EmployeeNotificationService {
 
         //
         if (originalEvent != null && originalEvent.getMachineId() != null) {
-            return String.valueOf(originalEvent.getMachineId());
+            return normalizeMachineIdObject(originalEvent.getMachineId());
         }
 
         return "Unknown";
+    }
+
+    // Helper to convert different machineId representations to a String
+    private String normalizeMachineIdObject(Object val) {
+        if (val instanceof String) {
+            return (String) val;
+        }
+        if (val instanceof Number) {
+            // keep existing formatting behavior for numeric ids
+            return convertLongToMachineIdString(((Number) val).longValue());
+        }
+        // fallback to generic string conversion
+        return String.valueOf(val);
     }
 
     /**
