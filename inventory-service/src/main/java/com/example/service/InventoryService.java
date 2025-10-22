@@ -46,7 +46,7 @@ public class InventoryService {
 
                 System.out.println("[Inventory] Updated stock for " + materialName + ": " + newQty + " units remaining.");
 
-                // ✅ Only restock when below 100
+                // Restock when below 100
                 if (newQty < 100) {
                     System.out.println("[Auto-Restock] " + materialName + " below threshold. Adding +100 units.");
                     material.setQuantity(newQty + 100);

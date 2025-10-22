@@ -39,8 +39,8 @@ public class InventoryController {
     // ---------------------------------------------------------------
     @PutMapping("/update/{id}")
     public ResponseEntity<Map<String, Object>> updateMaterialQuantity(
-            @PathVariable Long id,
-            @RequestParam long quantity) {
+            @PathVariable int id,
+            @RequestParam int quantity) {
 
         return inventoryRepository.findById(id)
                 .map(material -> {

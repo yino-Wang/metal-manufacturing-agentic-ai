@@ -28,7 +28,7 @@ public class JobAddedToMachineEventHandler {
      * message is received from Kafka.
      */
     @Bean
-    public Consumer<JobAddedToMachineEvent> process() {
+    public Consumer<JobAddedToMachineEvent> handleJobEvents() {
         return event -> {
             System.out.println("[Stream] Received jobAddedToMachines event:");
             System.out.println("   → Job number: " + event.getJobAddedToMachineEventData().getJobNumber());

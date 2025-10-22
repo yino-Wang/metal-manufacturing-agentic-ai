@@ -31,7 +31,7 @@ public class Material {
         this.name = name;
     }
 
-    public long getQuantity() {
+    public int getQuantity() {
         return quantity;
     }
 
