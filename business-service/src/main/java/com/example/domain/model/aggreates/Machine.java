@@ -32,8 +32,6 @@ public class Machine extends AbstractAggregateRoot<Machine> {
     private Long id;
     @Embedded
     private MachineId machineId; // Aggregate Identifier - machine Name
-    //@Embedded
-    //private Employee employee; //Employee assigned to the Machine
     @Embedded
     private JobList jobList; //List of Jobs assigned to the Machine
     @Embedded

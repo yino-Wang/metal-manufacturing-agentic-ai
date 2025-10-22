@@ -6,34 +6,32 @@
 - **Maintenance MS** 
 - **Workforce MS** 
 
-# Business MS
-
-## Set-up for Business MS 
-## Apache Kafka Setup
+# Set-up for the whole application 
+#### Each microservice will specify what set-ups they require (i.e. not all MS's need Kafka)
+## Apache Kafka Set-up
 This Spring Boot project uses Apache Kafka as a messaging platform.
 To run this project, you need to set up Kafka first.
 
-#### Linux and MacOS
+(Linux/MacOS)
 Make sure you download kafka version 3.9.- or below, as v4 does not have zookeeper.
 Download a **binary package** of Apache Kafka (e.g., `kafka_2.13-3.7.0.tgz`) from
 [https://kafka.apache.org/downloads](https://kafka.apache.org/downloads)
 and unzip it.
-In the Terminal, `cd` to the unzip folder, and start Kafka with the following commands (each in a separate Terminal session):
+In the Terminal, `cd` to the unzip folder, and start Kafka with the following commands in a new Terminal each:
 ```bash
 ./bin/zookeeper-server-start.sh ./config/zookeeper.properties
 ```
 ```bash
 ./bin/kafka-server-start.sh ./config/server.properties
 ```
-
-## FR6: Handling newly submitted jobs (real-time) part 1
 #### Windows
 Make sure you download kafka version 3.9.- or below, as v4 does not have zookeeper.
 Download a **binary package** of Apache Kafka (e.g., `kafka_2.13-3.7.0.tgz`) from
 [https://kafka.apache.org/downloads](https://kafka.apache.org/downloads)
-and unzip it to a directory, e.g., `C:\kafka`&mdash;Windows does not like a complex path name (!).
+and unzip it to a directory: `C:\kafka` is used for the following commands, you will need to change it 
+to your directory if you use a different name.
 
-Use the following two commands in the Windows CMD (one in each window) to start Kafka:
+Use the following commands in two different Windows CMD to start Kafka:
 ```bash
 C:\kafka\bin\windows\zookeeper-server-start.bat C:\kafka\config\zookeeper.properties
 ``` 
@@ -41,78 +39,139 @@ C:\kafka\bin\windows\zookeeper-server-start.bat C:\kafka\config\zookeeper.proper
 C:\kafka\bin\windows\kafka-server-start.bat C:\kafka\config\server.properties
 ```
 
-## Run The Application
-### Stream Processing and Interactive Query
-After starting Kafka, run `business-service`'s main class, this main class will create 4 machines and 
+# Business MS
+To run the business microservice you will need to start kafka, as detailed in 'Set-up for the whole application'.
+After starting Kafka, run `business-service`'s main class, this main class will create 4 machines and
 will continuously assign random jobs to random machines.
 
-The following REST API is provided to query the results:
+### Machine and Job Management APIs
+Commands to view, find and add machines and jobs for machines.
+#### 1. Get All Machines and their stored information, including all jobs and job schedule
 ```shell
-curl -X GET -H "Content-Type:application/json" http://localhost:8787/queries/windowedMachinesByAmount
+curl "http://localhost:8787/machinescheduling/findAllMachines"
 ```
 
-## FR5: Manager side: can add and view machines and jobs
-### Adding Jobs and Machine scheduling
-#### Windows CMD
-
-Schedule a machine:
-```shell
-curl -X POST -H "Content-Type:application/json" -d "{\"machineId\":\"machine5\"}" http://localhost:8787/machinescheduling
-```
-Get all scheduledIds of all machines:
+#### 2. View all machineIds of all existing machines
 ```shell
 curl -X GET -H "Content-Type:application/json" http://localhost:8787/machinescheduling/findAllMachineIds
 ```
-Find a machine from a machineId - also shows all allocated jobs (replace `<<machineId>>` with the returned book key):
+
+#### 3. Find a specific machine from a machineId
+Replace `<<machineId>>` with one of the returned machineIds from step 2, or enter it if you know the machineId,
+(the four initialised machines in main are machine1, machine2, machine3, machine4 respectively)
+
+(Windows)
 ```shell
 set machineId=<<machineId>>
 ```
+(Linux/MacOS)
+```shell
+machineId="<<machineId>>"
+```
+This command works for all operating systems to find pass the parameter:
 ```shell
 curl "http://localhost:8787/machinescheduling/findMachine?machineId=%machineId%"
 ```
-Add a new job to a machine:
+
+#### 4. Add a new machine
 ```shell
-curl -X POST -H "Content-Type:application/json" -d "{\"jobNumber\":1000,\"jobTimeNeededDays\":5,\"priority\":1,\"machineId\":\"machine1\",\"materialNeeded\":\"wood\",\"materialAmount\":23,\"customerName\":\"JohnSmith\"}" http://localhost:8787/addJobToMachine
+curl -X POST -H "Content-Type:application/json" -d "{\"machineId\":\"machine5\"}" http://localhost:8787/machinescheduling
 ```
-Find all the jobs of a specific machine via machineId
+
+#### 5. Add a new job to a machine:
+```shell
+curl -X POST -H "Content-Type:application/json" -d "{\"jobNumber\":1000,\"jobTimeNeededDays\":5,\"priority\":1,\"machineId\":\"machine1\",\"materialNeeded\":\"steel\",\"materialAmount\":23,\"customerName\":\"John\"}" http://localhost:8787/addJobToMachine
+```
+
+#### 6. Find all the jobs of a specific machine via machineId
+Replace `<<machineId>>` with one of the returned machineIds from step 2, or enter it if you know the machineId,
+(the four initialised machines in main are machine1, machine2, machine3, machine4 respectively)
+
+machine5 also now exists in the system with one added job
+
+(Windows)
 ```shell
 set machineId=<<machineId>>
 ```
+(Linux/MacOS)
+```shell
+machineId="<<machineId>>"
+```
+This command works for all operating systems to find pass the parameter:
 ```shell
 curl "http://localhost:8787/addJobToMachine/findJobsByMachineId?machineId=%machineId%"
 ```
-Find a job by job number:
+
+#### 7. Find a job by job number:
+Replace `<<jobNumber>>` with a jobNumber, a number starting from 1
+
+(main adds a new job evey 5 seconds and each new job's jobNumber is increased by 1)
+
+(Windows)
 ```shell
 set jobNumber=<<jobNumber>>
 ```
+(Linux/MacOS)
+```shell
+jobNumber=<<jobNumber>>
+```
+This command works for all operating systems to find pass the parameter:
 ```shell
 curl "http://localhost:8787/addJobToMachine/findJobByJobNumber?jobNumber=%jobNumber%"
 ```
 
+### Customer portal APIs
+Commands to view and find jobs associated with a customer
+#### 8. Find a job by job number:
+Replace `<<jobNumber>>` with a jobNumber, a number starting from 1
 
-## FR1: Manage Machines Work Schedule (agentic)
+(main adds a new job evey 5 seconds and each new job's jobNumber is increased by 1)
 
+In reality the customer should already know their job numbers and should not be allowed to get a list of all job numbers
 
-## FR2: Customer side: can see progress/scheduling of a job
-Find a job by job number:
+For this reason, it is assumed the customer already knows the number they want to search for
+
+(Windows)
 ```shell
 set jobNumber=<<jobNumber>>
 ```
+(Linux/MacOS)
+```shell
+jobNumber=<<jobNumber>>
+```
+This command works for all operating systems to find pass the parameter:
 ```shell
 curl "http://localhost:8787/addJobToMachine/findJobInfoByJobNumber?jobNumber=%jobNumber%"
 ```
-Find all jobs from a customer name:
+
+#### 9. Find all jobs from a customer name:
+Replace `<<customerName>>` with a customerName
+
+For security reasons a customer cannot view a list of all customers and is expected to know their name in the system
+
+Available names to search with: Michelle, Randy, Rob, Deb, John
+
+(Windows)
 ```shell
 set customerName=<<customerName>>
 ```
+(Linux/MacOS)
+```shell
+customerName="<<customerName>>"
+```
+This command works for all operating systems to find pass the parameter:
 ```shell
 curl "http://localhost:8787/addJobToMachine/findAllCustomerJobsByCustomerName?customerName=%customerName%"
 ```
 
+### Monitor new job's material needs APIs
+Commands to view the needed materials per machine per material type in a 30-second window.
+#### 10. The following REST API is provided to query the windowed stream processing results:
+```shell
+curl -X GET -H "Content-Type:application/json" http://localhost:8787/queries/windowedMachinesByAmount
+```
 
-
-## FR6: Handling newly submitted jobs (real-time) part 2
-### View Booking Event Stream
+#### 11. View Booking Event Stream
 After running the `business-service`'s main class, check the Kafka topics with the following command:
 
 (Linux/MacOS)
@@ -123,16 +182,34 @@ After running the `business-service`'s main class, check the Kafka topics with t
 ```shell
 C:\kafka\bin\windows\kafka-topics.bat --bootstrap-server=localhost:9092 --list
 ```
-You should see three topics. You can read data in the `cargobookings` topic:
+You can read data in the `jobAddedToMachines` topic: 
 
 (Linux/MacOS)
 ```shell
-./bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic cargobookings --from-beginning
+./bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic jobAddedToMachines --from-beginning
 ```
 (Windows)
 ```shell
 c:\kafka\bin\windows\kafka-console-consumer.bat --bootstrap-server localhost:9092 --topic jobAddedToMachines --from-beginning
 ```
+
+### Schedule job APIs
+This functional requirement does not require the user to use any unique or different commands. 
+Every time a job is added (either in the main loop or by a user) the agentic AI scheduler is called
+and the new job's assigned machine's schedule is updated and saved. This means that whenever the above
+manager APIs are called, the generated schedule can already be viewed (as long as there is at least one job in a machine).
+
+In order to not have to find the relevant command again - the below command will show all machines and their schedules.
+Keep running the command every 5 seconds (after a new job is added) to see how the schedule dynamically changes.
+#### 12. View machines and their agentic AI generated schedules
+```shell
+curl "http://localhost:8787/machinescheduling/findAllMachines"
+```
+
+
+
+
+
 # Inventory MS
 To run application, first run kafka then open and 
 run the business-service [Main.java](business-service/src/main/java/com/example/Main.java).

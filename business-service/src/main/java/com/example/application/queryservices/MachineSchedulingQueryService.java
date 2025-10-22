@@ -85,35 +85,4 @@ public class MachineSchedulingQueryService {
         return machineRepository.findAll();
     }
 
-
-    /**
-     * Returns a valid job schedule, making sure times are in order and JobStatus is correctly assigned for each job
-     */
-//    @Transactional
-//    public void updateJobSchedule() {
-//        List<Machine> machines = machineRepository.findAll();
-//        for (Machine machine : machines) {
-//            List<Job> jobs = machine.getJobs();
-//            jobs.sort((job1, job2) -> job1.getStartTime().compareTo(job2.getStartTime()));
-//            for (int i = 0; i < jobs.size(); i++) {
-//                Job job = jobs.get(i);
-//                if (i == 0) {
-//                    job.setJobStatus(Job.JobStatus.IN_PROGRESS);
-//                } else if (i == jobs.size() - 1) {
-//                    job.setJobStatus(Job.JobStatus.SCHEDULED);
-//                } else {
-//                    job.setJobStatus(Job.JobStatus.SCHEDULED);
-//                }
-//                if (i > 0) {
-//                    Job previousJob = jobs.get(i - 1);
-//                    if (job.getStartTime().isBefore(previousJob.getEndTime())) {
-//                        throw new IllegalStateException("Job times are overlapping for machine: " + machine.getSchedulingId().getSchedulingId());
-//                    }
-//                }
-//            }
-//            machine.setJobs(jobs);
-//            machineRepository.save(machine);
-//        }
-//    }
-
 }

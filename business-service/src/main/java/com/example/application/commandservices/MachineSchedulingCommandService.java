@@ -50,11 +50,13 @@ public class MachineSchedulingCommandService {
                 new MachineId(addJobToMachineCommand.getMachineId()));
 
         machine.addJob(new
-                Job(addJobToMachineCommand.getJobNumber(), addJobToMachineCommand.getJobTimeNeededDays(), addJobToMachineCommand.getPriority(),
+                Job(addJobToMachineCommand.getJobNumber(), addJobToMachineCommand.getJobTimeNeededDays(),
+                addJobToMachineCommand.getPriority(),
                 addJobToMachineCommand.getDueDate(), addJobToMachineCommand.getMaterialNeeded(),
                 addJobToMachineCommand.getMaterialAmount(), addJobToMachineCommand.getCustomerName()));
         machineRepository.save(machine);
-        return new Job(addJobToMachineCommand.getJobNumber(), addJobToMachineCommand.getJobTimeNeededDays(), addJobToMachineCommand.getPriority(),
+        return new Job(addJobToMachineCommand.getJobNumber(), addJobToMachineCommand.getJobTimeNeededDays(),
+                addJobToMachineCommand.getPriority(),
                 addJobToMachineCommand.getDueDate(), addJobToMachineCommand.getMaterialNeeded(),
                 addJobToMachineCommand.getMaterialAmount(), addJobToMachineCommand.getCustomerName());
     }
