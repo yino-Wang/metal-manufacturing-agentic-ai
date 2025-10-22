@@ -1,0 +1,8 @@
+package com.example.infrastructure.repositories;
+
+import com.example.domain.model.Material;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface InventoryRepository extends JpaRepository<Material, Integer> {
+    Material findByMaterialName(String materialName);
+}
