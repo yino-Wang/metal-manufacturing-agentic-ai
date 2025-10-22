@@ -1,7 +1,10 @@
 package com.example.service;
+
+import com.example.domain.event.MaterialAllocatedEvent;
+import com.example.domain.event.LowStockEvent;
 import com.example.infrastructure.repository.InventoryRepository;
-import com.example.events.JobAddedToMachineEvent;
-import org.apache.kafka.streams.kstream.KStream;
+import com.example.domain.model.Material;
+import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -11,31 +14,25 @@ import java.util.function.Consumer;
 public class InventoryService {
 
     private final InventoryRepository inventoryRepository;
+    private final StreamBridge streamBridge;
 
-    public InventoryService(InventoryRepository inventoryRepository) {
+    public InventoryService(InventoryRepository inventoryRepository, StreamBridge streamBridge) {
         this.inventoryRepository = inventoryRepository;
+        this.streamBridge = streamBridge;
     }
 
-    /**
-     * Kafka stream consumer that processes JobAddedToMachineEvent messages.
-     * When a job arrives, it deducts material usage and prints the updated inventory.
-     */
     @Bean
-    public Consumer<KStream<String, JobAddedToMachineEvent>> handleJobStream() {
-        return inputStream -> inputStream.foreach((key, event) -> {
-
+    public Consumer<MaterialAllocatedEvent> handleMaterialAllocation() {
+        return event -> {
             String materialName = event.getMaterialName();
-            long materialRequired = event.getMaterialRequired();
+            long quantityAllocated = event.getQuantityAllocated();
 
-            System.out.println("--------------------------------------------------");
-            System.out.println("[Job Received] Material: " + materialName + " | Amount required: " + materialRequired);
-
+            // Check if material exists in inventory
             inventoryRepository.findByName(materialName).ifPresentOrElse(material -> {
-                long newQty = material.getQuantity() - materialRequired;
+                long newQty = material.getQuantity() - quantityAllocated;
 
                 if (newQty < 0) {
-                    System.out.println("[Warning] Not enough " + materialName + " in stock! Job requires "
-                            + materialRequired + ", but only " + material.getQuantity() + " available.");
+                    System.out.println("[Warning] Not enough " + materialName + " in stock!");
                     newQty = 0;
                 }
 
@@ -44,17 +41,16 @@ public class InventoryService {
 
                 System.out.println("[Inventory] Updated stock for " + materialName + ": " + newQty + " units remaining.");
 
-                // Restock when below 100
+                // Check if stock is below the threshold and trigger auto-restocking
                 if (newQty < 100) {
                     System.out.println("[Auto-Restock] " + materialName + " below threshold. Adding +100 units.");
                     material.setQuantity(newQty + 100);
                     inventoryRepository.save(material);
-                    System.out.println("[Inventory] New stock level for " + materialName + ": " + material.getQuantity());
+
+                    // Trigger Low Stock Event
+                    streamBridge.send("lowStockChannel", new LowStockEvent(materialName, material.getQuantity()));
                 }
-
-                System.out.println("--------------------------------------------------");
-
             }, () -> System.out.println("[Error] Material not found in inventory: " + materialName));
-        });
+        };
     }
 }

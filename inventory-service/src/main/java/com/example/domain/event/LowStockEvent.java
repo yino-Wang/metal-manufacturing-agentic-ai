@@ -1,7 +1,5 @@
 package com.example.domain.event;
 
-import com.example.domain.model.Material;
-
 public class LowStockEvent {
 
     private String materialName;
@@ -10,9 +8,9 @@ public class LowStockEvent {
 
     public LowStockEvent() {}
 
-    public LowStockEvent(Material material) {
-        this.materialName = material.getName();
-        this.quantity = material.getQuantity();
+    public LowStockEvent(String materialName, long quantity) {
+        this.materialName = materialName;
+        this.quantity = quantity;
         this.message = "[Low Stock Alert] " + materialName + " is low with only " + quantity + " units left!";
     }
 
