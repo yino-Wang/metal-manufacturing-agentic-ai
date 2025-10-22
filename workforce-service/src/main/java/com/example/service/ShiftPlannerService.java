@@ -89,18 +89,17 @@ public class ShiftPlannerService {
         // 将 machineId 填回每个 ShiftPlan（优先调用 setter，否则反射设置字段）
         for (ShiftPlan sp : generatedPlans) {
             String machineIdStr = findMachineForJob(sp.getJobId(), machineSchedule);
-            Long machineIdLong = convertMachineIdToLong(machineIdStr);
 
             try {
                 java.lang.reflect.Method setter = ShiftPlan.class.getMethod("setMachineId", Long.class);
-                setter.invoke(sp, machineIdLong);
-                logger.debug("Set machineId {} for ShiftPlan {} via setter", machineIdLong, sp.getShiftPlanId());
+                setter.invoke(sp, machineIdStr);
+                logger.debug("Set machineId {} for ShiftPlan {} via setter", machineIdStr, sp.getShiftPlanId());
             } catch (NoSuchMethodException nsme) {
                 try {
                     java.lang.reflect.Field field = ShiftPlan.class.getDeclaredField("machineId");
                     field.setAccessible(true);
-                    field.set(sp, machineIdLong);
-                    logger.debug("Set machineId {} for ShiftPlan {} via field", machineIdLong, sp.getShiftPlanId());
+                    field.set(sp, machineIdStr);
+                    logger.debug("Set machineId {} for ShiftPlan {} via field", machineIdStr, sp.getShiftPlanId());
                 } catch (NoSuchFieldException | IllegalAccessException ex) {
                     logger.debug("ShiftPlan has no machineId property or cannot set it via reflection", ex);
                 }
@@ -235,38 +234,7 @@ public class ShiftPlannerService {
         return Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
     }
 
-    /**
-     * Convert machine ID string to Long
-     * Handles cases like "MACHINE-001" -> 1, "MACHINE-002" -> 2, etc.
-     * For non-numeric machine IDs, returns a hash-based Long or 0 as fallback
-     */
-    private Long convertMachineIdToLong(String machineIdStr) {
-        if (machineIdStr == null || machineIdStr.trim().isEmpty() || "UNKNOWN".equals(machineIdStr)) {
-            return 0L;
-        }
 
-        try {
-            // Try direct conversion first (in case it's already numeric)
-            return Long.valueOf(machineIdStr);
-        } catch (NumberFormatException e) {
-            // Handle formatted machine IDs like "MACHINE-001", "MACHINE-002"
-            if (machineIdStr.contains("-")) {
-                String[] parts = machineIdStr.split("-");
-                if (parts.length >= 2) {
-                    try {
-                        return Long.valueOf(parts[parts.length - 1]); // Get the numeric part
-                    } catch (NumberFormatException ignored) {
-                        // Fall through to hash-based approach
-                    }
-                }
-            }
-
-            // Fallback: use hash code to generate a consistent Long ID
-            long hash = Math.abs(machineIdStr.hashCode()) % 1000000L; // Keep it reasonable
-            logger.debug("Converted non-numeric machineId '{}' to Long: {}", machineIdStr, hash);
-            return hash;
-        }
-    }
 
     /*
     // Commented out - ExternalMachineSchedule already provides mock data

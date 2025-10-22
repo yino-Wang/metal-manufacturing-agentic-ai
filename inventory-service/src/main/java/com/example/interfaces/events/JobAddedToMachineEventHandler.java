@@ -17,16 +17,19 @@ public class JobAddedToMachineEventHandler {
 
     private final AllocateMaterialsCommandService allocateMaterialsCommandService;
 
+    // Constructor to inject the service dependency
     public JobAddedToMachineEventHandler(AllocateMaterialsCommandService allocateMaterialsCommandService) {
         this.allocateMaterialsCommandService = allocateMaterialsCommandService;
     }
 
     /**
      * Spring Cloud Stream consumer that listens for JobAddedToMachineEvent events from Kafka.
+     * When the event is received, it processes the event to allocate materials.
      */
     @Bean
     public Consumer<JobAddedToMachineEvent> process() {
         return event -> {
+            // Print event details for logging purposes
             System.out.println("--------------------------------------------------");
             System.out.println("[Stream] Received JobAddedToMachineEvent:");
             System.out.println("   → Machine ID: " + event.getJobAddedToMachineEventData().getMachineId());
@@ -36,14 +39,17 @@ public class JobAddedToMachineEventHandler {
             System.out.println("   → Customer: " + event.getJobAddedToMachineEventData().getCustomerName());
             System.out.println("--------------------------------------------------");
 
+            // Create command to allocate materials for the job
             AddJobMaterialsCommand cmd = new AddJobMaterialsCommand(
                     event.getJobAddedToMachineEventData().getJobNumber(),
                     event.getJobAddedToMachineEventData().getMaterialNeeded(),
                     event.getJobAddedToMachineEventData().getMaterialAmount()
             );
 
+            // Trigger material allocation using the service
             allocateMaterialsCommandService.allocateMaterials(cmd);
 
+            // Log completion of material allocation
             System.out.println("[Stream] Material allocation completed for job: "
                     + event.getJobAddedToMachineEventData().getJobNumber());
             System.out.println("--------------------------------------------------");

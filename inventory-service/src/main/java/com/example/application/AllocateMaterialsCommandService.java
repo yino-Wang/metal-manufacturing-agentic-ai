@@ -3,8 +3,8 @@ package com.example.application;
 import com.example.domain.commands.AddJobMaterialsCommand;
 import com.example.domain.model.Material;
 import com.example.infrastructure.repository.InventoryRepository;
-import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class AllocateMaterialsCommandService {
