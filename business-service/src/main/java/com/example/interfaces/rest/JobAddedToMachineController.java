@@ -1,10 +1,12 @@
 package com.example.interfaces.rest;
 
+import com.example.application.agentService.ScheduleService;
 import com.example.application.commandservices.MachineSchedulingCommandService;
 import com.example.application.queryservices.MachineSchedulingQueryService;
 import com.example.domain.model.aggreates.Machine;
 import com.example.domain.model.aggreates.MachineId;
 import com.example.domain.model.entities.Job;
+import com.example.domain.model.valueobjects.Schedule;
 import com.example.interfaces.rest.dto.AddJobToMachineResource;
 import com.example.interfaces.rest.transform.AddJobToMachineCommandDTOAssembler;
 import org.springframework.stereotype.Controller;
@@ -20,14 +22,16 @@ public class JobAddedToMachineController {
 
     private MachineSchedulingCommandService machineSchedulingCommandService; // Application Service Dependency
     private MachineSchedulingQueryService machineSchedulingQueryService;
+    private ScheduleService scheduleService;
 
     /**
      * Provide the dependencies
      * @param machineSchedulingCommandService
      */
-    public JobAddedToMachineController(MachineSchedulingCommandService machineSchedulingCommandService, MachineSchedulingQueryService machineSchedulingQueryService) {
+    public JobAddedToMachineController(MachineSchedulingCommandService machineSchedulingCommandService, MachineSchedulingQueryService machineSchedulingQueryService, ScheduleService scheduleService) {
         this.machineSchedulingCommandService = machineSchedulingCommandService;
         this.machineSchedulingQueryService = machineSchedulingQueryService;
+        this.scheduleService = scheduleService;
     }
 
     /**
@@ -38,8 +42,10 @@ public class JobAddedToMachineController {
     @ResponseBody
     public Job addJobToMachine(@RequestBody AddJobToMachineResource addJobToMachineResource) {
         //System.out.println("****Job Added to Machine ****" + addJobToMachineResource.getMachineId());
+        String machineId = addJobToMachineResource.getMachineId();
         Job job = machineSchedulingCommandService.addJobToMachine(
                 AddJobToMachineCommandDTOAssembler.toCommandFromDTO(addJobToMachineResource));
+        Schedule updatedSchedule = scheduleService.generateSchedule(machineId);
         return job;
     }
 
