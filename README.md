@@ -597,60 +597,11 @@ curl -X POST "http://localhost:8080/api/workforce/portal/employee/1/clock-in-out
 
 ### 12. Auto-generate Shift Plan using data from Business MS (agentic) and notify employees
 ```bash
-curl -X POST "http://localhost:8080/api/shift-planner/create?requiredEmployees=1" \
-  -H "Content-Type: application/json"
+curl -X POST "http://localhost:8080/api/shift-planner/create-from-api?machineId=machine2"
 ```
-
-### 12(1). Auto-generate Shift Plan using mock data (agentic) and notify employees
+### 12(1) . Fetch machine schedule from Business MS
 ```bash
-curl -X POST "http://localhost:8080/api/shift-planner/create-with-mock-data?requiredEmployees=1" -H "Content-Type: application/json"
-
-```
-**Response:**
-```json
-[
-  {
-    "employeeId": 101,
-    "shiftDate": "2025-10-22",
-    "startTime": "08:00",
-    "endTime": "16:00",
-    "jobId": 55,
-    "jobPriority": 2
-  },
-  {
-    "employeeId": 102,
-    "shiftDate": "2025-10-22",
-    "startTime": "08:00",
-    "endTime": "16:00",
-    "jobId": 55,
-    "jobPriority": 2
-  },
-  {
-    "employeeId": 103,
-    "shiftDate": "2025-10-22",
-    "startTime": "08:00",
-    "endTime": "16:00",
-    "jobId": 55,
-    "jobPriority": 2
-  }
-]
-
-```
-####  Fetch machine schedule from ExternalMachineSchedule for testing
-```bash
-curl -X GET "http://localhost:8080/api/shift-planner/mock-schedule" -H "Accept: application/json"
-```
-**Response:**
-```json
-{
-  "scheduleId": "1",
-  "machineId": "1",
-  "startTime": "2025-10-23T09:00:00Z",
-  "endTime": "2025-10-23T17:00:00Z",
-  "jobId": 77,
-  "priority": 1,
-  "requiredEmployees": 1
-}
+curl "http://localhost:8080/api/shift-planner/api-schedule"
 
 ```
 ### 13. Update Shift Plan

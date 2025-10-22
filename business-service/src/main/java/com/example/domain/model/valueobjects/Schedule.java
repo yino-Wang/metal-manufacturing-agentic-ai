@@ -8,6 +8,8 @@ import java.util.List;
 @Embeddable
 public class Schedule {
 
+
+
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name="schedule_id")
     private List<Job> jobs = new ArrayList<>();

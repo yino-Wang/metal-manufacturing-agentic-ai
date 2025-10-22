@@ -46,6 +46,9 @@ public class Main {
         MachineIdDto schedulingId4 = restTemplate.postForObject(url, machine4, MachineIdDto.class);
         System.out.println("Scheduled machine: " + schedulingId4);
 
+        //add jobs to the machines
+
+
         //while true keep adding jobs to the machines
         final String urlAddJob = "http://localhost:8787/addJobToMachine";
         Random rand = new Random();
@@ -61,7 +64,8 @@ public class Main {
         int priorityNum = priorityOptions.length;
         LocalDate day = LocalDate.now();
         int jobNumber = 0;
-        while (true) {
+    //    int maxJobs = 10;
+        while (jobNumber <= 10) {
             jobNumber = jobNumber + 1;
             int materialAmount = rand.nextInt(maxMaterials) + 1; //at least 1 material
             int jobTimeNeededDays = rand.nextInt(maxDays) + 1; //at least 1 day needed
@@ -73,7 +77,7 @@ public class Main {
             String customerName = customers[customer];
             int priorityChosen = rand.nextInt(priorityNum);
             int priority = priorityOptions[priorityChosen];
-            LocalDate dueDate = day.plusDays(rand.nextInt(5,30)); //due date within the next 5 to 30 days
+            LocalDate dueDate = day.plusDays(rand.nextInt(5, 30)); //due date within the next 5 to 30 days
             System.out.println("Adding job " + jobNumber + " to " + machineId + " for " + materialAmount + " of " + materialName + " on " + dueDate);
             AddJobToMachineResource job = new AddJobToMachineResource(jobNumber, jobTimeNeededDays, priority, machineId, dueDate, materialName, materialAmount, customerName);
             //System.out.println("Posting job: " + job.toString());
@@ -90,7 +94,6 @@ public class Main {
             Thread.sleep(5000);
         }
     }
-
+}
 //    @Bean
 //    ChatModelListener chatModelLogger() {return new ModelLogger();}
-}
