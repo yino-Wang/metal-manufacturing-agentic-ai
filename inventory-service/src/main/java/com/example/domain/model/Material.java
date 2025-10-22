@@ -10,7 +10,7 @@ public class Material {
     private int id;
 
     private String name;
-    private long quantity;
+    private long quantity;  // Changed to long
 
     public Material() {}
 

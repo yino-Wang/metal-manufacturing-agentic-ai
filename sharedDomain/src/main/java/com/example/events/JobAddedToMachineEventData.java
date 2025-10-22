@@ -14,10 +14,6 @@ public class JobAddedToMachineEventData {
 
     public JobAddedToMachineEventData(){}
 
-    public JobAddedToMachineEventData(String machineId) {
-        this.machineId = machineId;
-    }
-
     public JobAddedToMachineEventData(String machineId, int jobNumber, int jobTimeNeededDays, int priority, LocalDate dueDate, String materialNeeded, int materialAmount, String customerName) {
         this.machineId = machineId;
         this.jobNumber = jobNumber;
@@ -40,6 +36,7 @@ public class JobAddedToMachineEventData {
     public int getJobNumber() {
         return jobNumber;
     }
+
     public void setJobNumber(int jobNumber) {
         this.jobNumber = jobNumber;
     }
@@ -100,5 +97,3 @@ public class JobAddedToMachineEventData {
     }
 
 }
-
-
