@@ -11,11 +11,6 @@ import com.example.events.MachineScheduledEventData;
 import jakarta.persistence.*;
 import org.springframework.data.domain.AbstractAggregateRoot;
 
-//import com.example.interfaces.rest.JobAddedToMachineEventData;
-//import com.example.interfaces.rest.JobAddedToMachineEvent;
-//import com.example.interfaces.rest.MachineScheduledEventData;
-//import com.example.interfaces.rest.MachineScheduledEvent;
-
 @Entity
 @NamedQueries({
         @NamedQuery(name = "Machine.findAll",
@@ -71,14 +66,6 @@ public class Machine extends AbstractAggregateRoot<Machine> {
         return machineId;
     }
 
-//    public Employee getEmployee() {
-//        return employee;
-//    }
-//
-//    public void setEmployee(Employee employee) {
-//        this.employee = employee;
-//    }
-
     public JobList getJobList() {
         return jobList;
     }
@@ -114,16 +101,6 @@ public class Machine extends AbstractAggregateRoot<Machine> {
                         job.getMaterialAmount(),
                         job.getCustomerName())));
     }
-
-//    /**
-//     *
-//     * @param lastJobHandledEvent
-//     */
-//    public void deriveCurrentJobProgress(LastJobHandledEvent lastJobHandledEvent) {
-//        this.currentJob = CurrentJob.derivedFrom(getJobList(),
-//                lastJobHandledEvent);
-//    }
-
 
     /**
      * Method to register the event
