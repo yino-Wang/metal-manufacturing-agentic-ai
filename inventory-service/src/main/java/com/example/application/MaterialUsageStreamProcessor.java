@@ -13,6 +13,10 @@ import org.springframework.context.annotation.Configuration;
 
 import java.time.Duration;
 
+//IMPORTANT: code taken from CSCI318 lab example Cargo Tracker (Stream Processing) StreamProcessor class
+//variable names have been changed
+//" start quote
+
 /**
  * Kafka Streams processor that aggregates total material usage over 30-second windows.
  * Produces a window store that can later be queried by InteractiveQueryService.
@@ -45,3 +49,5 @@ public class MaterialUsageStreamProcessor {
         };
     }
 }
+
+//" end quote
