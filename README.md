@@ -6,7 +6,11 @@
 - **Maintenance MS** 
 - **Workforce MS** 
 
-# Set-up for the whole application 
+# Configuration
+This project uses LangChain4j to provide agentic AI capabilities.
+To use LangChain4j, a Gemini Api Key is required.
+This project is already configured with a key for ease of use.\
+However, if you wish to use your own key, update the `langchain4j.google-ai-gemini.chat-model.api-key` property in the microservice's `application.properties` file.
 #### Each microservice will specify what set-ups they require (i.e. not all MS's need Kafka)
 ## Apache Kafka Set-up
 This Spring Boot project uses Apache Kafka as a messaging platform.
@@ -330,8 +334,8 @@ c:\kafka\bin\windows\kafka-console-consumer.bat --bootstrap-server localhost:909
 
 
 # Maintenance MS
-Run MaintenanceReportServiceApplication.java to start the Maintenance MS.
-Employs a persistent database (H2) to store maintenance reports for machines, should be prepopulated with 4 machines and reports.
+Run `MaintenanceReportServiceApplication.java` to start the Maintenance MS.\
+The microservice employs a persistent database (H2) to store maintenance reports for machines, and should be prepopulated with 4 machines and 4 reports.
 
 ### Report Management APIs
 Commands to view, add, update, and delete maintenance reports for machines.
