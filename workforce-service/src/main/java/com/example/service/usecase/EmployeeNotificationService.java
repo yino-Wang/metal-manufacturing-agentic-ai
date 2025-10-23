@@ -39,7 +39,7 @@ public class EmployeeNotificationService {
             // print notification to terminal
             printTerminalNotification(title, body);
 
-            logger.info("✅ Notification printed to terminal for employee {}", employeeId);
+            logger.info(" Notification printed to terminal for employee {}", employeeId);
 
         } catch (Exception e) {
             logger.error("Failed to send notification to employee {}: {}", schedule.getEmployeeId(), e.getMessage(), e);

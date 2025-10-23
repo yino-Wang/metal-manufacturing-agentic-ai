@@ -28,15 +28,15 @@ public class WorkforceServiceApplication {
         long existingTimesheetCount = timesheetRepository.count();
         long existingEmployeeCount = employeeRepository.count();
 
-        System.out.println("🗑️ Cleaning up existing data...");
+        System.out.println("Cleaning up existing data...");
         System.out.println("   - Found " + existingTimesheetCount + " existing timesheet records");
         System.out.println("   - Found " + existingEmployeeCount + " existing employee records");
 
         timesheetRepository.deleteAll();
         employeeRepository.deleteAll();
 
-        System.out.println("✅ All previous timesheet and employee records deleted!");
-        System.out.println("📋 Starting Workforce Management System with fresh data...");
+        System.out.println("All previous timesheet and employee records deleted!");
+        System.out.println("Starting Workforce Management System with fresh data...");
 
         // Create three employees similar to business-service machines
         RestTemplate restTemplate = new RestTemplate();
@@ -139,10 +139,10 @@ public class WorkforceServiceApplication {
         savedEmployee4.setStatus(employee4.getStatus());
         savedEmployee4 = employeeRepository.save(savedEmployee4);
 
-        System.out.println("👷 Created Employee 1: " + savedEmployee1.getName() + " (ID: " + savedEmployee1.getEmployeeId() + ")");
-        System.out.println("🔍 Created Employee 2: " + savedEmployee2.getName() + " (ID: " + savedEmployee2.getEmployeeId() + ")");
-        System.out.println("⚙️ Created Employee 3: " + savedEmployee3.getName() + " (ID: " + savedEmployee3.getEmployeeId() + ")");
-        System.out.println("⚙️ Created Employee 4: " + savedEmployee4.getName() + " (ID: " + savedEmployee4.getEmployeeId() + ")");
+        System.out.println("Created Employee 1: " + savedEmployee1.getName() + " (ID: " + savedEmployee1.getEmployeeId() + ")");
+        System.out.println("Created Employee 2: " + savedEmployee2.getName() + " (ID: " + savedEmployee2.getEmployeeId() + ")");
+        System.out.println("⚙Created Employee 3: " + savedEmployee3.getName() + " (ID: " + savedEmployee3.getEmployeeId() + ")");
+        System.out.println("⚙Created Employee 4: " + savedEmployee4.getName() + " (ID: " + savedEmployee4.getEmployeeId() + ")");
 
         // Generate one timesheet for each employee
         // Create timesheet for Employee 1 - John Smith (Welder)
@@ -152,7 +152,7 @@ public class WorkforceServiceApplication {
         LocalDateTime clockInTime1 = LocalDateTime.now().withHour(8).withMinute(0).withSecond(0);
         LocalDateTime clockOutTime1 = clockInTime1.plusHours(7).plusMinutes(30);
 
-        System.out.println("📊 Creating timesheet for " + savedEmployee1.getName() +
+        System.out.println("Creating timesheet for " + savedEmployee1.getName() +
                 " - " + hoursWorked1 + " hours (" + clockInTime1.getHour() + ":" +
                 String.format("%02d", clockInTime1.getMinute()) + " - " +
                 clockOutTime1.getHour() + ":" + String.format("%02d", clockOutTime1.getMinute()) + ")");
@@ -166,9 +166,9 @@ public class WorkforceServiceApplication {
                     clockInTime1,
                     clockOutTime1
             );
-            System.out.println("✅ Timesheet recorded successfully for " + savedEmployee1.getName());
+            System.out.println("Timesheet recorded successfully for " + savedEmployee1.getName());
         } catch (Exception e) {
-            System.out.println("❌ Error recording timesheet for " + savedEmployee1.getName() + ": " + e.getMessage());
+            System.out.println("Error recording timesheet for " + savedEmployee1.getName() + ": " + e.getMessage());
         }
 
         // Create timesheet for Employee 2 - Sarah Johnson (Quality Inspector)
@@ -178,7 +178,7 @@ public class WorkforceServiceApplication {
         LocalDateTime clockInTime2 = LocalDateTime.now().withHour(8).withMinute(0).withSecond(0);
         LocalDateTime clockOutTime2 = clockInTime2.plusHours(7);
 
-        System.out.println("📊 Creating timesheet for " + savedEmployee2.getName() +
+        System.out.println("Creating timesheet for " + savedEmployee2.getName() +
                 " - " + hoursWorked2 + " hours (" + clockInTime2.getHour() + ":" +
                 String.format("%02d", clockInTime2.getMinute()) + " - " +
                 clockOutTime2.getHour() + ":" + String.format("%02d", clockOutTime2.getMinute()) + ")");
@@ -192,9 +192,9 @@ public class WorkforceServiceApplication {
                     clockInTime2,
                     clockOutTime2
             );
-            System.out.println("✅ Timesheet recorded successfully for " + savedEmployee2.getName());
+            System.out.println("Timesheet recorded successfully for " + savedEmployee2.getName());
         } catch (Exception e) {
-            System.out.println("❌ Error recording timesheet for " + savedEmployee2.getName() + ": " + e.getMessage());
+            System.out.println("Error recording timesheet for " + savedEmployee2.getName() + ": " + e.getMessage());
         }
 
         // Create timesheet for Employee 3 - Michael Brown (Machine Operator)
@@ -204,7 +204,7 @@ public class WorkforceServiceApplication {
         LocalDateTime clockInTime3 = LocalDateTime.now().withHour(8).withMinute(0).withSecond(0);
         LocalDateTime clockOutTime3 = clockInTime3.plusHours(6);
 
-        System.out.println("📊 Creating timesheet for " + savedEmployee3.getName() +
+        System.out.println("Creating timesheet for " + savedEmployee3.getName() +
                 " - " + hoursWorked3 + " hours (" + clockInTime3.getHour() + ":" +
                 String.format("%02d", clockInTime3.getMinute()) + " - " +
                 clockOutTime3.getHour() + ":" + String.format("%02d", clockOutTime3.getMinute()) + ")");
@@ -218,9 +218,9 @@ public class WorkforceServiceApplication {
                     clockInTime3,
                     clockOutTime3
             );
-            System.out.println("✅ Timesheet recorded successfully for " + savedEmployee3.getName());
+            System.out.println("Timesheet recorded successfully for " + savedEmployee3.getName());
         } catch (Exception e) {
-            System.out.println("❌ Error recording timesheet for " + savedEmployee3.getName() + ": " + e.getMessage());
+            System.out.println("Error recording timesheet for " + savedEmployee3.getName() + ": " + e.getMessage());
         }
 
         // Create timesheet for Employee 4 - Carl Davis (Machine Operator)
@@ -229,7 +229,7 @@ public class WorkforceServiceApplication {
         Date workDate4 = new Date(); // Today
         LocalDateTime clockInTime4 = LocalDateTime.now().withHour(9).withMinute(0).withSecond(0);
         LocalDateTime clockOutTime4 = clockInTime4.plusHours(6);
-        System.out.println("📊 Creating timesheet for " + savedEmployee4.getName() +
+        System.out.println("Creating timesheet for " + savedEmployee4.getName() +
                 " - " + hoursWorked4 + " hours (" + clockInTime4.getHour() + ":" +
                 String.format("%02d", clockInTime4.getMinute()) + " - " +
                 clockOutTime4.getHour() + ":" + String.format("%02d", clockOutTime4.getMinute()) + ")");
@@ -242,15 +242,15 @@ public class WorkforceServiceApplication {
                     clockInTime4,
                     clockOutTime4
             );
-            System.out.println("✅ Timesheet recorded successfully for " + savedEmployee4.getName());
+            System.out.println("Timesheet recorded successfully for " + savedEmployee4.getName());
         } catch (Exception e) {
-            System.out.println("❌ Error recording timesheet for " + savedEmployee4.getName() + ": " + e.getMessage());
+            System.out.println("Error recording timesheet for " + savedEmployee4.getName() + ": " + e.getMessage());
         }
 
-        System.out.println("🎉 Workforce Management System initialized successfully!");
-        System.out.println("📈 Created 4 employees and 4 timesheets");
-        System.out.println("💰 Total hours worked today: " + (hoursWorked1 + hoursWorked2 + hoursWorked3 + hoursWorked4) + " hours");
-        System.out.println("💵 Estimated daily payroll: $" +
+        System.out.println("Workforce Management System initialized successfully!");
+        System.out.println("Created 4 employees and 4 timesheets");
+        System.out.println("Total hours worked today: " + (hoursWorked1 + hoursWorked2 + hoursWorked3 + hoursWorked4) + " hours");
+        System.out.println("Estimated daily payroll: $" +
                 (hoursWorked1 * savedEmployee1.getPay() +
                         hoursWorked2 * savedEmployee2.getPay() +
                         hoursWorked3 * savedEmployee3.getPay() +

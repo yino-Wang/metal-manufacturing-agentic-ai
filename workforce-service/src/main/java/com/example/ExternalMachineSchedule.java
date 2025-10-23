@@ -25,72 +25,6 @@ public class ExternalMachineSchedule {
 
     private final RestTemplate restTemplate = new RestTemplate();
 
-    /**
-     * Fetch machine schedule from business-service
-     */
-  /*  public MachineSchedule fetchNewSchedule() {
-        logger.info("Fetching machine schedule from business-service");
-
-
-        try {
-            // Call the REST API to get machine schedule
-            String url = "http://localhost:8787/machinescheduling/findMachine?machineId=machine2";
-            logger.info("Calling API: {}", url);
-
-            // Use String response first to avoid deserialization issues
-            ResponseEntity<String> rawResponse = restTemplate.getForEntity(url, String.class);
-            logger.info("HTTP Status: {}", rawResponse.getStatusCode());
-
-            String rawBody = rawResponse.getBody();
-            if (rawBody != null && !rawBody.isEmpty()) {
-                logger.info("✅ Successfully received raw response from business-service");
-                logger.debug("Raw response (first 500 chars): {}",
-                    rawBody.length() > 500 ? rawBody.substring(0, 500) + "..." : rawBody);
-
-                // Try to parse with ObjectMapper directly
-                try {
-                    com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
-                    MachineScheduleResponse responseBody = mapper.readValue(rawBody, MachineScheduleResponse.class);
-
-                    logger.info("✅ Successfully parsed JSON response");
-                    logger.info("Response machineId: {}", responseBody.getMachineId() != null ? responseBody.getMachineId().getMachineId() : "null");
-                    logger.info("Response schedule jobs count: {}",
-                        responseBody.getSchedule() != null && responseBody.getSchedule().getJobs() != null ?
-                        responseBody.getSchedule().getJobs().size() : "null/0");
-
-                    if (responseBody.getSchedule() != null && responseBody.getSchedule().getJobs() != null && !responseBody.getSchedule().getJobs().isEmpty()) {
-                        logger.info("✅ Found real job data from business-service");
-                        MachineSchedule converted = convertToMachineSchedule(responseBody);
-                        logger.info("✅ Successfully converted to MachineSchedule with {} machine(s)",
-                            converted.getSchedules().size());
-                        return converted;
-                    } else {
-                        logger.warn("❌ No jobs found in schedule, falling back to mock data");
-                        return createMockMachineSchedule();
-                    }
-
-                } catch (Exception jsonEx) {
-                    logger.error("❌ Failed to parse JSON response: {}", jsonEx.getMessage());
-                    logger.error("Raw response that failed to parse: {}", rawBody);
-                    logger.info("📋 Falling back to mock data due to JSON parsing error");
-                    return createMockMachineSchedule();
-                }
-
-            } else {
-                logger.warn("❌ API returned empty response body, falling back to mock data");
-                return createMockMachineSchedule();
-            }
-
-        } catch (Exception e) {
-            logger.error("❌ Failed to fetch machine schedule from business-service: {}", e.getMessage());
-            logger.error("Exception type: {}", e.getClass().getSimpleName());
-            if (e.getCause() != null) {
-                logger.error("Root cause: {}", e.getCause().getMessage());
-            }
-            logger.info("📋 Falling back to mock data");
-            return createMockMachineSchedule();
-        }
-    }*/
 
     public MachineSchedule fetchNewSchedule() throws RuntimeException {
         String url = "http://localhost:8787/addJobToMachine/findJobsByMachineId?machineId=machine2";
@@ -113,7 +47,7 @@ public class ExternalMachineSchedule {
 
             if (response.getStatusCode() == HttpStatus.OK && response.getBody() != null) {
                 String rawResponse = response.getBody();
-                logger.info("✅ Successfully received raw response from business-service");
+                logger.info("Successfully received raw response from business-service");
                 logger.info("Raw response (first 500 chars): {}",
                         rawResponse.length() > 500 ? rawResponse.substring(0, 500) + "..." : rawResponse);
 
@@ -123,13 +57,13 @@ public class ExternalMachineSchedule {
                     try {
                         MachineSchedule parsedSchedule = parseTextResponse(rawResponse);
                         if (parsedSchedule != null && !parsedSchedule.getSchedules().isEmpty()) {
-                            logger.info("✅ Successfully parsed text response into MachineSchedule");
+                            logger.info("Successfully parsed text response into MachineSchedule");
                             return parsedSchedule;
                         } else {
-                            logger.warn("❌ Text parsing returned null or empty schedule");
+                            logger.warn("Text parsing returned null or empty schedule");
                         }
                     } catch (Exception textParseEx) {
-                        logger.error("❌ Text parsing failed: {}", textParseEx.getMessage(), textParseEx);
+                        logger.error("ext parsing failed: {}", textParseEx.getMessage(), textParseEx);
                     }
                 } else if (rawResponse.trim().startsWith("{") || rawResponse.trim().startsWith("[")) {
                     logger.info("🔍 Detected JSON format response, using JSON parser");
@@ -139,39 +73,39 @@ public class ExternalMachineSchedule {
                         mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
                         MachineSchedule schedule = mapper.readValue(rawResponse, MachineSchedule.class);
-                        logger.info("✅ Successfully parsed JSON response into MachineSchedule");
+                        logger.info("Successfully parsed JSON response into MachineSchedule");
                         return schedule;
                     } catch (Exception jsonParseEx) {
-                        logger.error("❌ JSON parsing failed: {}", jsonParseEx.getMessage());
+                        logger.error("JSON parsing failed: {}", jsonParseEx.getMessage());
                     }
                 } else {
-                    logger.warn("❌ Unknown response format, response starts with: {}",
+                    logger.warn("Unknown response format, response starts with: {}",
                         rawResponse.length() > 50 ? rawResponse.substring(0, 50) : rawResponse);
                 }
 
-                logger.info("📋 All parsing attempts failed, falling back to mock data");
+                logger.info("All parsing attempts failed, falling back to mock data");
                 return createMockMachineSchedule();
 
             } else {
-                logger.error("❌ Invalid response from business-service. Status: {}", response.getStatusCode());
+                logger.error("Invalid response from business-service. Status: {}", response.getStatusCode());
                 return createMockMachineSchedule();
             }
 
         } catch (Exception e) {
-            logger.error("❌ Exception while calling business-service API: {}", e.getMessage(), e);
-            logger.info("📋 Using mock data due to API call failure");
+            logger.error("Exception while calling business-service API: {}", e.getMessage(), e);
+            logger.info("Using mock data due to API call failure");
             return createMockMachineSchedule();
         }
     }
 
     private MachineSchedule parseTextResponse(String textResponse) {
         try {
-            logger.info("📝 Starting to parse text response...");
+            logger.info("Starting to parse text response...");
             MachineSchedule schedule = new MachineSchedule();
             Map<String, List<JobDto>> schedules = new HashMap<>();
             List<JobDto> jobs = new ArrayList<>();
 
-            String machineId = "machine2"; // 默认值
+            String machineId = "machine2";
             if (textResponse.contains("MachineId: ")) {
                 String[] parts = textResponse.split("MachineId: ");
                 if (parts.length > 1) {
@@ -192,13 +126,12 @@ public class ExternalMachineSchedule {
                 if (line.startsWith("Job ") && line.contains("PRIORITY:")) {
                     if (currentJob != null) {
                         jobs.add(currentJob);
-                        logger.info("✅ Added job {} to list", currentJob.getJobId());
+                        logger.info("Added job {} to list", currentJob.getJobId());
                     }
 
                     currentJob = new JobDto();
                     inJobSection = true;
 
-                    // 解析作业 ID 和优先级: "Job 7: PRIORITY: 5"
                     try {
                         String[] parts = line.split(":");
                         if (parts.length >= 3) {
@@ -211,12 +144,12 @@ public class ExternalMachineSchedule {
                             int priority = Integer.parseInt(priorityStr);
                             currentJob.setPriority(priority);
 
-                            logger.info("🆔 Parsed Job ID: {}, Priority: {}", jobId, priority);
+                            logger.info("Parsed Job ID: {}, Priority: {}", jobId, priority);
                         }
                     } catch (Exception e) {
                         logger.warn("Failed to parse job ID or priority from: {}", line);
                         currentJob.setJobId(System.currentTimeMillis() % 1000); // 临时ID
-                        currentJob.setPriority(3); // 默认优先级
+                        currentJob.setPriority(3);
                     }
 
                 } else if (currentJob != null && line.contains("dueDate:")) {
@@ -229,17 +162,17 @@ public class ExternalMachineSchedule {
 
             if (currentJob != null) {
                 jobs.add(currentJob);
-                logger.info("✅ Added final job {} to list", currentJob.getJobId());
+                logger.info("Added final job {} to list", currentJob.getJobId());
             }
 
             String formattedMachineId = convertToMachineFormat(machineId);
             schedules.put(formattedMachineId, jobs);
             schedule.setSchedules(schedules);
 
-            logger.info("🎉 Successfully parsed {} jobs for machine {}", jobs.size(), formattedMachineId);
+            logger.info("Successfully parsed {} jobs for machine {}", jobs.size(), formattedMachineId);
 
             for (JobDto job : jobs) {
-                logger.info("📋 Job {}: {} - {} (Priority: {}, Material: {} x{})",
+                logger.info("Job {}: {} - {} (Priority: {}, Material: {} x{})",
                     job.getJobId(), job.getTitle(), job.getDueDate(),
                     job.getPriority(), job.getMaterialNeeded(), job.getMaterialAmount());
             }
@@ -247,14 +180,14 @@ public class ExternalMachineSchedule {
             return schedule;
 
         } catch (Exception e) {
-            logger.error("❌ Failed to parse text response: {}", e.getMessage(), e);
+            logger.error("Failed to parse text response: {}", e.getMessage(), e);
             return null;
         }
     }
 
     private void parseJobDatesImproved(String line, JobDto job) {
         try {
-            logger.debug("🗓️ Parsing dates from: {}", line);
+            logger.debug("Parsing dates from: {}", line);
 
             String[] parts = line.split(",");
 
