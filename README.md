@@ -310,28 +310,6 @@ curl -X GET "http://localhost:8081/api/inventory/list"
 ```shell
 curl -X GET -H "Content-Type:application/json" http://localhost:8081/queries/recentMaterialUsage
 ```
-#### 6. View material Event Stream
-After running the `business-service`'s and `inventory-service`'s main class, check the Kafka topics with the following command:
-
-(Linux/MacOS)
-```shell
-./bin/kafka-topics.sh --bootstrap-server=localhost:9092 --list
-```
-(Windows)
-```shell
-C:\kafka\bin\windows\kafka-topics.bat --bootstrap-server=localhost:9092 --list
-```
-You can read data in the `materialNeeded` topic:
-
-(Linux/MacOS)
-```shell
-./bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic materialNeeded --from-beginning
-```
-(Windows)
-```shell
-c:\kafka\bin\windows\kafka-console-consumer.bat --bootstrap-server localhost:9092 --topic materialNeeded --from-beginning
-```
-
 
 # Maintenance MS
 Run `MaintenanceReportServiceApplication.java` to start the Maintenance MS.\
