@@ -171,7 +171,7 @@ Commands to view the needed materials per machine per material type in a 30-seco
 curl -X GET -H "Content-Type:application/json" http://localhost:8787/queries/windowedMachinesByAmount
 ```
 
-#### 11. View Booking Event Stream
+#### 11. View Job Event Stream
 After running the `business-service`'s main class, check the Kafka topics with the following command:
 
 (Linux/MacOS)
@@ -447,6 +447,24 @@ Ensuring proper coolant pressure will help to dissipate heat, lubricate the cutt
 # Workforce MS 
 
 ### Employee Management APIs
+### Run Workforce MS
+To run application, first run kafka and then run WorkforceServiceApplication.java to start the Workforce MS.
+
+h2 database console is available at: http://localhost:8080/h2-console
+JDBC URL: jdbc:h2:mem:workforce_db
+Username: sa
+Password: (leave blank)
+
+Employs a persistent database (H2) to store employee and timesheet data, should be prepopulated with 4 employees and timesheets.
+
+#### Notice
+1. When deleting an employee, all associated timesheets will also be deleted.
+2. When adding a timesheet, ensure the employeeId exists in the system.
+3. Timesheet status can be "PENDING", "APPROVED", or "REJECTED".
+4. When approving or rejecting a timesheet, ensure the timesheetId exists in the system.
+5. When fetching working hours, salary, or payslip summary, ensure the employeeId exists in the system.
+6. When generating shift plans from Business MS, ensure you run the Business MS first to have machines available.
+7. When updating shift plans, ensure the shiftPlanId exists in the system.
 
 #### 1. Add New Employee
 Windows
@@ -458,21 +476,6 @@ Mac/Linux
 curl -X POST "http://localhost:8080/api/workforce/employees" \ -H "Content-Type: application/json" \ -d '{"name":"Alice Wu","pay":28.0,"skill":"Normal","phoneNumber":"555-0101","salary":4500.0,"managementArea":"None","managerName":"Manager Anderson","manager":false}'
 ```
 
-**Response:**
-```json
-{
-  "success": true,
-  "message": "Employee added successfully",
-  "employeeId": 1,
-  "employee": {
-    "id": 1,
-    "name": "Alice Wu",
-    "pay": 28.0,
-    "skill": "Normal"
-  }
-}
-```
-
 #### 2. Get All Employees
 Windows
 ```bash
@@ -482,44 +485,15 @@ Mac/Linux
 ```bash
 curl -H "Accept: application/json" 'http://localhost:8080/api/workforce/employees'
 ```
-**Response:**
-```json
-{
-  "success": true,
-  "count": 2,
-  "employees": [
-    {
-      "id": 1,
-      "name": "John Smith",
-      "pay": 28.0,
-      "skill": "Welding,Metal Cutting,Assembly",
-      "phoneNumber": "555-0101",
-      "manager": false
-    }
-  ]
-}
-```
 
 #### 3. Delete Employee (with all timesheets)
 Windows
 ```bash
-curl -X DELETE "http://localhost:8080/api/workforce/employees/1"
+curl -X DELETE "http://localhost:8080/api/workforce/employees/5"
 ```
 Mac/Linux
 ```bash
 curl -X DELETE 'http://localhost:8080/api/workforce/employees/1' -H 'Accept: application/json'
-```
-**Response:**
-```json
-{
-  "success": true,
-  "message": "Employee and all associated timesheets deleted successfully",
-  "deletedEmployee": {
-    "employeeId": 1,
-    "name": "John Smith"
-  },
-  "deletedTimesheets": 5
-}
 ```
 
 **Error Response (Employee not found):**
@@ -540,24 +514,6 @@ curl -X POST "http://localhost:8080/api/workforce/timesheets" -H "Content-Type: 
 Mac/Linux
 ```bash
 curl -X POST 'http://localhost:8080/api/workforce/timesheets' -H 'Content-Type: application/json' -d '{"employeeId":5,"workDate":"2025-10-18","hoursWorked":8.0,"clockInTime":"2025-10-18T09:00:00","clockOutTime":"2025-10-18T17:00:00","jobId":5}'
-```
-**Response:**
-```json
-{
-  "success": true,
-  "message": "Timesheet recorded successfully",
-  "timesheet": {
-    "timesheetId": 5,
-    "employeeId": 5,
-    "workDate": "2025-10-18",
-    "hoursWorked": 8.0,
-    "salaryPaid": 224.0,
-    "status": "EXCEPTION",
-    "clockInTime": "2025-10-18T09:00:00",
-    "clockOutTime": "2025-10-18T17:00:00",
-    "jobId": 5
-  }
-}
 ```
 
 #### 5. Get All Timesheets 
@@ -590,26 +546,6 @@ curl -H 'Accept: application/json' 'http://localhost:8080/api/workforce/timeshee
 curl -H 'Accept: application/json' 'http://localhost:8080/api/workforce/timesheets?employeeId=1&status=APPROVED'
 ```
 
-**Response:**
-```json
-{
-  "success": true,
-  "count": 2,
-  "timesheets": [
-    {
-      "timesheetId": 1,
-      "employeeId": 1,
-      "workDate": "2025-10-18",
-      "hoursWorked": 8.0,
-      "salaryPaid": 224.0,
-      "status": "EXCEPTION",
-      "clockInTime": "2025-10-18T09:00:00",
-      "clockOutTime": "2025-10-18T17:00:00"
-    }
-  ]
-}
-```
-
 #### 6. Approve Timesheet
 Windows
 ```bash
@@ -618,21 +554,6 @@ curl -X PUT "http://localhost:8080/api/workforce/portal/timesheet/1/approve"
 Mac/Linux
 ```bash
 curl -X PUT 'http://localhost:8080/api/workforce/portal/timesheet/1/approve' -H 'Accept: application/json'
-```
-**Response:**
-```json
-{
-  "success": true,
-  "message": "Timesheet approved successfully",
-  "timesheet": {
-    "timesheetId": 1,
-    "employeeId": 1,
-    "status": "APPROVED",
-    "workDate": "2025-10-18",
-    "hoursWorked": 8.0,
-    "salaryPaid": 224.0
-  }
-}
 ```
 
 #### 7. Reject Timesheet
@@ -643,21 +564,6 @@ curl -X PUT "http://localhost:8080/api/workforce/portal/timesheet/1/reject"
 Mac/Linux
 ```bash
 curl -X PUT 'http://localhost:8080/api/workforce/portal/timesheet/1/reject' -H 'Accept: application/json'
-```
-**Response:**
-```json
-{
-  "success": true,
-  "message": "Timesheet rejected successfully",
-  "timesheet": {
-    "timesheetId": 1,
-    "employeeId": 1,
-    "status": "REJECTED",
-    "workDate": "2025-10-18",
-    "hoursWorked": 8.0,
-    "salaryPaid": 224.0
-  }
-}
 ```
 
 ### Employee Portal APIs
@@ -716,23 +622,6 @@ curl -X POST 'http://localhost:8080/api/workforce/portal/employee/1/clock-in-out
   -H 'Content-Type: application/json' \ 
   -d '{"workDate":"2025-10-18","hoursWorked":8.0,"clockInTime":"2025-10-18T09:00:00","clockOutTime":"2025-10-18T17:00:00","jobId":1}'
 ```
-**Response:**
-```json
-{
-  "success": true,
-  "message": "Clock-in and clock-out recorded successfully",
-  "timesheet": {
-    "timesheetId": 2,
-    "employeeId": 1,
-    "workDate": "2025-10-18",
-    "hoursWorked": 8.0,
-    "salaryPaid": 224.0,
-    "status": "EXCEPTION",
-    "clockInTime": "2025-10-18T09:00:00",
-    "clockOutTime": "2025-10-18T17:00:00"
-  }
-}
-```
 
 ### 12. Auto-generate Shift Plan using data from Business MS (agentic) and notify employees
 Windows
@@ -763,23 +652,6 @@ Mac/Linux
 curl -X PUT 'http://localhost:8080/api/workforce/manager/portal/shift-plan/1' \
   -H 'Content-Type: application/json' \
   -d '{"employeeId":1,"shiftDate":"2025-10-22","startTime":"2025-10-22","endTime":"2025-10-23","status":"BUSY","version":2,"jobId":10,"requiredEmployees":1}'
-```
-**responseL**
-```json
-{
-  "success": true,
-  "message": "Shift plan updated successfully",
-  "shiftPlan": {
-    "shiftPlanId": 1,
-    "employeeId": 1,
-    "shiftDate": "2025-10-22",
-    "startTime": "2025-10-23",
-    "endTime": "2025-10-24",
-    "status": "BUSY",
-    "version": 2,
-    "jobId": 9
-  }
-}
 ```
 
 ### 14. Get all Shift Plans

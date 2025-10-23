@@ -61,7 +61,7 @@ public class Main {
         int priorityNum = priorityOptions.length;
         LocalDate day = LocalDate.now();
         int jobNumber = 0;
-        while (true) {
+        while (jobNumber < 10) {
             jobNumber = jobNumber + 1;
             int materialAmount = rand.nextInt(maxMaterials) + 1; //at least 1 material
             int jobTimeNeededDays = rand.nextInt(maxDays) + 1; //at least 1 day needed
