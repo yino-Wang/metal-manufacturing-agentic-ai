@@ -40,7 +40,7 @@ public class Timesheet {
     private Float salaryPaid;
 
     @Column(name = "status")
-    private String status; // 工时状态：NORMAL/EXCEPTION/PENDING_APPROVAL/APPROVED/REJECTED
+    private String status;
 
     @ManyToOne
     @JoinColumn(name = "employee_id", referencedColumnName = "employee_id", insertable = false, updatable = false)
