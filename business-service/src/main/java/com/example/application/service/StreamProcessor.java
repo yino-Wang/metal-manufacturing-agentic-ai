@@ -1,6 +1,6 @@
 package com.example.application.service;
 
-import com.example.events.JobAddedToMachineEvent;
+import com.example.events.sharedDomain.JobAddedToMachineEvent;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.KeyValue;

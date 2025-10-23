@@ -1,4 +1,4 @@
-package com.example.events;
+package com.example.events.sharedDomain;
 
 import java.time.LocalDate;
 

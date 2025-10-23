@@ -4,10 +4,10 @@ import com.example.domain.model.commands.ScheduleMachineCommand;
 //import com.example.domain.model.entities.Employee;
 import com.example.domain.model.entities.Job;
 import com.example.domain.model.valueobjects.*;
-import com.example.events.JobAddedToMachineEvent;
-import com.example.events.JobAddedToMachineEventData;
-import com.example.events.MachineScheduledEvent;
-import com.example.events.MachineScheduledEventData;
+import com.example.events.sharedDomain.JobAddedToMachineEvent;
+import com.example.events.sharedDomain.JobAddedToMachineEventData;
+import com.example.events.sharedDomain.MachineScheduledEvent;
+import com.example.events.sharedDomain.MachineScheduledEventData;
 import jakarta.persistence.*;
 import org.springframework.data.domain.AbstractAggregateRoot;
 

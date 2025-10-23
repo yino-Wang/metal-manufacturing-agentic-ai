@@ -1,8 +1,5 @@
 package com.example.application.service;
 
-import org.apache.kafka.common.serialization.Serdes;
-import org.springframework.kafka.support.serializer.JsonSerializer;
-
 import java.util.Objects;
 
 public class MachineMaterialKey {
@@ -17,21 +14,13 @@ public class MachineMaterialKey {
         this.materialName = materialName;
     }
 
-    public String getMachineId() {
-        return machineId;
-    }
+    public String getMachineId() { return machineId; }
 
-    public void setMachineId(String machineId) {
-        this.machineId = machineId;
-    }
+    public void setMachineId(String machineId) { this.machineId = machineId; }
 
-    public String getMaterialName() {
-        return materialName;
-    }
+    public String getMaterialName() { return materialName;  }
 
-    public void setMaterialName(String materialName) {
-        this.materialName = materialName;
-    }
+    public void setMaterialName(String materialName) { this.materialName = materialName; }
 
     @Override
     public boolean equals(Object o) {

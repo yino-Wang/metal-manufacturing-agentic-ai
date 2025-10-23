@@ -40,10 +40,8 @@ public class InteractiveQuery {
 
     /**
      * Fetches the total booking amounts for each city from the most recently completed time window.
-     * Note: The DTO {@link MaterialAmountByMachineId} and its property `bookingQuantity` are slightly misnamed.
-     * This method actually retrieves the sum of booking *amounts* (a monetary value), not the count of bookings.
      *
-     * @return A list of {@link MaterialAmountByMachineId} objects, each containing a city and the total booking amount for that city in the last window.
+     * @return A list of {@link MaterialAmountByMachineId} objects.
      */
     public List<MaterialAmountByMachineId> getWindowedMaterialAmountByMachineId() {
         List<MaterialAmountByMachineId> windowedMachineMaterialAmounts = new ArrayList<>();
@@ -62,7 +60,8 @@ public class InteractiveQuery {
                 KeyValue<Windowed<MachineMaterialKey>, Long> ks = all.next();
                 MaterialAmountByMachineId amountPerSchedule = new MaterialAmountByMachineId();
                 // The city name is decorated with the window start and end times for clarity.
-                amountPerSchedule.setMachineId(ks.key.key() + " (window: " + ks.key.window().startTime() + " - " + ks.key.window().endTime() + ")");
+                amountPerSchedule.setMachineId(ks.key.key() + " (window: " + ks.key.window().startTime() + " - "
+                        + ks.key.window().endTime() + ")");
                 amountPerSchedule.setMaterialAmount(ks.value);
                 windowedMachineMaterialAmounts.add(amountPerSchedule);
             }
