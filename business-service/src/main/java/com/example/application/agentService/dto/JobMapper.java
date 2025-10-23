@@ -17,7 +17,6 @@ public final class JobMapper {
             return new JobListDto(List.of(), LocalDate.now());
         }
 
-        // adapt this access if your JobList exposes a different method name (e.g. jobs() vs getJobs())
         List<Job> domainJobs = jobList.getJobs();
 
         List<JobSummaryDto> summaries = (domainJobs == null) ? List.of() :

@@ -81,12 +81,6 @@ public class Main {
             //System.out.println("******" + schedulingId + job + "*****");
             //System.out.println(job);
 
-            ///create schedule
-            Schedule schedule = service.generateSchedule(machineId);
-
-            /// post schedule back to update machine schedule
-            //ScheduleDto scheduleDto = restTemplate.postForObject(urlAddJob, schedule, ScheduleDto.class);
-
             Thread.sleep(5000);
         }
     }
