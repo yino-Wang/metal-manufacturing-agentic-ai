@@ -15,7 +15,7 @@ import java.util.Map;
 /**
  * REST endpoint for querying recent aggregated material usage.
  */
-@Controller    // This means that this class is a Controller
+@RestController    // This means that this class is a Controller
 @RequestMapping("/queries")
 public class AnalyticsController {
 

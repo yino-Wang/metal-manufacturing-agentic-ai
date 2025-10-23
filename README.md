@@ -321,15 +321,15 @@ After running the `business-service`'s and `inventory-service`'s main class, che
 ```shell
 C:\kafka\bin\windows\kafka-topics.bat --bootstrap-server=localhost:9092 --list
 ```
-You can read data in the `materialUpdated` topic:
+You can read data in the `materialNeeded` topic:
 
 (Linux/MacOS)
 ```shell
-./bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic materialUpdated --from-beginning
+./bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic materialNeeded --from-beginning
 ```
 (Windows)
 ```shell
-c:\kafka\bin\windows\kafka-console-consumer.bat --bootstrap-server localhost:9092 --topic materialUpdated --from-beginning
+c:\kafka\bin\windows\kafka-console-consumer.bat --bootstrap-server localhost:9092 --topic materialNeeded --from-beginning
 ```
 
 
