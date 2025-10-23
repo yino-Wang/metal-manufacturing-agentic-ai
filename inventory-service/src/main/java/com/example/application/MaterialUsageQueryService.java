@@ -58,7 +58,7 @@ public class MaterialUsageQueryService {
                 KeyValue<Windowed<String>, Long> record = iterator.next();
                 MaterialConsumedByName amountPerMaterial = new MaterialConsumedByName();
                 amountPerMaterial.setName(record.key.key());
-                amountPerMaterial.setQuantity(record.value); // This value is the sum of booking amounts, not a quantity.
+                amountPerMaterial.setQuantity(record.value);
                 usageStats.add(amountPerMaterial);
             }
         }
