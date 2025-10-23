@@ -22,6 +22,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+//IMPORTANT: code taken from CSCI318 lab example Cargo Tracker (Stream Processing) QueryService class
+//variable names have been changed
+//" start quote
 /**
  * Queries the Kafka Streams window store for aggregated material usage.
  */
@@ -77,3 +80,5 @@ public class MaterialUsageQueryService {
                 QueryableStoreTypes.windowStore());
     }
 }
+
+//" end quote
