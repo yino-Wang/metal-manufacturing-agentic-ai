@@ -27,9 +27,10 @@ public class InventoryServiceApplication {
 
             if (inventoryRepository.count() == 0) {
                 inventoryRepository.save(new Material("Steel", 150));
-                inventoryRepository.save(new Material("Aluminium", 150));
+                inventoryRepository.save(new Material("Aluminum", 150));
                 inventoryRepository.save(new Material("Copper", 150));
                 inventoryRepository.save(new Material("Iron", 150));
+                inventoryRepository.save(new Material("Zinc", 150));
                 System.out.println("[Init] Default materials added successfully!");
             } else {
                 System.out.println("[Init] Materials already exist — skipping seeding.");

@@ -206,10 +206,6 @@ Keep running the command every 5 seconds (after a new job is added) to see how t
 curl "http://localhost:8787/machinescheduling/findAllMachines"
 ```
 
-
-
-
-
 # Inventory MS
 To run application, first run kafka then open and 
 run the business-service [Main.java](business-service/src/main/java/com/example/Main.java).
@@ -244,7 +240,7 @@ Auto-restock applied → new quantity = 280
 ```
 #### 2. Add a Material
 ```bash
-curl -X POST "http://localhost:8080/api/inventory/add" -H "Content-Type: application/json" -d "{\"name\":\"Zinc\",\"quantity\":150}"
+curl -X POST "http://localhost:8081/api/inventory/add" -H "Content-Type: application/json" -d "{\"name\":\"Zinc\",\"quantity\":150}"
 ```
 **Response:**
 ```json
@@ -256,7 +252,7 @@ curl -X POST "http://localhost:8080/api/inventory/add" -H "Content-Type: applica
 
 #### 3. Update Material Quantity
 ```bash
-curl -X PUT "http://localhost:8080/api/inventory/update/1?quantity=60"
+curl -X PUT "http://localhost:8081/api/inventory/update/1?quantity=60"
 ```
 **Response:**
 ```json
@@ -269,7 +265,7 @@ curl -X PUT "http://localhost:8080/api/inventory/update/1?quantity=60"
 
 #### 4. Get all Materials
 ```bash
-curl -X GET "http://localhost:8080/api/inventory/list"
+curl -X GET "http://localhost:8081/api/inventory/list"
 ```
 **Response:**
 ```json
@@ -306,6 +302,32 @@ curl -X GET "http://localhost:8080/api/inventory/list"
   }
 ]
 ```
+#### 5. The following REST API is provided to query the windowed stream processing results:
+```shell
+curl -X GET -H "Content-Type:application/json" http://localhost:8081/queries/recentMaterialUsage
+```
+#### 6. View material Event Stream
+After running the `business-service`'s and `inventory-service`'s main class, check the Kafka topics with the following command:
+
+(Linux/MacOS)
+```shell
+./bin/kafka-topics.sh --bootstrap-server=localhost:9092 --list
+```
+(Windows)
+```shell
+C:\kafka\bin\windows\kafka-topics.bat --bootstrap-server=localhost:9092 --list
+```
+You can read data in the `materialUpdated` topic:
+
+(Linux/MacOS)
+```shell
+./bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic materialUpdated --from-beginning
+```
+(Windows)
+```shell
+c:\kafka\bin\windows\kafka-console-consumer.bat --bootstrap-server localhost:9092 --topic materialUpdated --from-beginning
+```
+
 
 # Maintenance MS
 Run MaintenanceReportServiceApplication.java to start the Maintenance MS.

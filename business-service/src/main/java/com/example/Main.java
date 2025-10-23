@@ -53,7 +53,7 @@ public class Main {
         int maxDays = 10; //Maximum days a job can take
         String[] machines = {"machine1", "machine2", "machine3", "machine4"};
         int numMachines = machines.length;
-        String[] materialNeeded = {"steel", "Aluminum", "nails", "iron"};
+        String[] materialNeeded = {"steel", "aluminum", "copper", "iron", "zinc"};
         int materialOptions = materialNeeded.length;
         String[] customers = {"Michelle", "Randy", "Rob", "Deb"};
         int numCustomers = customers.length;
